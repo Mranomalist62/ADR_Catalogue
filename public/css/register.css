@@ -1,0 +1,102 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #64b5f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-box {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+}
+
+.logo-box img {
+  width: 60px;
+  height: auto;
+}
+
+.form-box {
+  background: white;
+  border: 1px solid #2196F3;
+  border-radius: 12px;
+  padding: 30px 40px;
+  width: 380px; /* 🔹 diperkecil supaya tidak terlalu lebar */
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.form-box h2 {
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.form-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1.5px solid black;
+  outline: none;
+  font-size: 14px;
+   /* 🔹 teks input lebih tengah */
+}
+
+.btn-daftar {
+  background-color: #00CFFF;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 25px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 100%;
+}
+
+.btn-daftar:hover {
+  background-color: #00B8E6;
+}
+
+.login-text {
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.login-text a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.btn-kembali {
+  position: absolute;
+  bottom: 30px;
+  right: 40px;
+  background: white;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 25px;
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: 0.3s;
+}
+
+.btn-kembali:hover {
+  background-color: #f1f1f1;
+}
