@@ -1,0 +1,154 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background: linear-gradient(to bottom right, #8ec5fc, #64b5f6);
+  min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 40px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-box {
+  width: 50px;
+  height: 35px;
+  background: #e0e0e0;
+  border: 1px solid #999;
+}
+
+.promo {
+  font-weight: 600;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.kategori {
+  background: none;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-btn {
+  background: #00CFFF;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth-btn:hover {
+  background-color: #00B8E6;
+}
+
+/* Main Content */
+.content {
+  padding: 30px 60px;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #333;
+}
+
+.breadcrumb span {
+  font-weight: 600;
+}
+
+.page-title {
+  margin-top: 10px;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+/* Tabs */
+.tab-container {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+}
+
+.tab {
+  background: none;
+  border: none;
+  font-weight: 600;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.tab.active {
+  border: 2px solid black;
+}
+
+.tab:hover {
+  background-color: rgba(0,0,0,0.05);
+}
+
+/* Product Grid */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 kolom */
+  gap: 25px;
+  justify-items: center;
+}
+
+.product-card {
+  width: 100%;
+  max-width: 200px;
+  height: 250px;
+  background: white;
+  border-radius: 12px;
+  padding: 15px,;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  transition: 0.3s ease;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.product-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.product-card p {
+  margin: 10px 0 0;
+  font-weight: 500;
+  color: #333;
+}
+
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
