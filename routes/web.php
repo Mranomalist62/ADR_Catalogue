@@ -12,7 +12,10 @@ Route::prefix('auth')->group((function(){
     Route::post('/user/register', [userAuth::class, 'register']);
     Route::post('/user/login', [userAuth::class, 'login']);
     Route::post('/user/logout', [userAuth::class, 'logout']);
+}));
+
+Route::prefix('admin')->group((function(){
+    Route::post('/admin/register', [adminAuth::class, 'register']);
     Route::post('/admin/login', [adminAuth::class, 'login']);
     Route::post('/admin/logout', [adminAuth::class, 'logout']);
-    Route::get('/admin/profile', [adminAuth::class, 'profile']);
 }));
