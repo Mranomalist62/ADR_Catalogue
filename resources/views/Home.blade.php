@@ -17,12 +17,13 @@
     </div>
     <div class="nav-right">
       <button class="kategori"><i class="fa fa-th"></i> Kategori</button>
-      <button class="auth-btn">Daftar/Masuk</button>
+      <button class="auth-btn">Daftar/masuk</button>
     </div>
   </nav>
 
   <!-- Main Section -->
   <main>
+    <div class="main-container">
     <h2 class="tagline">Tag Line</h2>
     
     <!-- Search -->
@@ -60,6 +61,7 @@
         <div class="product-card">Lorem Ipsum</div>
         <div class="product-card">Lorem Ipsum</div>
       </div>
+    </div>
     </div>
   </main>
 </body>
