@@ -14,8 +14,11 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar">
-        <div class="nav-left">
-            <div class="logo-box"></div>
+        <div class="nav-left flex items-center space-x-4">
+            <div class="logo-box flex items-center">
+                <img class="logo-img" src="{{ asset('images/asset/logo.png') }}" alt="Logo"
+                    class="logo w-10 h-10 object-contain">
+            </div>
             <span class="promo">Promo</span>
         </div>
         <div class="nav-right">

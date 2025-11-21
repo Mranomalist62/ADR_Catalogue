@@ -15,12 +15,16 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar">
-        <div class="nav-left">
-            <div class="logo-box"></div>
-            <span class="promo">Promo</span>
+        <div class="nav-left flex items-center space-x-4">
+            <div class="logo-box flex items-center">
+                <img class="logo-img" src="{{ asset('images/asset/logo.png') }}" alt="Logo"
+                    class="logo w-10 h-10 object-contain">
+            </div>
+            <span class="promo" onclick="window.location.href='{{ route('promo') }}'">Promo</span>
         </div>
         <div class="nav-right">
-            <button class="kategori"><i class="fas fa-th"></i> Kategori</button>
+            <button class="kategori" onclick="window.location.href='{{ route('kategori') }}'"><i class="fas fa-th"></i>
+                Kategori</button>
             <button class="auth-btn" onclick="window.location.href='{{ route('login') }}'">Daftar/Masuk</button>
         </div>
     </nav>

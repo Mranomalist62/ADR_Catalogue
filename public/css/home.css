@@ -26,11 +26,19 @@ body {
   gap: 10px;
 }
 
+.logo-img {
+    width: 64px;
+    object-fit: contain;
+}
+
 .logo-box {
-  width: 70px;
-  height: 40px;
-  background: #d9d9d9;
-  border-radius: 6px;
+    width: 70px;
+    height: 40px;
+    background: #d9d9d900;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .promo {
