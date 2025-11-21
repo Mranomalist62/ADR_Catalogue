@@ -78,3 +78,6 @@ Route::middleware(['auth:user'])->group(function () {
 Route::post('/register', [UserAuth::class, 'register'])->name('register.submit');
 Route::post('/login', [UserAuth::class, 'login'])->name('login.submit');
 
+Route::get('/admin', function () {
+        return view('admin');
+    })->name('admin');
