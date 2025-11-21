@@ -14,10 +14,11 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'id_kategori');
     }
 
-    public function promos()
+    public function promo()
     {
-        return $this->belongsToMany(Promo::class, 'promolist', 'id_produk', 'id_promo');
+        return $this->belongsTo(Promo::class, 'active_promo_id');
     }
+
 
     public function orders()
     {

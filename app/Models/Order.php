@@ -11,6 +11,8 @@ class Order extends Model
         'id_pemesan',
         'id_produk',
         'id_promo',
+        'nama_promo',
+        'potongan_harga',
         'kuantitas',
         'total_harga',
         'total_instalment',

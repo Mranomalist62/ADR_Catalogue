@@ -7,16 +7,15 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('promo', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama', 255);
-            $table->integer('potongan_harga')->nullable();
-            $table->timestamps();
+        Schema::table('product', function (Blueprint $table) {
+            $table->integer('harga_satuan')->default(0)->after('desc');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('promo');
+        Schema::table('product', function (Blueprint $table) {
+            $table->dropColumn('harga_satuan');
+        });
     }
 };
