@@ -25,6 +25,13 @@ Route::get('/kategori', function () {
     return view('kategori');
 })->name('kategori');
 
+Route::get('/admin', function () {
+        return view('admin');
+    })->name('admin');
+
+    Route::get('/product', function () {
+        return view('product');
+    })->name('product');
 
 //testing route
 
@@ -78,6 +85,3 @@ Route::middleware(['auth:user'])->group(function () {
 Route::post('/register', [UserAuth::class, 'register'])->name('register.submit');
 Route::post('/login', [UserAuth::class, 'login'])->name('login.submit');
 
-Route::get('/admin', function () {
-        return view('admin');
-    })->name('admin');
