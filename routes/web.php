@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\adminAuth;
 use App\Http\Controllers\Auth\userAuth;
 
 // Public routes (no authentication required)
@@ -69,8 +68,8 @@ Route::get('/debug-auth', function () {
 })->name('debug.auth');
 
 
-// Protected routes (require authentication)
-Route::middleware(['auth:user'])->group(function () {
+// Protected routes
+Route::middleware(['auth.user'])->group(function () {
 
     Route::get('/promo', function () {
         return view('promo');

@@ -48,7 +48,7 @@ class CategoryController extends Controller
         $thumbnailPath = null;
 
         if ($request->hasFile('thumbnail')) {
-            $thumbnailPath = $request->file('thumbnail')->store('categories', 'public');
+            $thumbnailPath = $request->file('thumbnail')->store('images/category', 'public');
         }
 
         $category = Category::create([
@@ -87,7 +87,7 @@ class CategoryController extends Controller
                 Storage::disk('public')->delete($category->path_thumbnail);
             }
 
-            $thumbnailPath = $request->file('thumbnail')->store('categories', 'public');
+            $thumbnailPath = $request->file('thumbnail')->store('images/category', 'public');
             $category->path_thumbnail = $thumbnailPath;
         }
 

@@ -1,17 +1,19 @@
 <?php
 
+
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\adminAuth;
 
 
 /*
-|--------------------------------------------------------------------------
+
 | PUBLIC API ROUTES
-|--------------------------------------------------------------------------
+
 */
 
 Route::prefix('public')->group(function () {
@@ -35,13 +37,11 @@ Route::prefix('public')->group(function () {
 
 
 /*
-|--------------------------------------------------------------------------
 | ADMIN PROTECTED API ROUTES
-|--------------------------------------------------------------------------
 */
 
 Route::prefix('admin')
-    ->middleware('auth:admin')
+    ->middleware(adminAuth::class)
     ->group(function () {
 
         // Products (Admin CRUD + custom actions)
@@ -56,14 +56,14 @@ Route::prefix('admin')
         Route::apiResource('categories', CategoryController::class)
             ->only(['store', 'update', 'destroy']);
 
-        // User R
+        // User Addresses
         Route::apiResource('addresses', AddressController::class)->only(['index', 'show']);
 
         // Promo CRUD
         Route::apiResource('promo', PromoController::class)->except(['index', 'show']);
 
         // Order CRUD
-        Route::prefix('admin')->middleware('auth:admin')->group(function () {
+        Route::prefix('admin')->middleware(adminAuth::class)->group(function () {
         Route::get('orders', [OrderController::class, 'index']);
         Route::get('orders/{id}', [OrderController::class, 'show']);
         Route::post('orders', [OrderController::class, 'store']);
@@ -71,17 +71,13 @@ Route::prefix('admin')
         Route::delete('orders/{id}', [OrderController::class, 'destroy']);
 });
 
-
-
     });
 
 
 /*
-|--------------------------------------------------------------------------
 | USER PROTECTED API ROUTES
-|--------------------------------------------------------------------------
 */
-Route::middleware('auth:user')
+Route::middleware('auth.user')
     ->prefix('user')
     ->group(function () {
 
