@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('nama', 255);
             $table->integer('potongan_harga')->nullable();
+            $table->string('path_thumbnail', 255)->nullable();
             $table->timestamps();
         });
     }

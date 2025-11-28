@@ -16,31 +16,29 @@ class userAuth extends Controller
 {
 
     public function login(Request $request)
-{
-    $request->validate([
-        'nomor_handphone' => 'required|string',  // Changed from email
-        'password' => 'required|string',
-    ]);
+    {
+        $request->validate([
+            'nomor_handphone' => 'required|string',  // Changed from email
+            'password' => 'required|string',
+        ]);
 
-    // Find user by phone number through their profile
-    $user = User::whereHas('profile', function($query) use ($request) {
-        $query->where('nomor_handphone', $request->nomor_handphone);
-    })->first();
+        // Find user by phone number through their profile
+        $user = User::whereHas('profile', function($query) use ($request) {
+            $query->where('nomor_handphone', $request->nomor_handphone);
+        })->first();
 
-    // Alternative: If phone number is stored in user table directly
-    // $user = User::where('nomor_handphone', $request->nomor_handphone)->first();
 
-    if (!$user || !Hash::check($request->password, $user->password)) {
-        return redirect()->route('login')
-            ->withErrors(['nomor_handphone' => 'Nomor handphone atau password salah.'])
-            ->withInput($request->only('nomor_handphone'));
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return redirect()->route('login')
+                ->withErrors(['nomor_handphone' => 'Nomor handphone atau password salah.'])
+                ->withInput($request->only('nomor_handphone'));
+        }
+
+        Auth::guard('user')->login($user);
+
+        return redirect()->intended(route('home'))
+            ->with('success', 'Login berhasil! Selamat datang.');
     }
-
-    Auth::guard('user')->login($user);
-
-    return redirect()->intended(route('home'))
-        ->with('success', 'Login berhasil! Selamat datang.');
-}
 
     public function register(Request $request)
     {

@@ -45,18 +45,26 @@ class PromoController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'potongan_harga' => 'required|integer|min:0|max:100', // percentage
+            'potongan_harga' => 'required|integer|min:0|max:100',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
 
+        // handle thumbnail upload
+        $thumbnailPath = null;
+        if ($request->hasFile('thumbnail')) {
+            $thumbnailPath = $request->file('thumbnail')->store('images/promo', 'public');
+        }
+
         $promo = Promo::create([
-            'nama'           => $request->nama ? : $request->potongan_harga,
+            'nama'           => $request->nama ?: $request->potongan_harga,
             'potongan_harga' => $request->potongan_harga,
+            'path_thumbnail' => $thumbnailPath,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Promo created successfully',
-            'data'    => $promo
+            'data' => $promo
         ], 201);
     }
 
@@ -77,14 +85,31 @@ class PromoController extends Controller
         $request->validate([
             'nama' => 'sometimes|string|max:255',
             'potongan_harga' => 'sometimes|integer|min:0|max:100',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
 
-        $promo->update($request->only(['nama', 'potongan_harga']));
+        // handle new thumbnail
+        if ($request->hasFile('thumbnail')) {
+
+            // delete existing thumbnail
+            if ($promo->path_thumbnail) {
+                \Storage::disk('public')->delete($promo->path_thumbnail);
+            }
+
+            $newPath = $request->file('thumbnail')->store('images/promo', 'public');
+            $promo->path_thumbnail = $newPath;
+        }
+
+        $promo->update([
+            'nama' => $request->nama ?? $promo->nama,
+            'potongan_harga' => $request->potongan_harga ?? $promo->potongan_harga,
+            'path_thumbnail' => $promo->path_thumbnail,
+        ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Promo updated successfully',
-            'data'    => $promo
+            'data' => $promo
         ]);
     }
 

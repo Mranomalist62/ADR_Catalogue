@@ -50,7 +50,8 @@ class ProductController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'kuantitas' => 'required|integer|min:0',
-            'id_kategori' => 'required|exists:categories,id',
+            'id_kategori' => 'required|exists:category,id',
+            'harga_satuan' => 'required|integer|min:0',
             'desc' => 'nullable|string',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
 
@@ -71,6 +72,7 @@ class ProductController extends Controller
             'kuantitas' => $request->kuantitas,
             'id_kategori' => $request->id_kategori,
             'desc' => $request->desc,
+            'harga_satuan' => $request->harga_satuan,
             'path_thumbnail' => $pathThumbnail
         ]);
 
@@ -105,21 +107,26 @@ class ProductController extends Controller
         $request->validate([
             'nama' => 'sometimes|string|max:255',
             'kuantitas' => 'sometimes|integer|min:0',
-            'id_kategori' => 'sometimes|exists:categories,id',
+            'id_kategori' => 'sometimes|exists:category,id',
             'desc' => 'nullable|string',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'harga_satuan' => 'sometimes|integer|min:0'
         ]);
+
+        $updateData = $request->only(['nama', 'kuantitas', 'id_kategori', 'desc']);
 
         if ($request->hasFile('thumbnail')) {
             // Delete old thumbnail if exists
             if ($product->path_thumbnail) {
                 Storage::disk('public')->delete($product->path_thumbnail);
             }
+
             $pathThumbnail = $request->file('thumbnail')->store('images/product', 'public');
-            $product->path_thumbnail = $pathThumbnail;
+            $updateData['path_thumbnail'] = $pathThumbnail;
         }
 
-        $product->update($request->only(['nama', 'kuantitas', 'id_kategori', 'desc']));
+        // Update all fields at once
+        $product->update($updateData);
 
         return response()->json([
             'success' => true,

@@ -10,11 +10,20 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\adminAuth;
 
 
+
+Route::apiResource('products', ProductController::class)
+            ->only(['store', 'update', 'destroy']);
+
+
+Route::apiResource('categories', CategoryController::class)
+            ->only(['store', 'update', 'destroy']);
+
 /*
 
 | PUBLIC API ROUTES
 
 */
+
 
 Route::prefix('public')->group(function () {
 
@@ -49,12 +58,8 @@ Route::prefix('admin')
             Route::post('{id}/thumbnail', [ProductController::class, 'updateThumbnail']);
         });
 
-        Route::apiResource('products', ProductController::class)
-            ->only(['store', 'update', 'destroy']);
 
-        // Category CRUD
-        Route::apiResource('categories', CategoryController::class)
-            ->only(['store', 'update', 'destroy']);
+
 
         // User Addresses
         Route::apiResource('addresses', AddressController::class)->only(['index', 'show']);
@@ -71,8 +76,7 @@ Route::prefix('admin')
         Route::delete('orders/{id}', [OrderController::class, 'destroy']);
 });
 
-    });
-
+});
 
 /*
 | USER PROTECTED API ROUTES

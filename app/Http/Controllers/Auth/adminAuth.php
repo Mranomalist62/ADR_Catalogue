@@ -27,18 +27,13 @@ class adminAuth extends Controller
             }
 
             Auth::guard('admin')->login($admin);
-            return response()->json([
-                'message'=> 'Admin login successful',
-                'admin' => [
-                    'id'=> $admin->id,
-                    'nama'=> $admin->nama,
-                    'email' => $admin->email,
-                ]
-            ]);
+
+            return redirect()->intended(route('admin'))
+            ->with('success', 'Login berhasil! Selamat datang.');
     }
 
-    public function Logout(Request $request){
-        Auth::guard('admin')->Logout();
+    public function logout(Request $request){
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return response()->json(['message' => 'Admin logout successful']);
