@@ -25,13 +25,6 @@ Route::get('/kategori', function () {
     return view('kategori');
 })->name('kategori');
 
-Route::get('/admin', function () {
-        return view('admin');
-    })->name('admin');
-
-    Route::get('/product', function () {
-        return view('product');
-    })->name('product');
 
 //testing route
 
@@ -83,5 +76,33 @@ Route::middleware(['auth:user'])->group(function () {
 
 // Put Submission Route here
 Route::post('/register', [UserAuth::class, 'register'])->name('register.submit');
-Route::post('/login', [UserAuth::class, 'login'])->name('login.submit');
+// Admin routes
+Route::get('/admin/login', function () {
+    return view('admin_login');
+})->name('admin.login');
 
+Route::post('/admin/login', [App\Http\Controllers\Auth\adminAuth::class, 'login'])->name('admin.login.submit');
+Route::post('/admin/logout', [App\Http\Controllers\Auth\adminAuth::class, 'Logout'])->name('admin.logout');
+
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin', function () {
+        return view('admin');
+    })->name('admin');
+    
+    Route::get('/admin/orders', function () {
+        return view('admin_orders');
+    })->name('admin.orders');
+    
+    Route::get('/admin/statistics', function () {
+        return view('admin_statistics');
+    })->name('admin.statistics');
+    
+    Route::get('/admin/billing', function () {
+        return view('admin_billing');
+    })->name('admin.billing');
+    
+    Route::get('/admin/products', function () {
+        return view('admin_products');
+    })->name('admin.products');
+});
+Route::post('/login', [UserAuth::class, 'login'])->name('login.submit');
