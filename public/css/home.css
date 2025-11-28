@@ -10,6 +10,12 @@ body {
   min-height: 100vh;
 }
 
+.main-container {
+  max-width: 1200px;   /* kontrol lebar semua halaman */
+  margin: 0 auto;      /* otomatis center */
+  padding: 0 20px;     /* jarak kiri kanan biar rapi */
+}
+
 /* Navbar */
 .navbar {
   display: flex;
@@ -148,9 +154,25 @@ body {
 
 .recommend-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center  ;
   align-items: center;
+  gap: 300px;
   margin-bottom: 15px;
+  width: 100%;
+}
+.recommend-header h3 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.lihat-semua {
+  background: #1E90FF;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .lihat-semua {
@@ -181,4 +203,10 @@ body {
   padding-bottom: 10px;
   font-weight: 500;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.container {
+  max-width: 1200px;   /* kontrol lebar semua halaman */
+  margin: 0 auto;      /* otomatis center */
+  padding: 0 20px;     /* jarak kiri kanan biar rapi */
 }

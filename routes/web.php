@@ -25,6 +25,13 @@ Route::get('/kategori', function () {
     return view('kategori');
 })->name('kategori');
 
+Route::get('/admin', function () {
+        return view('admin');
+    })->name('admin');
+
+    Route::get('/product', function () {
+        return view('product');
+    })->name('product');
 
 //testing route
 
