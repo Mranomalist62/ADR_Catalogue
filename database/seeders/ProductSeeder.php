@@ -14,7 +14,7 @@ class ProductSeeder extends Seeder
             [
                 'nama' => 'Pipa PVC 2 inch',
                 'kuantitas' => 50,
-                'id_kategori' => 2, // Pipa
+                'id_kategori' => 2,
                 'desc' => 'Pipa PVC berkualitas untuk instalasi air.',
                 'harga_satuan' => 25000,
                 'thumbnail' => null,
@@ -24,7 +24,7 @@ class ProductSeeder extends Seeder
             [
                 'nama' => 'Keran Air Minimalis',
                 'kuantitas' => 30,
-                'id_kategori' => 3, // Keran & Katup
+                'id_kategori' => 3,
                 'desc' => 'Keran air dengan desain modern dan tahan lama.',
                 'harga_satuan' => 75000,
                 'thumbnail' => null,
@@ -34,7 +34,7 @@ class ProductSeeder extends Seeder
             [
                 'nama' => 'Shower Set 3 Fungsi',
                 'kuantitas' => 20,
-                'id_kategori' => 4, // Shower & Floor Drain
+                'id_kategori' => 4,
                 'desc' => 'Shower set dengan 3 fungsi semprot, mudah dipasang.',
                 'harga_satuan' => 150000,
                 'thumbnail' => null,
@@ -44,7 +44,7 @@ class ProductSeeder extends Seeder
             [
                 'nama' => 'Aksesori Wastafel 5 pcs',
                 'kuantitas' => 40,
-                'id_kategori' => 5, // Aksesori Wastafel
+                'id_kategori' => 5,
                 'desc' => 'Set aksesori wastafel lengkap untuk rumah.',
                 'harga_satuan' => 50000,
                 'thumbnail' => null,
@@ -54,7 +54,7 @@ class ProductSeeder extends Seeder
             [
                 'nama' => 'Kunci Inggris 12 inch',
                 'kuantitas' => 25,
-                'id_kategori' => 7, // Kunci & Tang
+                'id_kategori' => 7,
                 'desc' => 'Kunci Inggris kuat dan tahan lama.',
                 'harga_satuan' => 60000,
                 'thumbnail' => null,
@@ -64,7 +64,7 @@ class ProductSeeder extends Seeder
             [
                 'nama' => 'Tekiro Obeng Set 6 pcs',
                 'kuantitas' => 35,
-                'id_kategori' => 9, // Tekiro
+                'id_kategori' => 9,
                 'desc' => 'Obeng set dari Tekiro, cocok untuk rumah dan bengkel.',
                 'harga_satuan' => 45000,
                 'thumbnail' => null,
@@ -74,7 +74,7 @@ class ProductSeeder extends Seeder
             [
                 'nama' => 'C-Mart Palu Kecil',
                 'kuantitas' => 50,
-                'id_kategori' => 10, // C-Mart
+                'id_kategori' => 10,
                 'desc' => 'Palu ringan dan nyaman digunakan.',
                 'harga_satuan' => 30000,
                 'thumbnail' => null,
@@ -84,29 +84,32 @@ class ProductSeeder extends Seeder
             [
                 'nama' => 'Lampu LED 9W',
                 'kuantitas' => 100,
-                'id_kategori' => 11, // Lampu
+                'id_kategori' => 11,
                 'desc' => 'Lampu LED hemat energi, terang dan tahan lama.',
                 'harga_satuan' => 40000,
                 'thumbnail' => null,
                 'promo_nama' => 'Promo Lampu 10%',
                 'promo_potongan' => 10
-            ]
+            ],
         ];
 
         foreach ($products as $item) {
-            $product = Product::create([
+
+            // 🔹 Buat promo terlebih dahulu
+            $promo = Promo::create([
+                'nama' => $item['promo_nama'],
+                'potongan_harga' => $item['promo_potongan']
+            ]);
+
+            // 🔹 Buat produk dengan id_promo (sesuai tabel kamu)
+            Product::create([
                 'nama' => $item['nama'],
                 'kuantitas' => $item['kuantitas'],
                 'id_kategori' => $item['id_kategori'],
                 'desc' => $item['desc'],
                 'harga_satuan' => $item['harga_satuan'],
-                'path_thumbnail' => $item['thumbnail']
-            ]);
-
-            Promo::create([
-                'product_id' => $product->id,
-                'nama' => $item['promo_nama'],
-                'potongan_harga' => $item['promo_potongan']
+                'path_thumbnail' => $item['thumbnail'],
+                'id_promo' => $promo->id
             ]);
         }
     }

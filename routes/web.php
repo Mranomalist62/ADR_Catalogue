@@ -2,6 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\userAuth;
+use App\Http\Controllers\AddressController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PromoController;
+use App\Http\Controllers\UserController;
+
 
 // Public routes (no authentication required)
 Route::get('/', function () {
@@ -23,6 +32,12 @@ Route::get('/rekomendasi', function () {
 Route::get('/kategori', function () {
     return view('kategori');
 })->name('kategori');
+
+Route::get('/chatbot', function () {
+    return view('chatbot');
+})->name('chatbot');
+
+Route::post('/chat/reply', [ChatbotController::class, 'reply']);
 
 
 //testing route
