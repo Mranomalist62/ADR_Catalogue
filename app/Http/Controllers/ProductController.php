@@ -29,7 +29,7 @@ class ProductController extends Controller
     // GET /api/products/{id} - Show specific product
     public function show($id)
     {
-        $product = Product::with(['category', 'promos'])->find($id);
+        $product = Product::with(['category', 'promo'])->find($id);
 
         if (!$product) {
             return response()->json([
@@ -49,15 +49,16 @@ class ProductController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'kuantitas' => 'required|integer|min:0',
+            'quantity' => 'required|integer|min:0',
             'id_kategori' => 'required|exists:category,id',
-            'harga_satuan' => 'required|integer|min:0',
+            'harga' => 'required|integer|min:0',
             'desc' => 'nullable|string',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'discount_value' => 'nullable|integer|min:0|max:100',
 
-            // Add promo validation
-            'promo_nama' => 'required|string|max:255',
-            'promo_potongan' => 'required|integer|min:0|max:100'
+            // // Add promo validation
+            // 'promo_nama' => 'required|string|max:255',
+            // 'promo_potongan' => 'required|integer|min:0|max:100'
         ]);
 
         // Handle thumbnail upload
@@ -69,18 +70,18 @@ class ProductController extends Controller
         // Create product
         $product = Product::create([
             'nama' => $request->nama,
-            'kuantitas' => $request->kuantitas,
+            'kuantitas' => $request->quantity,
             'id_kategori' => $request->id_kategori,
             'desc' => $request->desc,
-            'harga_satuan' => $request->harga_satuan,
+            'harga_satuan' => $request->harga,
             'path_thumbnail' => $pathThumbnail
         ]);
 
         // AUTO-create promo
         $promo = Promo::create([
             'product_id' => $product->id,
-            'nama' => $request->promo_nama,
-            'potongan_harga' => $request->promo_potongan
+            'nama' => $request->discount_value ? : 10,
+            'potongan_harga' => $request->discount_value
         ]);
 
         return response()->json([

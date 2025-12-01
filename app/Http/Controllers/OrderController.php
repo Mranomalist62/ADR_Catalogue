@@ -50,6 +50,7 @@ class OrderController extends Controller
         $request->validate([
             'id_produk' => 'required|exists:product,id',
             'kuantitas' => 'required|integer|min:1',
+            'payment_method' => 'sometimes|string|in:transfer,qris,cash'
         ]);
 
         $product = Product::with('promo')->find($request->id_produk);
@@ -88,6 +89,7 @@ class OrderController extends Controller
             'total_harga' => $totalHargaAfterDiscount,
             'status' => 'pending',
             'waktu_berlaku' => $waktuBerlaku,
+            'payment_method' => $request->payment_method
         ]);
 
         // reduce product stock

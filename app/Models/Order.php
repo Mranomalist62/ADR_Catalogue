@@ -17,9 +17,9 @@ class Order extends Model
         'total_harga',
         'total_instalment',
         'waktu_berlaku',
-        'status'
+        'status',
+        'payment_method'
     ];
-
     public function user()
     {
         return $this->belongsTo(User::class, 'id_pemesan');

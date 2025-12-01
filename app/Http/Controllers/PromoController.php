@@ -56,7 +56,7 @@ class PromoController extends Controller
         }
 
         $promo = Promo::create([
-            'nama'           => $request->nama ?: $request->potongan_harga,
+            'nama'           => 'Diskon Potongan Harga ' + $request->nama ?: $request->potongan_harga + '%',
             'potongan_harga' => $request->potongan_harga,
             'path_thumbnail' => $thumbnailPath,
         ]);
@@ -101,7 +101,7 @@ class PromoController extends Controller
         }
 
         $promo->update([
-            'nama' => $request->nama ?? $promo->nama,
+            'nama' => 'Diskon Potongan Harga ' + $request->nama ?: $request->potongan_harga + '%',
             'potongan_harga' => $request->potongan_harga ?? $promo->potongan_harga,
             'path_thumbnail' => $promo->path_thumbnail,
         ]);
