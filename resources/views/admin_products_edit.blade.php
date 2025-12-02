@@ -280,93 +280,108 @@
                     </div>
                 </div>
 
-                <!-- Add Product Form -->
+                <!-- Edit Product Form -->
                 <div class="card-hover bg-white rounded-xl shadow-lg overflow-hidden slide-in"
                     style="animation-delay: 0.5s">
                     <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-gray-800">Tambah Produk Baru</h3>
+                        <h3 class="text-lg font-semibold text-gray-800">Edit Produk</h3>
                         <button onclick="toggleForm()" class="text-gray-600 hover:text-gray-800 transition-colors">
                             <i class="fas fa-chevron-down" id="formToggleIcon"></i>
                         </button>
                     </div>
                     <div id="productForm" class="p-6">
-                        <form id="productCreateForm">
+                        {{-- Handle this with js --}}
+                       <form id="productEditForm">
                             @csrf
+                            <input type="hidden" name="id" value="{{ $product->id }}">
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label for="nama" class="block text-sm font-medium text-gray-700 mb-2">Nama
-                                        Produk</label>
+                                    <label for="nama" class="block text-sm font-medium text-gray-700 mb-2">Nama Produk</label>
                                     <input type="text" id="nama" name="nama" required
                                         class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="Masukkan nama produk">
+                                        placeholder="Masukkan nama produk"
+                                        value="{{ old('nama', $product->nama) }}">
                                 </div>
                                 <div>
-                                    <label for="kategori"
-                                        class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+                                    <label for="kategori" class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
                                     <select id="kategori" name="id_kategori" required
                                         class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                         <option value="">Pilih Kategori</option>
-                                        <!-- Options loaded by JavaScript -->
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}"
+                                                {{ old('id_kategori', $product->id_kategori) == $category->id ? 'selected' : '' }}>
+                                                {{ $category->nama_kategori }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                                 <div>
-                                    <label for="harga_satuan"
-                                        class="block text-sm font-medium text-gray-700 mb-2">Harga</label>
+                                    <label for="harga_satuan" class="block text-sm font-medium text-gray-700 mb-2">Harga</label>
                                     <input type="number" id="harga_satuan" name="harga_satuan" required
                                         class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="Masukkan harga" step="1000">
+                                        placeholder="Masukkan harga" step="1000"
+                                        value="{{ old('harga_satuan', $product->harga_satuan) }}">
                                 </div>
                                 <div>
-                                    <label for="diskon" class="block text-sm font-medium text-gray-700 mb-2">Diskon
-                                        (%)</label>
+                                    <label for="diskon" class="block text-sm font-medium text-gray-700 mb-2">Diskon (%)</label>
                                     <input type="number" id="diskon" name="diskon" min="0" max="100" step="0.01"
                                         class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="Masukkan diskon dalam persen">
+                                        placeholder="Masukkan diskon dalam persen"
+                                        value="{{ old('diskon', $product->promo ? $product->promo->potongan_harga : 0) }}">
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                                 <div>
-                                    <label for="kuantitas"
-                                        class="block text-sm font-medium text-gray-700 mb-2">Stok</label>
+                                    <label for="kuantitas" class="block text-sm font-medium text-gray-700 mb-2">Stok</label>
                                     <input type="number" id="kuantitas" name="kuantitas" required
                                         class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="Masukkan jumlah stok">
+                                        placeholder="Masukkan jumlah stok"
+                                        value="{{ old('kuantitas', $product->kuantitas) }}">
                                 </div>
                                 <div>
-                                    <label for="harga_setelah_diskon"
-                                        class="block text-sm font-medium text-gray-700 mb-2">
+                                    <label for="harga_setelah_diskon" class="block text-sm font-medium text-gray-700 mb-2">
                                         Harga Setelah Diskon
                                     </label>
                                     <input type="text" id="harga_setelah_diskon" readonly
                                         class="w-full px-4 py-2 border border-gray-200 rounded-md bg-gray-50 text-gray-700"
-                                        placeholder="Rp 0">
+                                        placeholder="Rp 0"
+                                        value="Rp {{ number_format($product->harga_satuan - ($product->harga_satuan *  ($product->promo ? $product->promo->potongan_harga : 0) / 100), 0, ',', '.') }}">
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                                 <div>
-                                    <label for="desc"
-                                        class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
+                                    <label for="desc" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
                                     <textarea id="desc" name="desc" rows="3" required
                                         class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="Masukkan deskripsi produk"></textarea>
+                                        placeholder="Masukkan deskripsi produk">{{ old('desc', $product->desc) }}</textarea>
                                 </div>
                                 <div>
-                                    <label for="thumbnail"
-                                        class="block text-sm font-medium text-gray-700 mb-2">Thumbnail</label>
+                                    <label for="thumbnail" class="block text-sm font-medium text-gray-700 mb-2">Thumbnail</label>
                                     <input type="file" id="thumbnail" name="thumbnail"
                                         class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                                    <!-- Show current thumbnail if exists -->
+                                    @if($product->thumbnail)
+                                        <div class="mt-2">
+                                            <p class="text-sm text-gray-600 mb-1">Thumbnail saat ini:</p>
+                                            <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="Thumbnail"
+                                                class="w-32 h-32 object-cover rounded-md border">
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="flex justify-end mt-6">
                                 <button type="submit" id="submitBtn"
                                     class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-md transition-colors transform hover:scale-105">
-                                    <i class="fas fa-save mr-2"></i> Simpan Produk
+                                    <i class="fas fa-save mr-2"></i> Simpan Perubahan
                                 </button>
                             </div>
                         </form>
                     </div>
+
                 </div>
 
                 <!-- Products Table -->
@@ -425,7 +440,7 @@
                                         Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                           <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse ($products as $product)
                                     <tr class="hover:bg-blue-50 transition-colors duration-200">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -548,38 +563,100 @@
             }
         }
 
+        // Load categories from API on page load
         document.addEventListener('DOMContentLoaded', function () {
-            // 1. Load categories from API
+            // Get the current selected category ID BEFORE loading from API
+            const kategoriSelect = document.getElementById('kategori');
+            const currentCategoryId = kategoriSelect.value;
+            const currentCategoryOption = kategoriSelect.querySelector(`option[value="${currentCategoryId}"]`);
+
+            // Store the current option's text if it exists
+            let currentCategoryText = '';
+            if (currentCategoryOption && currentCategoryId) {
+                currentCategoryText = currentCategoryOption.textContent;
+            }
+
+            // Clear existing options except the first one and the current one
+            const firstOption = kategoriSelect.querySelector('option[value=""]');
+            kategoriSelect.innerHTML = '';
+            if (firstOption) {
+                kategoriSelect.appendChild(firstOption);
+            }
+
+            // Load categories from API
             fetch('/public/categories')
                 .then(res => res.json())
                 .then(data => {
-                    const select = document.getElementById('kategori');
+                    // Add options from API
                     data.data.forEach(category => {
                         const option = document.createElement('option');
                         option.value = category.id;
                         option.textContent = category.nama;
-                        select.appendChild(option);
+
+                        // Check if this is the current category
+                        if (category.id == currentCategoryId) {
+                            option.selected = true;
+                        }
+
+                        kategoriSelect.appendChild(option);
                     });
+
+                    // If current category wasn't found in API results, add it back
+                    if (currentCategoryId && currentCategoryText &&
+                        !Array.from(kategoriSelect.options).some(opt => opt.value == currentCategoryId)) {
+                        const option = document.createElement('option');
+                        option.value = currentCategoryId;
+                        option.textContent = currentCategoryText;
+                        option.selected = true;
+                        kategoriSelect.appendChild(option);
+                    }
+
+                    // Also populate category-filter if it exists
+                    const categoryFilter = document.getElementById('category-filter');
+                    if (categoryFilter) {
+                        categoryFilter.innerHTML = '<option value="">Semua Kategori</option>';
+                        data.data.forEach(category => {
+                            const option = document.createElement('option');
+                            option.value = category.nama;
+                            option.textContent = category.nama;
+                            categoryFilter.appendChild(option);
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error("Failed to load categories", err);
+                    // Keep the server-side rendered options if API fails
+                    if (currentCategoryId && currentCategoryText) {
+                        const option = document.createElement('option');
+                        option.value = currentCategoryId;
+                        option.textContent = currentCategoryText;
+                        option.selected = true;
+                        kategoriSelect.appendChild(option);
+                    }
                 });
 
-            // 2. Handle form submission
-            document.getElementById('productCreateForm').addEventListener('submit', async function (e) {
+            // Handle form submission - FIXED: method should be 'PUT' or use POST with _method
+            document.getElementById('productEditForm').addEventListener('submit', async function (e) {
                 e.preventDefault();
 
                 const submitBtn = document.getElementById('submitBtn');
                 const originalText = submitBtn.innerHTML;
 
-                // Show loading
+                // Show loading state
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
 
                 try {
                     // Create FormData for file upload
                     const formData = new FormData(this);
+                    const productId = formData.get('id') || '{{ $product->id }}';
 
-                    // Send to API endpoint
-                    const response = await fetch('/admin/api/products', {
-                        method: 'POST',
+                    // Add _method for Laravel to recognize as PUT
+                    formData.append('_method', 'PUT');
+
+                    // Send to API - use POST with _method=PUT
+                    const response = await fetch(`/admin/api/products/${productId}`, {
+                        method: 'PUT',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
@@ -589,28 +666,26 @@
                     const result = await response.json();
 
                     if (response.ok && result.success) {
-                        alert('Produk berhasil disimpan!');
-                        this.reset();
-                        document.getElementById('harga_setelah_diskon').value = 'Rp 0';
+                        // Success - show message
+                        alert('Produk berhasil diperbarui!');
 
-                        // Show success message
-                        showNotification('Produk berhasil dibuat!', 'success');
-
-                        // Redirect to product list
-                        window.location.href = '{{ route("admin.products") }}';
+                        // Optional: Update the form with new data
+                       window.location.href = '{{ route("admin.products") }}';
                     } else {
+                        // Error
                         alert(result.message || 'Gagal menyimpan produk');
                     }
                 } catch (error) {
                     console.error('Error:', error);
                     alert('Terjadi kesalahan saat menyimpan produk');
                 } finally {
+                    // Reset button
                     submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalText;
+                    submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i> Simpan Perubahan';
                 }
             });
 
-            // 3. Calculate discounted price
+            // Calculate discounted price
             const hargaInput = document.getElementById('harga_satuan');
             const diskonInput = document.getElementById('diskon');
             const hargaDiskonInput = document.getElementById('harga_setelah_diskon');
@@ -622,31 +697,24 @@
                 hargaDiskonInput.value = 'Rp ' + hargaDiskon.toLocaleString('id-ID');
             }
 
+            // Initialize with current values
+            calculateDiscount();
+
             hargaInput.addEventListener('input', calculateDiscount);
             diskonInput.addEventListener('input', calculateDiscount);
-
-            // 4. Success notification function
-            function showNotification(message, type = 'success') {
-                const notification = document.createElement('div');
-                notification.className = `fixed top-4 right-4 px-6 py-3 rounded-md shadow-lg ${type === 'success' ? 'bg-green-500' : 'bg-red-500'
-                    } text-white`;
-                notification.textContent = message;
-                document.body.appendChild(notification);
-
-                setTimeout(() => notification.remove(), 3000);
-            }
         });
 
         // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function (e) {
+        document.getElementById('searchInput')?.addEventListener('input', function (e) {
             const searchValue = e.target.value.toLowerCase();
             const rows = document.querySelectorAll('tbody tr');
 
             rows.forEach(row => {
-                const productName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                const categoryName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                const productName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase();
+                const categoryName = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase();
 
-                if (productName.includes(searchValue) || categoryName.includes(searchValue)) {
+                if (productName && categoryName &&
+                    (productName.includes(searchValue) || categoryName.includes(searchValue))) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
@@ -655,12 +723,12 @@
         });
 
         // Category filter
-        document.getElementById('category-filter').addEventListener('change', function (e) {
+        document.getElementById('category-filter')?.addEventListener('change', function (e) {
             const categoryValue = e.target.value;
             const rows = document.querySelectorAll('tbody tr');
 
             rows.forEach(row => {
-                const rowCategory = row.querySelector('td:nth-child(3)').textContent;
+                const rowCategory = row.querySelector('td:nth-child(3)')?.textContent;
 
                 if (categoryValue === '' || rowCategory === categoryValue) {
                     row.style.display = '';
@@ -670,27 +738,7 @@
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const selects = [
-                document.getElementById('kategori'),
-                document.getElementById('category-filter')
-            ].filter(Boolean); // ignore null elements if one doesn't exist
-
-            fetch('/public/categories')
-                .then(res => res.json())
-                .then(data => {
-                    data.data.forEach(category => {
-                        selects.forEach(select => {
-                            const option = document.createElement('option');
-                            option.value = category.id;
-                            option.textContent = category.nama;
-                            select.appendChild(option);
-                        });
-                    });
-                })
-                .catch(err => console.error("Failed to load categories", err));
-        });
-
+        // Delete functionality
         document.addEventListener('click', function (e) {
             if (e.target.classList.contains('delete-btn')) {
                 const productId = e.target.dataset.productId;
@@ -705,16 +753,22 @@
                 const response = await fetch(`/admin/api/products/${productId}`, {
                     method: 'DELETE',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
                     }
                 });
 
-                if (response.ok) {
+                const result = await response.json();
+
+                if (response.ok && result.success) {
                     // Remove row from table or reload
                     location.reload();
+                } else {
+                    alert(result.message || 'Gagal menghapus produk');
                 }
             } catch (error) {
                 console.error('Delete failed:', error);
+                alert('Terjadi kesalahan saat menghapus produk');
             }
         }
     </script>

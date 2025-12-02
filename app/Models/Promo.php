@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Promo extends Model
 {
     protected $table = 'promo';
-    protected $fillable = ['nama', 'potongan_harga', 'path_thumbnail'];
+    protected $fillable = ['nama', 'potongan_harga', 'path_thumbnail', 'product_id'];
 
-    // One promo belongs to exactly one product
+    // One promo belongs to one product
     public function product()
     {
-        return $this->hasOne(Product::class, 'id_promo');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 }
