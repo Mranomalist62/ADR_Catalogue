@@ -111,10 +111,10 @@ Route::prefix('admin')->middleware(['auth.admin'])->group(function () {
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
 
     // Admin product management
-    Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
-    Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
-    Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-    Route::delete('/products/{id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+    //    Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
+       Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
+    // Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+    // Route::delete('/products/{id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
 
     // Admin chat routes
     Route::get('/chat', [ChatController::class, 'adminChat'])->name('admin.chat');
