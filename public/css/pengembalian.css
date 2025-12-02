@@ -1,0 +1,25 @@
+body { 
+    font-family: 'Poppins', sans-serif; 
+}
+
+.return-gradient {
+    background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
+}
+
+.step-card {
+    transition: all 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
+}
+
+.file-upload {
+    transition: all 0.3s ease;
+}
+
+.file-upload:hover {
+    border-color: #3b82f6;
+    background-color: #f0f9ff;
+}

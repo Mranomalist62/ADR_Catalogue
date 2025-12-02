@@ -27,21 +27,28 @@ class adminAuth extends Controller
             }
 
             Auth::guard('admin')->login($admin);
-            return response()->json([
-                'message'=> 'Admin login successful',
-                'admin' => [
-                    'id'=> $admin->id,
-                    'nama'=> $admin->nama,
-                    'email' => $admin->email,
-                ]
-            ]);
+            
+            // Check if request wants JSON response (for AJAX)
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message'=> 'Admin login successful',
+                    'admin' => [
+                        'id'=> $admin->id,
+                        'nama'=> $admin->nama,
+                        'email' => $admin->email,
+                    ]
+                ]);
+            }
+            
+            // For form submission, redirect to admin dashboard
+            return redirect()->route('admin')->with('success', 'Login berhasil! Selamat datang admin.');
     }
 
     public function Logout(Request $request){
         Auth::guard('admin')->Logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return response()->json(['message' => 'Admin logout successful']);
+        return redirect()->route('admin.login')->with('success', 'Admin logout successful');
     }
 
     public function profile(Request $request){
