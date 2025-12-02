@@ -14,7 +14,7 @@ class ChatbotController extends Controller
         $apiKey = env('GOOGLE_API_KEY');
 
         // ================
-        // 🕒 JAM OPERASIONAL
+        // JAM OPERASIONAL
         // ================
         $now = now()->setTimezone('Asia/Jakarta');
         $start = now()->setTimezone('Asia/Jakarta')->setTime(8, 0);
@@ -27,7 +27,7 @@ class ChatbotController extends Controller
         }
 
         // ======================
-        // 🔥 AMBIL DATA PRODUK
+        // AMBIL DATA PRODUK
         // ======================
         $products = DB::table('product')
             ->join('category', 'product.id_kategori', '=', 'category.id')
@@ -56,7 +56,7 @@ class ChatbotController extends Controller
         }
 
         // ============================
-        // 🔥 INSTRUKSI KETAT UNTUK AI
+        // INSTRUKSI KETAT UNTUK AI
         // ============================
         $systemInstruction = "
 Kamu adalah Chatbot resmi Toko ADRCatalog.
@@ -114,7 +114,7 @@ Aturan:
     }
 
     // =========================
-    // 🔥 Hapus Formatting Markdown
+    // Hapus Formatting Markdown
     // =========================
     private function bersihkanMarkdown($text)
     {

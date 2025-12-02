@@ -12,9 +12,14 @@ class PromoController extends Controller
      */
     public function index()
     {
+        // Only show promos with actual discounts (> 0%)
+        $promos = Promo::where('potongan_harga', '>', 0)
+            ->with('product:id,nama')
+            ->get();
+
         return response()->json([
             'success' => true,
-            'data' => Promo::with('product:id,nama')->get()
+            'data' => $promos
         ]);
     }
 
@@ -31,6 +36,14 @@ class PromoController extends Controller
                 'message' => 'Promo not found'
             ], 404);
         }
+
+        // Optional: Hide 0% promos from public view
+        // if ($promo->potongan_harga == 0) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Promo not available'
+        //     ], 404);
+        // }
 
         return response()->json([
             'success' => true,
