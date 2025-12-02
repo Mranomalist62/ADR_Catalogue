@@ -12,12 +12,16 @@ class userAuth
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::guard('user')->check()) {
-            return response()->json([
-                'message' => 'Unauthorized. Please login as user.',
-                'error' => 'user_authentication_required'
-            ], 401);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Unauthorized. Please login as user.',
+                    'error' => 'user_authentication_required'
+                ], 401);
+            }
+            
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu untuk mengakses halaman ini.');
         }
-
+        
         return $next($request);
     }
 }

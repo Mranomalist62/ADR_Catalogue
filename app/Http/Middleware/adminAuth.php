@@ -13,10 +13,15 @@ class adminAuth
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::guard('admin')->check()) {
-            return response()->json([
-                'message' => 'Unauthorized. Admin access required.',
-                'error' => 'admin_authentication_required'
-            ], 401);
+            // For web requests, redirect to admin login page
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Unauthorized. Admin access required.',
+                    'error' => 'admin_authentication_required'
+                ], 401);
+            }
+            
+            return redirect('/admin/login');
         }
 
         return $next($request);
