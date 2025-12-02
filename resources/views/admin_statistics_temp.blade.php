@@ -275,7 +275,7 @@
                 </div>
 
                 <!-- Charts Row -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                     <!-- Sales Chart -->
                     <div class="card-hover bg-white rounded-xl shadow-lg p-6 slide-in" style="animation-delay: 0.6s">
                         <div class="flex items-center justify-between mb-4">
@@ -392,8 +392,7 @@
                         data: [12, 19, 15, 25, 22, 30, 28],
                         borderColor: 'rgb(59, 130, 246)',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.4,
-                        fill: true
+                        tension: 0.4
                     }]
                 },
                 options: {
@@ -413,20 +412,17 @@
             });
         }
 
-        // Revenue Chart
-        const revenueCtx = document.getElementById('revenueChart');
-        if (revenueCtx) {
-            new Chart(revenueCtx, {
-                type: 'line',
+        // Products Chart
+        const productsCtx = document.getElementById('productsChart');
+        if (productsCtx) {
+            new Chart(productsCtx, {
+                type: 'bar',
                 data: {
-                    labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+                    labels: ['Laptop ASUS ROG', 'Mouse Gaming', 'Keyboard Mechanical'],
                     datasets: [{
-                        label: 'Pendapatan',
-                        data: [15000000, 19000000, 15000000, 25000000, 22000000, 30000000, 28000000],
-                        borderColor: 'rgb(59, 130, 246)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.4,
-                        fill: true
+                        label: 'Terjual',
+                        data: [234, 456, 189],
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)'
                     }]
                 },
                 options: {
@@ -435,23 +431,11 @@
                     plugins: {
                         legend: {
                             display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
-                                }
-                            }
                         }
                     },
                     scales: {
                         y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return 'Rp ' + (value / 1000000).toFixed(1) + 'M';
-                                }
-                            }
+                            beginAtZero: true
                         }
                     }
                 }

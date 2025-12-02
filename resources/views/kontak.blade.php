@@ -1,45 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promo - ADR Catalogue</title>
+    <title>Kontak - ADR Catalogue</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/promo.css') }}">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .promo-gradient {
-            background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
-        }
-        .light-blue-gradient {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 25%, #93c5fd 50%, #60a5fa 75%, #3b82f6 100%);
-        }
-        .promo-card {
-            transition: all 0.3s ease;
-        }
-        .promo-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        .slide-in {
-            animation: slideIn 0.5s ease-out;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-in {
-            animation: fadeIn 0.8s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/kontak.css') }}">
 </head>
 
 <body class="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200">
@@ -66,12 +36,12 @@
                                     </span>
                                 </span>
                             </a>
-                            <a href="{{ route('promo') }}" class="nav-link group relative px-4 py-2 text-blue-600 font-medium transition-all duration-300">
+                            <a href="{{ route('promo') }}" class="nav-link group relative px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
                                 <span class="flex items-center">
                                     <i class="fas fa-tags mr-2 text-sm group-hover:animate-pulse"></i>
                                     <span class="relative">
                                         Promo
-                                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
                                     </span>
                                 </span>
                             </a>
@@ -143,7 +113,7 @@
                     <i class="fas fa-home mr-3 group-hover:animate-pulse"></i>
                     Beranda
                 </a>
-                <a href="{{ route('promo') }}" class="mobile-nav-link group block px-4 py-3 text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                <a href="{{ route('promo') }}" class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-tags mr-3 group-hover:animate-pulse"></i>
                     Promo
                 </a>
@@ -217,242 +187,233 @@
     </style>
 
     <!-- Header Section -->
-    <section class="promo-gradient text-white py-16">
+    <section class="contact-gradient text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center slide-in">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">Promo Spesial</h1>
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Hubungi Kami</h1>
                 <p class="text-xl opacity-90 max-w-2xl mx-auto">
-                    Dapatkan penawaran terbaik dan diskon menarik untuk produk pilihan
+                    Kami siap membantu menjawab pertanyaan dan menangani keluhan Anda
                 </p>
             </div>
         </div>
     </section>
 
-    <!-- Filter Section (Simplified) -->
-    <section class="py-8 bg-white">
+    <!-- Contact Info & Form -->
+    <section class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="filterPromos('all')" class="filter-btn px-4 py-2 bg-indigo-600 text-white rounded-lg transition-colors">
-                        Semua Promo
-                    </button>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Contact Information -->
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">Informasi Kontak</h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Address -->
+                        <div class="contact-card bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-map-marker-alt text-blue-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Alamat</h3>
+                                    <p class="text-gray-600">Jl. Contoh No. 123</p>
+                                    <p class="text-gray-600">Jakarta Selatan, DKI Jakarta</p>
+                                    <p class="text-gray-600">Indonesia 12345</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="contact-card bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-phone text-green-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Telepon</h3>
+                                    <p class="text-gray-600 mb-1">+62 21 1234 5678</p>
+                                    <p class="text-gray-600">+62 812 3456 7890 (WhatsApp)</p>
+                                    <p class="text-sm text-gray-500">Senin - Sabtu, 08:00 - 20:00 WIB</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="contact-card bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-envelope text-purple-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Email</h3>
+                                    <p class="text-gray-600 mb-1">info@adrcatalogue.com</p>
+                                    <p class="text-gray-600">support@adrcatalogue.com</p>
+                                    <p class="text-sm text-gray-500">Respons dalam 24 jam</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="contact-card bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-share-alt text-orange-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Media Sosial</h3>
+                                    <div class="flex space-x-3">
+                                        <a href="#" class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition-colors">
+                                            <i class="fab fa-facebook-f"></i>
+                                        </a>
+                                        <a href="#" class="w-10 h-10 bg-pink-600 rounded-full flex items-center justify-center text-white hover:bg-pink-700 transition-colors">
+                                            <i class="fab fa-instagram"></i>
+                                        </a>
+                                        <a href="#" class="w-10 h-10 bg-sky-500 rounded-full flex items-center justify-center text-white hover:bg-sky-600 transition-colors">
+                                            <i class="fab fa-twitter"></i>
+                                        </a>
+                                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white hover:bg-red-700 transition-colors">
+                                            <i class="fab fa-youtube"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">Kirim Pesan</h2>
+                    
+                    <form onsubmit="submitContact(event)" class="bg-white rounded-xl shadow-lg p-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap *</label>
+                                <input type="text" 
+                                       required
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="John Doe">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                                <input type="email" 
+                                       required
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="email@example.com">
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Subjek *</label>
+                            <select required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Pilih subjek</option>
+                                <option value="general">Pertanyaan Umum</option>
+                                <option value="order">Tentang Pesanan</option>
+                                <option value="return">Pengembalian Produk</option>
+                                <option value="payment">Masalah Pembayaran</option>
+                                <option value="technical">Bantuan Teknis</option>
+                                <option value="partnership">Kerjasama</option>
+                                <option value="complaint">Keluhan</option>
+                                <option value="suggestion">Saran</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Pesan *</label>
+                            <textarea required
+                                      rows="5"
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                      placeholder="Tuliskan pesan Anda..."></textarea>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Pesanan (Opsional)</label>
+                            <input type="text" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="ORD-123456">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2">
+                                <span class="text-sm text-gray-700">Saya ingin menerima newsletter dan promo terbaru</span>
+                            </label>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-paper-plane mr-2"></i>Kirim Pesan
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
 
-
-    <!-- All Promos Grid -->
+    <!-- Map Section -->
     <section class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-2">Semua Promo</h2>
-                <p class="text-gray-600">Temukan penawaran terbaik untuk Anda</p>
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Temukan Lokasi Kami</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Kunjungi kantor kami untuk pengalaman belanja yang lebih baik
+                </p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Promo Card 1 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.1s">
-                    <div class="relative">
-                        <div class="bg-gradient-to-r from-blue-300 to-blue-500 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-laptop text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Elektronik Sale</h3>
-                            </div>
-                        </div>
-                        <span class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            -50%
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Diskon besar untuk semua produk elektronik pilihan</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 500.000</p>
-                                <p class="text-sm text-gray-500 line-through">Rp 1.000.000</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                2 hari lagi
-                            </div>
-                        </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="map-container rounded-xl p-8 text-center">
+                    <i class="fas fa-map-marked-alt text-6xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Kantor Pusat</h3>
+                    <p class="text-gray-600 mb-4">Jakarta Selatan</p>
+                    <button onclick="openMap('jakarta')" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-directions mr-2"></i>Dapatkan Arah
+                    </button>
                 </div>
-
-                <!-- Promo Card 2 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.2s">
-                    <div class="relative">
-                        <div class="bg-gradient-to-r from-blue-200 to-blue-400 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-tshirt text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Fashion Deal</h3>
-                            </div>
-                        </div>
-                        <span class="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            -30%
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Koleksi fashion terbaru dengan harga spesial</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 210.000</p>
-                                <p class="text-sm text-gray-500 line-through">Rp 300.000</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                5 hari lagi
-                            </div>
-                        </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Promo Card 3 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.3s">
-                    <div class="relative">
-                        <div class="bg-gradient-to-r from-sky-200 to-sky-400 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-utensils text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Makanan Fest</h3>
-                            </div>
-                        </div>
-                        <span class="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            Buy 2 Get 1
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Beli 2 gratis 1 untuk makanan pilihan</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 75.000</p>
-                                <p class="text-sm text-green-600">Hemat 50%</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                1 minggu lagi
-                            </div>
-                        </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Promo Card 4 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.4s">
-                    <div class="relative">
-                        <div class="bg-gradient-to-r from-indigo-200 to-indigo-400 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-spa text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Beauty Special</h3>
-                            </div>
-                        </div>
-                        <span class="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            -40%
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Produk kecantikan dengan diskon spesial</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 90.000</p>
-                                <p class="text-sm text-gray-500 line-through">Rp 150.000</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                3 hari lagi
-                            </div>
-                        </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Promo Card 5 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.5s">
-                    <div class="relative">
-                        <div class="bg-gradient-to-r from-cyan-200 to-cyan-400 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-couch text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Home Living</h3>
-                            </div>
-                        </div>
-                        <span class="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            Gratis Ongkir
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Perabotan rumah dengan gratis ongkir</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 250.000</p>
-                                <p class="text-sm text-blue-600">Hemat Rp 15.000</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                4 hari lagi
-                            </div>
-                        </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Promo Card 6 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.6s">
-                    <div class="relative">
-                        <div class="bg-gradient-to-r from-blue-100 to-blue-300 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-gamepad text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Gaming Zone</h3>
-                            </div>
-                        </div>
-                        <span class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            -60%
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Aksesoris gaming dengan diskon besar</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 120.000</p>
-                                <p class="text-sm text-gray-500 line-through">Rp 300.000</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                6 hari lagi
-                            </div>
-                        </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
+                
+                <div class="map-container rounded-xl p-8 text-center">
+                    <i class="fas fa-store text-6xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Toko Fisik</h3>
+                    <p class="text-gray-600 mb-4">5 Lokasi di Jakarta</p>
+                    <button onclick="showStoreLocations()" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-list mr-2"></i>Lihat Semua Lokasi
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Newsletter Section -->
-    <section class="py-16 bg-gray-100">
+    <!-- FAQ Section -->
+    <section class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-gradient-to-r from-blue-400 to-blue-600 rounded-2xl p-8 text-center text-white">
-                <h2 class="text-3xl font-bold mb-4">Jangan Lewatkan Promo!</h2>
-                <p class="text-lg mb-6 opacity-90">Dapatkan informasi promo terbaru langsung di inbox Anda</p>
-                <div class="max-w-md mx-auto flex gap-2">
-                    <input type="email" 
-                           placeholder="Masukkan email Anda" 
-                           class="flex-1 px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white">
-                    <button class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
-                        Subscribe
-                    </button>
+            <div class="bg-blue-50 rounded-xl p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Pertanyaan Umum</h2>
+                    <p class="text-gray-600">Cari jawaban cepat untuk pertanyaan yang sering diajukan</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-900 mb-2">Berapa jam operasional?</h3>
+                        <p class="text-gray-600 text-sm">Senin - Sabtu: 08:00 - 20:00 WIB</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-900 mb-2">Apakah ada biaya konsultasi?</h3>
+                        <p class="text-gray-600 text-sm">Tidak, konsultasi produk gratis</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-900 mb-2">Bagaimana cara tracking pesanan?</h3>
+                        <p class="text-gray-600 text-sm">Gunakan nomor resi yang dikirim via email</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-900 mb-2">Apakah ada garansi produk?</h3>
+                        <p class="text-gray-600 text-sm">Ya, garansi resmi dari produsen</p>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-6">
+                    <a href="{{ route('faq') }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                        Lihat semua FAQ <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -467,7 +428,7 @@
                         <img class="h-8 w-auto mr-2" src="{{ asset('images/asset/logo.png') }}" alt="ADR Catalogue">
                         <span class="text-xl font-bold">ADR Catalogue</span>
                     </div>
-                    <p class="text-gray-400">Temukan produk terbaik dengan harga terjangkau</p>
+                    <p class="text-blue-200">Temukan produk terbaik dengan harga terjangkau</p>
                 </div>
                 
                 <div>
@@ -523,9 +484,35 @@
             menu.classList.toggle('hidden');
         }
         
+        function submitContact(event) {
+            event.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(event.target);
+            
+            // Show success message (simulation)
+            alert('Pesan Anda telah terkirim! Kami akan menghubungi Anda dalam 1x24 jam.');
+            
+            // Reset form
+            event.target.reset();
+            
+            // In real app, this would send data to server
+            console.log('Contact form submitted');
+        }
+        
+        function openMap(location) {
+            // In real app, this would open Google Maps or similar
+            alert('Map akan segera tersedia. Silakan gunakan aplikasi maps untuk menemukan lokasi kami.');
+        }
+        
+        function showStoreLocations() {
+            // In real app, this would show store locations
+            alert('Halaman lokasi toko akan segera tersedia.');
+        }
     </script>
-
-    <!-- Chat Bot Component (Available for all users) -->
+    
+    <!-- Chat Bot Component -->
     @include('components.chat_bot')
+    
 </body>
 </html>

@@ -4,48 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kategori - ADR Catalogue</title>
+    <title>Pengembalian - ADR Catalogue</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .category-gradient {
-            background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
-        }
-        .light-blue-gradient {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 25%, #93c5fd 50%, #60a5fa 75%, #3b82f6 100%);
-        }
-        .category-card {
-            transition: all 0.3s ease;
-        }
-        .category-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        .category-icon {
-            transition: all 0.3s ease;
-        }
-        .category-card:hover .category-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-        .slide-in {
-            animation: slideIn 0.5s ease-out;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-in {
-            animation: fadeIn 0.8s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/pengembalian.css') }}">
 </head>
 
 <body class="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200">
@@ -81,12 +45,12 @@
                                     </span>
                                 </span>
                             </a>
-                            <a href="{{ route('kategori') }}" class="nav-link group relative px-4 py-2 text-blue-600 font-medium transition-all duration-300">
+                            <a href="{{ route('kategori') }}" class="nav-link group relative px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
                                 <span class="flex items-center">
                                     <i class="fas fa-th-large mr-2 text-sm group-hover:animate-pulse"></i>
                                     <span class="relative">
                                         Kategori
-                                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
                                     </span>
                                 </span>
                             </a>
@@ -153,7 +117,7 @@
                     <i class="fas fa-tags mr-3 group-hover:animate-pulse"></i>
                     Promo
                 </a>
-                <a href="{{ route('kategori') }}" class="mobile-nav-link group block px-4 py-3 text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                <a href="{{ route('kategori') }}" class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-th-large mr-3 group-hover:animate-pulse"></i>
                     Kategori
                 </a>
@@ -223,222 +187,225 @@
     </style>
 
     <!-- Header Section -->
-    <section class="category-gradient text-white py-16">
+    <section class="return-gradient text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-           
-            <div class="text-center slide-in">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">Jelajahi Kategori</h1>
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Kebijakan Pengembalian</h1>
                 <p class="text-xl opacity-90 max-w-2xl mx-auto">
-                    Temukan berbagai kategori produk yang sesuai dengan kebutuhan Anda
+                    Proses pengembalian produk yang mudah dan transparan
                 </p>
             </div>
         </div>
     </section>
 
-    <!-- Search and Filter Section -->
-    <section class="py-8 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div class="relative flex-1 max-w-md">
-                    <input type="text" 
-                           placeholder="Cari kategori..." 
-                           class="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
-                    </div>
-                </div>
-                
-                <div class="flex gap-2">
-                    <button onclick="filterCategories('all')" class="filter-btn px-4 py-2 bg-indigo-600 text-white rounded-lg transition-colors">
-                        Semua
-                    </button>
-                    <button onclick="filterCategories('popular')" class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 rounded-lg transition-colors">
-                        Populer
-                    </button>
-                    <button onclick="filterCategories('new')" class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 rounded-lg transition-colors">
-                        Terbaru
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Categories Grid -->
+    <!-- Return Policy -->
     <section class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <!-- Elektronik -->
-                <div class="category-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer slide-in" style="animation-delay: 0.1s" onclick="window.location.href='#'">
-                    <div class="bg-gradient-to-br from-blue-400 to-blue-600 p-8 text-center">
-                        <div class="category-icon inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
-                            <i class="fas fa-laptop text-3xl text-blue-600"></i>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                <!-- Eligibility -->
+                <div class="step-card bg-white rounded-xl shadow-lg p-6">
+                    <div class="text-center mb-4">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                            <i class="fas fa-check-circle text-2xl text-green-600"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Elektronik</h3>
-                        <p class="text-blue-100 text-sm">245 Produk</p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Kelayakan</h3>
                     </div>
-                    <div class="p-4">
-                        <div class="flex items-center justify-between text-sm text-gray-600">
-                            <span><i class="fas fa-fire text-orange-500 mr-1"></i> Populer</span>
-                            <span><i class="fas fa-arrow-right text-blue-500"></i></span>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-3 mt-1"></i>
+                            <span class="text-gray-600">Produk diterima dalam 7 hari sejak tanggal pembelian</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-3 mt-1"></i>
+                            <span class="text-gray-600">Produk dalam kondisi asli, tidak rusak, dan lengkap</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-3 mt-1"></i>
+                            <span class="text-gray-600">Label harga dan barcode masih terpasang dengan baik</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-3 mt-1"></i>
+                            <span class="text-gray-600">Bukti pembelian asli (invoice, struk, atau email konfirmasi)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Process -->
+                <div class="step-card bg-white rounded-xl shadow-lg p-6">
+                    <div class="text-center mb-4">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+                            <i class="fas fa-cogs text-2xl text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Proses</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">1</div>
+                            <div>
+                                <p class="font-medium text-gray-900">Ajukan Pengembalian</p>
+                                <p class="text-sm text-gray-600">Hubungi CS melalui email atau live chat</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">2</div>
+                            <div>
+                                <p class="font-medium text-gray-900">Verifikasi Produk</p>
+                                <p class="text-sm text-gray-600">Tim kami akan memeriksa kondisi produk</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">3</div>
+                            <div>
+                                <p class="font-medium text-gray-900">Proses Refund</p>
+                                <p class="text-sm text-gray-600">Dana dikembalikan dalam 3-5 hari kerja</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Fashion -->
-                <div class="category-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer slide-in" style="animation-delay: 0.2s" onclick="window.location.href='#'">
-                    <div class="bg-gradient-to-br from-pink-400 to-pink-600 p-8 text-center">
-                        <div class="category-icon inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
-                            <i class="fas fa-tshirt text-3xl text-pink-600"></i>
+                <!-- Exclusions -->
+                <div class="step-card bg-white rounded-xl shadow-lg p-6">
+                    <div class="text-center mb-4">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+                            <i class="fas fa-times-circle text-2xl text-red-600"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Fashion</h3>
-                        <p class="text-pink-100 text-sm">189 Produk</p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Pengecualian</h3>
                     </div>
-                    <div class="p-4">
-                        <div class="flex items-center justify-between text-sm text-gray-600">
-                            <span><i class="fas fa-fire text-orange-500 mr-1"></i> Populer</span>
-                            <span><i class="fas fa-arrow-right text-blue-500"></i></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Makanan -->
-                <div class="category-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer slide-in" style="animation-delay: 0.3s" onclick="window.location.href='#'">
-                    <div class="bg-gradient-to-br from-green-400 to-green-600 p-8 text-center">
-                        <div class="category-icon inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
-                            <i class="fas fa-utensils text-3xl text-green-600"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Makanan</h3>
-                        <p class="text-green-100 text-sm">156 Produk</p>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex items-center justify-between text-sm text-gray-600">
-                            <span><i class="fas fa-star text-yellow-500 mr-1"></i> Rating Tinggi</span>
-                            <span><i class="fas fa-arrow-right text-blue-500"></i></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Perabotan -->
-                <div class="category-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer slide-in" style="animation-delay: 0.4s" onclick="window.location.href='#'">
-                    <div class="bg-gradient-to-br from-purple-400 to-purple-600 p-8 text-center">
-                        <div class="category-icon inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
-                            <i class="fas fa-couch text-3xl text-purple-600"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Perabotan</h3>
-                        <p class="text-purple-100 text-sm">98 Produk</p>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex items-center justify-between text-sm text-gray-600">
-                            <span><i class="fas fa-sparkles text-blue-500 mr-1"></i> Berkualitas</span>
-                            <span><i class="fas fa-arrow-right text-blue-500"></i></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Kosmetik -->
-                <div class="category-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer slide-in" style="animation-delay: 0.5s" onclick="window.location.href='#'">
-                    <div class="bg-gradient-to-br from-yellow-400 to-orange-500 p-8 text-center">
-                        <div class="category-icon inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
-                            <i class="fas fa-spa text-3xl text-orange-500"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Kosmetik</h3>
-                        <p class="text-yellow-100 text-sm">134 Produk</p>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex items-center justify-between text-sm text-gray-600">
-                            <span><i class="fas fa-heart text-red-500 mr-1"></i> Favorit</span>
-                            <span><i class="fas fa-arrow-right text-blue-500"></i></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Olahraga -->
-                <div class="category-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer slide-in" style="animation-delay: 0.6s" onclick="window.location.href='#'">
-                    <div class="bg-gradient-to-br from-red-400 to-red-600 p-8 text-center">
-                        <div class="category-icon inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
-                            <i class="fas fa-dumbbell text-3xl text-red-600"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Olahraga</h3>
-                        <p class="text-red-100 text-sm">87 Produk</p>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex items-center justify-between text-sm text-gray-600">
-                            <span><i class="fas fa-bolt text-yellow-500 mr-1"></i> Energi</span>
-                            <span><i class="fas fa-arrow-right text-blue-500"></i></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Gaming -->
-                <div class="category-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer slide-in" style="animation-delay: 0.7s" onclick="window.location.href='#'">
-                    <div class="bg-gradient-to-br from-indigo-400 to-indigo-600 p-8 text-center">
-                        <div class="category-icon inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
-                            <i class="fas fa-gamepad text-3xl text-indigo-600"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Gaming</h3>
-                        <p class="text-indigo-100 text-sm">76 Produk</p>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex items-center justify-between text-sm text-gray-600">
-                            <span><i class="fas fa-trophy text-yellow-500 mr-1"></i> Terbaik</span>
-                            <span><i class="fas fa-arrow-right text-blue-500"></i></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Otomotif -->
-                <div class="category-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer slide-in" style="animation-delay: 0.8s" onclick="window.location.href='#'">
-                    <div class="bg-gradient-to-br from-teal-400 to-teal-600 p-8 text-center">
-                        <div class="category-icon inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
-                            <i class="fas fa-car text-3xl text-teal-600"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Otomotif</h3>
-                        <p class="text-teal-100 text-sm">65 Produk</p>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex items-center justify-between text-sm text-gray-600">
-                            <span><i class="fas fa-cog text-gray-500 mr-1"></i> Teknologi</span>
-                            <span><i class="fas fa-arrow-right text-blue-500"></i></span>
-                        </div>
-                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-times text-red-500 mr-3 mt-1"></i>
+                            <span class="text-gray-600">Produk yang sudah melewati batas waktu 7 hari</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times text-red-500 mr-3 mt-1"></i>
+                            <span class="text-gray-600">Produk rusak karena kesalahan pengguna</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times text-red-500 mr-3 mt-1"></i>
+                            <span class="text-gray-600">Produk intim, pakaian dalam, atau produk higienis</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times text-red-500 mr-3 mt-1"></i>
+                            <span class="text-gray-600">Produk digital (software, game, dll)</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Return Form -->
+    <section class="py-12 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">Kategori Pilihan</h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Temukan produk berkualitas dari berbagai kategori terpercaya
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Formulir Pengembalian</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Isi formulir berikut untuk mengajukan pengembalian produk
                 </p>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
-                        <i class="fas fa-box text-2xl text-indigo-600"></i>
+
+            <form onsubmit="submitReturn(event)" class="max-w-2xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Pesanan *</label>
+                        <input type="text" 
+                               required
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="Masukkan nomor pesanan">
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">1,000+</h3>
-                    <p class="text-gray-600">Produk Tersedia</p>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                        <input type="email" 
+                               required
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="email@example.com">
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Alasan Pengembalian *</label>
+                    <select required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Pilih alasan</option>
+                        <option value="wrong-product">Produk tidak sesuai</option>
+                        <option value="defective">Produk cacat/rusak</option>
+                        <option value="not-as-described">Tidak sesuai deskripsi</option>
+                        <option value="change-mind">Berubah pikiran</option>
+                        <option value="other">Lainnya</option>
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Detail Alasan *</label>
+                    <textarea required
+                              rows="4"
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              placeholder="Jelaskan secara detail alasan pengembalian..."></textarea>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Upload Buk Foto Produk *</label>
+                    <div class="file-upload border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer"
+                         onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-600 mb-2">Klik untuk upload atau drag and drop</p>
+                        <p class="text-sm text-gray-500">Maksimal 5 file, format JPG/PNG, maksimal 10MB per file</p>
+                        <input type="file" id="fileInput" multiple accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+                    </div>
+                    <div id="fileList" class="mt-4 space-y-2"></div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="flex items-center">
+                        <input type="checkbox" required class="mr-2">
+                        <span class="text-sm text-gray-700">Saya menyetujui <a href="#" class="text-blue-600 hover:underline">kebijakan pengembalian</a> dan telah membaca syarat & ketentuan yang berlaku</span>
+                    </label>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-paper-plane mr-2"></i>Ajukan Pengembalian
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Contact Info -->
+    <section class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-blue-50 rounded-xl p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Butuh Bantuan?</h2>
+                    <p class="text-gray-600">Tim customer service kami siap membantu proses pengembalian Anda</p>
                 </div>
                 
-                <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-                        <i class="fas fa-tags text-2xl text-green-600"></i>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-4">
+                            <i class="fas fa-envelope text-2xl text-blue-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-2">Email Support</h3>
+                        <p class="text-gray-600 mb-2">support@adrcatalogue.com</p>
+                        <p class="text-sm text-gray-500">Respons dalam 24 jam</p>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">50+</h3>
-                    <p class="text-gray-600">Promo Aktif</p>
-                </div>
-                
-                <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4">
-                        <i class="fas fa-users text-2xl text-purple-600"></i>
+                    
+                    <div class="text-center">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-4">
+                            <i class="fas fa-phone text-2xl text-green-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-2">Call Center</h3>
+                        <p class="text-gray-600 mb-2">+62 21 1234 5678</p>
+                        <p class="text-sm text-gray-500">Senin - Sabtu, 08:00 - 20:00</p>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">10,000+</h3>
-                    <p class="text-gray-600">Pelanggan Puas</p>
+                    
+                    <div class="text-center">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-4">
+                            <i class="fas fa-comments text-2xl text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-2">Live Chat</h3>
+                        <p class="text-gray-600 mb-2">Chat langsung dengan tim kami</p>
+                        <p class="text-sm text-gray-500">Tersedia 24/7</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -453,7 +420,7 @@
                         <img class="h-8 w-auto mr-2" src="{{ asset('images/asset/logo.png') }}" alt="ADR Catalogue">
                         <span class="text-xl font-bold">ADR Catalogue</span>
                     </div>
-                    <p class="text-gray-400">Temukan produk terbaik dengan harga terjangkau</p>
+                    <p class="text-blue-200">Temukan produk terbaik dengan harga terjangkau</p>
                 </div>
                 
                 <div>
@@ -509,37 +476,60 @@
             menu.classList.toggle('hidden');
         }
         
-        function filterCategories(type) {
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-indigo-600', 'text-white');
-                btn.classList.add('bg-gray-200', 'text-gray-700');
-            });
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
             
-            event.target.classList.remove('bg-gray-200', 'text-gray-700');
-            event.target.classList.add('bg-indigo-600', 'text-white');
-            
-            // Here you would typically filter the categories based on the type
-            console.log('Filtering categories by:', type);
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'flex items-center justify-between bg-gray-50 p-3 rounded-lg';
+                fileItem.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas fa-image text-blue-600 mr-3"></i>
+                        <span class="text-sm text-gray-700">${file.name}</span>
+                        <span class="text-xs text-gray-500 ml-2">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                    </div>
+                    <button type="button" onclick="removeFile(this)" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                fileList.appendChild(fileItem);
+            }
         }
         
-        // Search functionality
-        document.querySelector('input[placeholder="Cari kategori..."]').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const categoryCards = document.querySelectorAll('.category-card');
+        function removeFile(button) {
+            button.parentElement.remove();
+        }
+        
+        function submitReturn(event) {
+            event.preventDefault();
             
-            categoryCards.forEach(card => {
-                const categoryName = card.querySelector('h3').textContent.toLowerCase();
-                if (categoryName.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
+            // Get form data
+            const formData = new FormData(event.target);
+            
+            // Validate form
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                alert('Silakan upload minimal 1 foto produk');
+                return;
+            }
+            
+            // Show success message (simulation)
+            alert('Pengajuan pengembalian berhasil! Kami akan menghubungi Anda dalam 1x24 jam untuk proses verifikasi.');
+            
+            // Reset form
+            event.target.reset();
+            document.getElementById('fileList').innerHTML = '';
+            
+            // In real app, this would send data to server
+            console.log('Return form submitted');
+        }
     </script>
-
-    <!-- Chat Bot Component (Available for all users) -->
+    
+    <!-- Chat Bot Component -->
     @include('components.chat_bot')
+    
 </body>
 </html>

@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $table = 'order';
+    use HasFactory;
+
+    protected $table = 'orders';
+
     protected $fillable = [
         'id_pemesan',
         'id_produk',
@@ -22,21 +26,38 @@ class Order extends Model
     ];
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_pemesan');
+        return $this->belongsTo(User::class);
     }
 
-    public function product()
+    /**
+     * Get the address for the order.
+     */
+    public function address()
     {
-        return $this->belongsTo(Product::class, 'id_produk');
+        return $this->belongsTo(Address::class);
     }
 
-    public function promo()
-    {
-        return $this->belongsTo(Promo::class, 'id_promo');
-    }
-
+    /**
+     * Get the payment for the order.
+     */
     public function payment()
     {
-        return $this->hasOne(Payment::class, 'id_order');
+        return $this->hasOne(Payment::class);
+    }
+
+    /**
+     * Get the order items for the order.
+     */
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Get the promo for the order.
+     */
+    public function promo()
+    {
+        return $this->belongsTo(Promo::class);
     }
 }

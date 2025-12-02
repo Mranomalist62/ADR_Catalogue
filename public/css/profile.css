@@ -2,7 +2,7 @@ body {
     font-family: 'Poppins', sans-serif; 
 }
 
-.promo-gradient {
+.profile-gradient {
     background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
 }
 
@@ -10,13 +10,13 @@ body {
     background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 25%, #93c5fd 50%, #60a5fa 75%, #3b82f6 100%);
 }
 
-.promo-card {
+.card-hover {
     transition: all 0.3s ease;
 }
 
-.promo-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
 
 .slide-in {
@@ -28,21 +28,18 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.fade-in {
-    animation: fadeIn 0.8s ease-out;
+.timeline-item {
+    transition: all 0.3s ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.timeline-item:hover {
+    transform: scale(1.02);
 }
 
-.countdown-badge {
-    animation: pulse 2s infinite;
+.stat-card {
+    transition: all 0.3s ease;
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+.stat-card:hover {
+    transform: translateY(-2px) scale(1.02);
 }
