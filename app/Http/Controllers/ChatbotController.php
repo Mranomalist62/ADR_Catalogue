@@ -18,11 +18,11 @@ class ChatbotController extends Controller
         // ================
         $now = now()->setTimezone('Asia/Jakarta');
         $start = now()->setTimezone('Asia/Jakarta')->setTime(8, 0);
-        $end = now()->setTimezone('Asia/Jakarta')->setTime(23, 59);
+        $end = now()->setTimezone('Asia/Jakarta')->setTime(21, 0);
 
         if ($now->lt($start) || $now->gt($end)) {
             return response()->json([
-                'reply' => 'Maaf, layanan chatbot ADRCatalog hanya aktif pukul 08.00–22.00 WIB. Silakan kembali pada jam kerja.'
+                'reply' => 'Maaf, layanan chatbot ADRCatalog hanya aktif pukul 08.00–21.00 WIB. Silakan kembali pada jam kerja.'
             ]);
         }
 
