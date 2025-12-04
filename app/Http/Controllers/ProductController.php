@@ -29,7 +29,7 @@ class ProductController extends Controller
     // GET /api/products/{id} - Show specific product
     public function show($id)
     {
-        $product = Product::with(['category', 'promos'])->find($id);
+        $product = Product::with(['category', 'promo'])->find($id);
 
         if (!$product) {
             return response()->json([
@@ -47,94 +47,148 @@ class ProductController extends Controller
     // POST /api/products - Create new product
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'kuantitas' => 'required|integer|min:0',
-            'id_kategori' => 'required|exists:category,id',
-            'harga_satuan' => 'required|integer|min:0',
-            'desc' => 'nullable|string',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        try{
+            $request->validate([
+                'nama' => 'required|string|max:255',
+                'kuantitas' => 'required|integer|min:0',
+                'id_kategori' => 'required|exists:category,id',
+                'harga_satuan' => 'required|integer|min:0',
+                'desc' => 'nullable|string',
+                'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'diskon' => 'nullable|integer|min:0|max:100',
+            ]);
 
-            // Add promo validation
-            'promo_nama' => 'required|string|max:255',
-            'promo_potongan' => 'required|integer|min:0|max:100'
-        ]);
+            // Handle thumbnail upload
+            $pathThumbnail = null;
+            if ($request->hasFile('thumbnail')) {
+                $pathThumbnail = $request->file('thumbnail')->store('images/product', 'public');
+            }
 
-        // Handle thumbnail upload
-        $pathThumbnail = null;
-        if ($request->hasFile('thumbnail')) {
-            $pathThumbnail = $request->file('thumbnail')->store('images/product', 'public');
+            // Create product
+            $product = Product::create([
+                'nama' => $request->nama,
+                'kuantitas' => $request->kuantitas,
+                'id_kategori' => $request->id_kategori,
+                'desc' => $request->desc,
+                'harga_satuan' => $request->harga_satuan,
+                'path_thumbnail' => $pathThumbnail
+            ]);
+
+            // ALWAYS create promo record (even at 0%)
+            $promo = Promo::create([
+                'product_id' => $product->id,
+                'nama' => $request->diskon > 0 ?
+                    'Diskon ' . $request->diskon . '% untuk ' . $request->nama :
+                    'Tidak ada diskon untuk ' . $request->nama,
+                'potongan_harga' => $request->diskon ?? 0,
+                'path_thumbnail' => null, // Add this field
+            ]);
+
+            // Since Promo has product_id, we don't need to set promo_id on Product
+            // The relationship is one-way: Promo → Product (promo belongs to product)
+            // If you want two-way relationship, you need a promo_id column in products table
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Product and promo created successfully',
+                'data' => [
+                    'product' => $product->load('category', 'promo'),
+                    'promo' => $promo
+                ]
+            ], 201);
+        } catch (\Exception $e) {
+            // Return detailed error for debugging
+            return response()->json([
+                'success' => false,
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => env('APP_DEBUG') ? $e->getTrace() : []
+            ], 500);
         }
-
-        // Create product
-        $product = Product::create([
-            'nama' => $request->nama,
-            'kuantitas' => $request->kuantitas,
-            'id_kategori' => $request->id_kategori,
-            'desc' => $request->desc,
-            'harga_satuan' => $request->harga_satuan,
-            'path_thumbnail' => $pathThumbnail
-        ]);
-
-        // AUTO-create promo
-        $promo = Promo::create([
-            'product_id' => $product->id,
-            'nama' => $request->promo_nama,
-            'potongan_harga' => $request->promo_potongan
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Product + promo created successfully',
-            'data' => [
-                'product' => $product->load('category'),
-                'promo' => $promo
-            ]
-        ], 201);
     }
+
     // PUT /api/products/{id} - Update product
     public function update(Request $request, $id)
     {
-        $product = Product::find($id);
+        try {
+            $product = Product::with('promo')->find($id);
 
-        if (!$product) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Product not found'
-            ], 404);
-        }
-
-        $request->validate([
-            'nama' => 'sometimes|string|max:255',
-            'kuantitas' => 'sometimes|integer|min:0',
-            'id_kategori' => 'sometimes|exists:category,id',
-            'desc' => 'nullable|string',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'harga_satuan' => 'sometimes|integer|min:0'
-        ]);
-
-        $updateData = $request->only(['nama', 'kuantitas', 'id_kategori', 'desc']);
-
-        if ($request->hasFile('thumbnail')) {
-            // Delete old thumbnail if exists
-            if ($product->path_thumbnail) {
-                Storage::disk('public')->delete($product->path_thumbnail);
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Product not found'
+                ], 404);
             }
 
-            $pathThumbnail = $request->file('thumbnail')->store('images/product', 'public');
-            $updateData['path_thumbnail'] = $pathThumbnail;
+            $request->validate([
+                'nama' => 'sometimes|string|max:255',
+                'kuantitas' => 'sometimes|integer|min:0',
+                'id_kategori' => 'sometimes|exists:category,id',
+                'desc' => 'nullable|string',
+                'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'harga_satuan' => 'sometimes|integer|min:0',
+                'diskon' => 'nullable|integer|min:0|max:100'
+            ]);
+
+            $updateData = $request->only(['nama', 'kuantitas', 'id_kategori', 'desc', 'harga_satuan']);
+
+            if ($request->hasFile('thumbnail')) {
+                if ($product->path_thumbnail) {
+                    Storage::disk('public')->delete($product->path_thumbnail);
+                }
+                $pathThumbnail = $request->file('thumbnail')->store('images/product', 'public');
+                $updateData['path_thumbnail'] = $pathThumbnail;
+            }
+
+            // Update product
+            $product->update($updateData);
+
+            // Handle promo
+            $diskonValue = $request->has('diskon') ? $request->diskon : ($product->promo ? $product->promo->potongan_harga : 0);
+
+            if ($product->promo) {
+                // Update existing promo
+                $product->promo->update([
+                    'potongan_harga' => $diskonValue,
+                    'nama' => $diskonValue > 0 ?
+                        'Diskon ' . $diskonValue . '% untuk ' . $product->nama :
+                        'Tidak ada diskon untuk ' . $product->nama,
+                ]);
+            } else {
+                // Create new promo if doesn't exist
+                Promo::create([
+                    'product_id' => $product->id,
+                    'nama' => $diskonValue > 0 ?
+                        'Diskon ' . $diskonValue . '% untuk ' . $product->nama :
+                        'Tidak ada diskon untuk ' . $product->nama,
+                    'potongan_harga' => $diskonValue,
+                    'path_thumbnail' => null,
+                ]);
+            }
+
+            // Reload relationships
+            $product->load('category', 'promo');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Product updated successfully',
+                'data' => $product
+            ]);
+
+        } catch (\Exception $e) {
+            // Return detailed error for debugging
+            return response()->json([
+                'success' => false,
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => env('APP_DEBUG') ? $e->getTrace() : []
+            ], 500);
         }
-
-        // Update all fields at once
-        $product->update($updateData);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Product updated successfully',
-            'data' => $product->load('category')
-        ]);
     }
-
     // DELETE /api/products/{id} - Delete product
     public function destroy($id)
     {

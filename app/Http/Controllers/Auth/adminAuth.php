@@ -21,9 +21,7 @@ class adminAuth extends Controller
             $admin = Admin::where('email', $request->email)->first();
 
             if (!$admin || !Hash::check($request->password, $admin->password)){
-                throw ValidationException::withMessages([
-                    'email' => ['the provided credentials are incorrect']
-                ]);
+                return redirect()->back()->withErrors('Login failed! Please check your credentials.');
             }
 
             Auth::guard('admin')->login($admin);
@@ -36,7 +34,7 @@ class adminAuth extends Controller
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return response()->json(['message' => 'Admin logout successful']);
+        return redirect()->route('admin.login')->with('success', 'Admin logout successful');
     }
 
     public function profile(Request $request){
