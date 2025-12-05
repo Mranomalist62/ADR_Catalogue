@@ -37,11 +37,71 @@ Route::get('/kategori', function () {
     return view('kategori');
 })->name('kategori');
 
-Route::get('/chatbot', function () {
-    return view('chatbot');
-})->name('chatbot');
+Route::get('/promo', function () {
+    return view('promo');
+})->name('promo');
 
-Route::post('/chat/reply', [ChatbotController::class, 'reply']);
+Route::get('/profile', function () {
+    return view('profile');
+})->name('profile');
+
+Route::get('/invoice', function () {
+    return view('invoice');
+})->name('invoice');
+
+Route::get('/product', function () {
+    return view('product');
+})->name('product');
+
+Route::get('/alamat', function () {
+    return view('alamat');
+})->name('alamat');
+
+Route::get('/listalamat', function () {
+    return view('alamat_list');
+})->name('listalamat');
+
+Route::get('/addalamat', function () {
+    return view('alamat_add');
+})->name('addalamat');
+
+Route::get('/banner', function () {
+    return view('admin_banner');
+})->name('banner');
+
+Route::get('/pesanan', function () {
+    return view('pesanan');
+})->name('pesanan');
+
+
+//testing route
+
+
+
+// Checkout routes (no authentication required)
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+Route::get('/order/confirmation/{id}', [CheckoutController::class, 'confirmation'])->name('order.confirmation');
+
+// Public chat bot route (no authentication required)
+Route::post('/chat/bot', [ChatController::class, 'getBotResponse'])->name('chat.bot');
+
+// Protected routes (require authentication)
+Route::middleware(['auth.user'])->group(function () {
+    // Protected profile route (require authentication)
+    Route::get('/user/profile', [UserAuth::class, 'profile'])->name('user.profile');
+    Route::post('/logout', [UserAuth::class, 'logout'])->name('logout');
+    
+    // Chat routes for users
+    Route::get('/chat', [ChatController::class, 'userChat'])->name('user.chat');
+    Route::post('/chat/send', [ChatController::class, 'sendUserMessage'])->name('chat.send.user');
+    Route::get('/chat/refresh', [ChatController::class, 'getUserChatForRefresh'])->name('chat.refresh.user');
+});
+    
+
+
+// Put Submission Route here
+Route::post('/register', [UserAuth::class, 'register'])->name('register.submit');
 
 // Help Pages
 Route::get('/faq', function () {
