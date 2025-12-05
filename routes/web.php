@@ -149,11 +149,8 @@ Route::post('/admin/logout', [AdminAuth::class, 'logout'])->name('admin.logout')
 
 // User protected views
 Route::middleware(['auth.user'])->group(function () {
-    Route::get('/promo', function () {
-        return view('promo');
-    })->name('promo');
-
-    Route::get('/profile', [UserAuth::class, 'profile'])->name('profile');
+    // Protected profile route (require authentication)
+    Route::get('/user/profile', [UserAuth::class, 'profile'])->name('user.profile');
     Route::post('/logout', [UserAuth::class, 'logout'])->name('logout');
 
     // User chat routes

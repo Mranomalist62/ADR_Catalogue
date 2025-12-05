@@ -212,7 +212,7 @@
                 </a>
                 <a href="{{ route('pesanan') }}" class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-shopping-cart mr-3 group-hover:animate-pulse"></i>
-                    pesanan
+                    Pesanan
                 </a>
                 @if(auth('user')->check())
                     <a href="{{ route('user.chat') }}" class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
