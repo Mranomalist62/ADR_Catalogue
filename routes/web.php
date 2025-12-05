@@ -37,6 +37,34 @@ Route::get('/profile', function () {
     return view('profile');
 })->name('profile');
 
+Route::get('/invoice', function () {
+    return view('invoice');
+})->name('invoice');
+
+Route::get('/product', function () {
+    return view('product');
+})->name('product');
+
+Route::get('/alamat', function () {
+    return view('alamat');
+})->name('alamat');
+
+Route::get('/listalamat', function () {
+    return view('alamat_list');
+})->name('listalamat');
+
+Route::get('/addalamat', function () {
+    return view('alamat_add');
+})->name('addalamat');
+
+Route::get('/banner', function () {
+    return view('admin_banner');
+})->name('banner');
+
+Route::get('/pesanan', function () {
+    return view('pesanan');
+})->name('pesanan');
+
 
 //testing route
 
