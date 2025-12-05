@@ -13,7 +13,7 @@
     <style>
         body { font-family: 'Poppins', sans-serif; }
         .category-gradient {
-            background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
+            background: linear-gradient(135deg, #bfdbfe 0%, #93 5fd 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
         }
         .light-blue-gradient {
             background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 25%, #93c5fd 50%, #60a5fa 75%, #3b82f6 100%);
