@@ -43,8 +43,8 @@
                     <a href="{{ route('rekomendasi') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                         <i class="fas fa-star mr-1"></i> Rekomendasi
                     </a>
-                    <a href="{{ route('checkout') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                        <i class="fas fa-shopping-cart mr-1"></i> Keranjang
+                    <a href="{{ route('pesanan') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-shopping-cart mr-1"></i> Pesanan
                     </a>
                     <a href="{{ route('profile') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                         <i class="fas fa-building mr-1"></i> Profil
@@ -309,7 +309,7 @@
                         <li><a href="{{ route('promo') }}" class="text-blue-200 hover:text-white transition-colors">Promo</a></li>
                         <li><a href="{{ route('kategori') }}" class="text-blue-200 hover:text-white transition-colors">Kategori</a></li>
                         <li><a href="{{ route('rekomendasi') }}" class="text-blue-200 hover:text-white transition-colors">Rekomendasi</a></li>
-                        <li><a href="{{ route('checkout') }}" class="text-blue-200 hover:text-white transition-colors">Keranjang</a></li>
+                        <li><a href="{{ route('pesanan') }}" class="text-blue-200 hover:text-white transition-colors">Pesanan</a></li>
                         <li><a href="{{ route('profile') }}" class="text-blue-200 hover:text-white transition-colors">Profil</a></li>
                     </ul>
                 </div>

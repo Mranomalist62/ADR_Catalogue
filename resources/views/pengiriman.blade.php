@@ -69,11 +69,11 @@
                             </span>
                         </span>
                     </a>
-                    <a href="{{ route('checkout') }}" class="nav-link group relative px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
+                    <a href="{{ route('pesanan') }}" class="nav-link group relative px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
                         <span class="flex items-center">
                             <i class="fas fa-shopping-cart mr-2 text-sm group-hover:animate-pulse"></i>
                             <span class="relative hidden sm:inline">
-                                Keranjang
+                                Pesanan
                                 <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
                             </span>
                         </span>
@@ -451,7 +451,7 @@
                         <li><a href="{{ route('promo') }}" class="text-blue-200 hover:text-white transition-colors">Promo</a></li>
                         <li><a href="{{ route('kategori') }}" class="text-blue-200 hover:text-white transition-colors">Kategori</a></li>
                         <li><a href="{{ route('rekomendasi') }}" class="text-blue-200 hover:text-white transition-colors">Rekomendasi</a></li>
-                        <li><a href="{{ route('checkout') }}" class="text-blue-200 hover:text-white transition-colors">Keranjang</a></li>
+                        <li><a href="{{ route('pesanan') }}" class="text-blue-200 hover:text-white transition-colors">Pesanan</a></li>
                         <li><a href="{{ route('profile') }}" class="text-blue-200 hover:text-white transition-colors">Profil</a></li>
                     </ul>
                 </div>

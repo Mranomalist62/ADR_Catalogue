@@ -26,6 +26,24 @@ class ProductController extends Controller
         ]);
     }
 
+    /**
+     * GET /public/products/latest
+     * Get latest products for home page slider
+     */
+    public function latest()
+    {
+        // Get latest products with their promo information
+        $products = Product::with(['category:id,nama', 'promo'])
+            ->orderBy('created_at', 'desc')
+            ->take(10) // Limit to 10 latest products
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ]);
+    }
+
     // GET /api/products/{id} - Show specific product
     public function show($id)
     {

@@ -166,6 +166,7 @@ Route::prefix('admin')->middleware(['auth.admin'])->group(function () {
     Route::get('/statistics', [AdminController::class, 'statistics'])->name('admin.statistics');
     Route::get('/billing', [AdminController::class, 'billing'])->name('admin.billing');
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::get('/promo', [AdminController::class, 'promo'])->name('admin.promo');
 
     // Admin product management
     //    Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
@@ -201,6 +202,10 @@ Route::prefix('public')->group(function () {
     // Promos
     Route::get('/promo', [PromoController::class, 'index']);
     Route::get('/promo/{id}', [PromoController::class, 'show']);
+    
+    // Home page specific endpoints
+    Route::get('/promo/featured', [PromoController::class, 'featured']);
+    Route::get('/products/latest', [ProductController::class, 'latest']);
 });
 
 // ====================

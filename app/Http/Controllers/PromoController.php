@@ -24,6 +24,25 @@ class PromoController extends Controller
     }
 
     /**
+     * GET /public/promo/featured
+     * Get featured promos for home page slider
+     */
+    public function featured()
+    {
+        // Get promos with actual discounts (> 0%) and order by discount amount
+        $promos = Promo::where('potongan_harga', '>', 0)
+            ->with('product:id,nama,harga_satuan,path_thumbnail')
+            ->orderBy('potongan_harga', 'desc')
+            ->take(10) // Limit to 10 featured promos
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $promos
+        ]);
+    }
+
+    /**
      * GET /api/promo/{id}
      */
     public function show($id)
@@ -59,6 +78,7 @@ class PromoController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'potongan_harga' => 'required|integer|min:0|max:100',
+            'product_id' => 'nullable|exists:products,id',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
 
@@ -69,8 +89,9 @@ class PromoController extends Controller
         }
 
         $promo = Promo::create([
-            'nama'           => 'Diskon Potongan Harga ' + $request->nama ?: $request->potongan_harga + '%',
+            'nama'           => $request->nama,
             'potongan_harga' => $request->potongan_harga,
+            'product_id'     => $request->product_id,
             'path_thumbnail' => $thumbnailPath,
         ]);
 
@@ -98,6 +119,7 @@ class PromoController extends Controller
         $request->validate([
             'nama' => 'sometimes|string|max:255',
             'potongan_harga' => 'sometimes|integer|min:0|max:100',
+            'product_id' => 'nullable|exists:products,id',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
 
@@ -113,11 +135,17 @@ class PromoController extends Controller
             $promo->path_thumbnail = $newPath;
         }
 
-        $promo->update([
-            'nama' => 'Diskon Potongan Harga ' + $request->nama ?: $request->potongan_harga + '%',
+        $updateData = [
+            'nama' => $request->nama ?? $promo->nama,
             'potongan_harga' => $request->potongan_harga ?? $promo->potongan_harga,
-            'path_thumbnail' => $promo->path_thumbnail,
-        ]);
+            'product_id' => $request->product_id ?? $promo->product_id,
+        ];
+
+        if ($request->hasFile('thumbnail')) {
+            $updateData['path_thumbnail'] = $promo->path_thumbnail;
+        }
+
+        $promo->update($updateData);
 
         return response()->json([
             'success' => true,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Chat;
 use App\Models\Product;
+use App\Models\Promo;
 
 use Illuminate\Http\Request;
 
@@ -72,6 +73,16 @@ class AdminController extends Controller
         $categories = Category::all();
         $products = Product::with('category')->get();
         return view('admin_products_edit', compact('product', 'categories', 'unreadCount','products'));
+    }
+
+    public function promo()
+    {
+        // Get unread messages count
+        $unreadCount = Chat::where('is_read', false)
+                           ->where('sender', 'user')
+                           ->count();
+
+        return view('admin_home_promo', compact('unreadCount'));
     }
 
 }
