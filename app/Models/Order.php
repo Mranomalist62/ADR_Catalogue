@@ -9,12 +9,12 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $table = 'orders';
+    protected $table = 'order';
 
     protected $fillable = [
         'id_pemesan',
         'id_produk',
-        'id_promo',
+        'id_promo', //to be deleted
         'nama_promo',
         'potongan_harga',
         'kuantitas',
@@ -46,18 +46,15 @@ class Order extends Model
     }
 
     /**
-     * Get the order items for the order.
-     */
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
-
-    /**
      * Get the promo for the order.
      */
     public function promo()
     {
         return $this->belongsTo(Promo::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'id_produk');
     }
 }

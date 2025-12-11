@@ -131,11 +131,12 @@ Route::prefix('admin')->middleware(['auth.admin'])->group(function () {
 Route::prefix('public')->group(function () {
     // Products
     Route::prefix('products')->group(function () {
-        Route::get('/', [ProductController::class, 'index']);
-        Route::get('/{id}', [ProductController::class, 'show']);
         Route::get('/category/{categoryId}', [ProductController::class, 'byCategory']);
         Route::get('/search/{keyword}', [ProductController::class, 'search']);
-    });
+        Route::get('/recommended', [ProductController::class, 'recommended']);
+        Route::get('/', [ProductController::class, 'index']);
+        Route::get('/{id}', [ProductController::class, 'show']);
+});
 
     // Categories
     Route::get('/categories', [CategoryController::class, 'index']);
