@@ -7,7 +7,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Chat;
 
-class admin extends Controller
+class UserController extends Controller
 {
     public function dashboard()
     {

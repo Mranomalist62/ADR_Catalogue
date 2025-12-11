@@ -21,31 +21,17 @@ class adminAuth extends Controller
             $admin = Admin::where('email', $request->email)->first();
 
             if (!$admin || !Hash::check($request->password, $admin->password)){
-                throw ValidationException::withMessages([
-                    'email' => ['the provided credentials are incorrect']
-                ]);
+                return redirect()->back()->withErrors('Login failed! Please check your credentials.');
             }
 
             Auth::guard('admin')->login($admin);
-            
-            // Check if request wants JSON response (for AJAX)
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'message'=> 'Admin login successful',
-                    'admin' => [
-                        'id'=> $admin->id,
-                        'nama'=> $admin->nama,
-                        'email' => $admin->email,
-                    ]
-                ]);
-            }
-            
-            // For form submission, redirect to admin dashboard
-            return redirect()->route('admin')->with('success', 'Login berhasil! Selamat datang admin.');
+
+            return redirect()->intended(route('admin'))
+            ->with('success', 'Login berhasil! Selamat datang.');
     }
 
-    public function Logout(Request $request){
-        Auth::guard('admin')->Logout();
+    public function logout(Request $request){
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('admin.login')->with('success', 'Admin logout successful');

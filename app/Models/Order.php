@@ -10,33 +10,20 @@ class Order extends Model
     use HasFactory;
 
     protected $table = 'orders';
-    
+
     protected $fillable = [
-        'order_number',
-        'user_id',
-        'address_id',
-        'subtotal',
-        'shipping_cost',
-        'discount',
-        'total',
+        'id_pemesan',
+        'id_produk',
+        'id_promo',
+        'nama_promo',
+        'potongan_harga',
+        'kuantitas',
+        'total_harga',
+        'total_instalment',
+        'waktu_berlaku',
         'status',
-        'payment_method',
-        'shipping_method',
-        'notes',
-        'order_date'
+        'payment_method'
     ];
-
-    protected $casts = [
-        'subtotal' => 'decimal:2',
-        'shipping_cost' => 'decimal:2',
-        'discount' => 'decimal:2',
-        'total' => 'decimal:2',
-        'order_date' => 'datetime'
-    ];
-
-    /**
-     * Get the user that owns the order.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);

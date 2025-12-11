@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->foreignId('admin_id')->nullable()->constrained('admins')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('user')->onDelete('cascade');
+            $table->foreignId('admin_id')->nullable()->constrained('admin')->onDelete('cascade');
             $table->text('message');
             $table->enum('sender', ['user', 'admin', 'bot']);
             $table->boolean('is_read')->default(false);

@@ -212,7 +212,7 @@
                 </a>
                 <a href="{{ route('pesanan') }}" class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-shopping-cart mr-3 group-hover:animate-pulse"></i>
-                    pesanan
+                    Pesanan
                 </a>
                 @if(auth('user')->check())
                     <a href="{{ route('user.chat') }}" class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
@@ -315,35 +315,36 @@
         </div>
     </section>
 
-    <!-- Banner Section -->
-    <section class="py-8 bg-white">
+    <!-- Promo Slider Section -->
+    <section class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="relative rounded-xl overflow-hidden shadow-lg banner-slide" style="animation-delay: 0.6s">
-                    <div class="light-blue-gradient h-48 flex items-center justify-center">
-                        <div class="text-white text-center p-6">
-                            <h3 class="text-2xl font-bold mb-2">Promo Spesial</h3>
-                            <p class="mb-4">Diskon hingga 50% untuk produk pilihan</p>
-                            <button onclick="window.location.href='{{ route('promo') }}'" class="bg-white text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-blue-50 transition-colors">
-                                Lihat Promo
-                            </button>
-                        </div>
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Promo Spesial</h2>
+                <p class="text-gray-600">Dapatkan penawaran terbaik dan diskon menarik untuk produk pilihan</p>
+            </div>
+            
+            <div class="relative">
+                <!-- Navigation Buttons -->
+                <button onclick="scrollSlider('promoSlider', 'left')" class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all -ml-2 md:-ml-4">
+                    <i class="fas fa-chevron-left text-gray-600 text-lg"></i>
+                </button>
+                <button onclick="scrollSlider('promoSlider', 'right')" class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all -mr-2 md:-mr-4">
+                    <i class="fas fa-chevron-right text-gray-600 text-lg"></i>
+                </button>
+                
+                <!-- Promo Slider Container -->
+                <div id="promoSlider" class="scroll-container overflow-x-auto flex space-x-6 pb-6 px-2 md:px-4">
+                    <!-- Loading state -->
+                    <div id="promoLoading" class="flex justify-center items-center w-full py-8">
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+                        <span class="ml-3 text-gray-600">Memuat promo...</span>
                     </div>
-                </div>
-                <div class="relative rounded-xl overflow-hidden shadow-lg banner-slide" style="animation-delay: 0.8s">
-                    <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-48 flex items-center justify-center">
-                        <div class="text-white text-center p-6">
-                            <h3 class="text-2xl font-bold mb-2">Produk Terbaru</h3>
-                            <p class="mb-4">Koleksi terkini dengan kualitas terbaik</p>
-                            <button onclick="window.location.href='{{ route('rekomendasi') }}'" class="bg-white text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-blue-50 transition-colors">
-                                Jelajahi Sekarang
-                            </button>
-                        </div>
-                    </div>
+                    <!-- Promo cards will be loaded dynamically -->
                 </div>
             </div>
         </div>
     </section>
+
 
     <!-- Categories Section -->
     <section class="py-12 bg-gray-50">
@@ -538,7 +539,7 @@
                         <li><a href="{{ route('promo') }}" class="text-blue-200 hover:text-white transition-colors">Promo</a></li>
                         <li><a href="{{ route('kategori') }}" class="text-blue-200 hover:text-white transition-colors">Kategori</a></li>
                         <li><a href="{{ route('rekomendasi') }}" class="text-blue-200 hover:text-white transition-colors">Rekomendasi</a></li>
-                        <li><a href="{{ route('checkout') }}" class="text-blue-200 hover:text-white transition-colors">Keranjang</a></li>
+                        <li><a href="{{ route('pesanan') }}" class="text-blue-200 hover:text-white transition-colors">Pesanan</a></li>
                         <li><a href="{{ route('profile') }}" class="text-blue-200 hover:text-white transition-colors">Profil</a></li>
                     </ul>
                 </div>
@@ -597,6 +598,98 @@
             }
         }
         
+        function scrollSlider(sliderId, direction) {
+            const container = document.getElementById(sliderId);
+            const cardWidth = container.querySelector('.slider-card')?.offsetWidth || 280;
+            const gap = 24; // space-x-6 = 24px
+            const scrollAmount = cardWidth + gap;
+            
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+        
+        // Load featured promos
+        function loadFeaturedPromos() {
+            fetch('/public/promo/featured')
+                .then(response => response.json())
+                .then(data => {
+                    const promoSlider = document.getElementById('promoSlider');
+                    const promoLoading = document.getElementById('promoLoading');
+                    
+                    if (data.success && data.data && data.data.length > 0) {
+                        promoLoading.style.display = 'none';
+                        
+                        const promoCards = data.data.map(promo => {
+                            const imageUrl = promo.path_thumbnail ?
+                                `/storage/${promo.path_thumbnail}` :
+                                (promo.product && promo.product.path_thumbnail ?
+                                    `/storage/${promo.product.path_thumbnail}` :
+                                    null);
+                            
+                            const productName = promo.product ? promo.product.nama : 'Produk';
+                            const productPrice = promo.product ? promo.product.harga_satuan : 0;
+                            const discountedPrice = productPrice - (productPrice * promo.potongan_harga / 100);
+                            
+                            return `
+                                <div class="slider-card flex-shrink-0 w-72 bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300" onclick="window.location.href='/promo'">
+                                    <div class="relative">
+                                        ${imageUrl ?
+                                            `<img src="${imageUrl}" alt="${promo.nama}" class="w-full h-48 object-cover">` :
+                                            `<div class="w-full h-48 bg-gradient-to-br from-blue-100 to-blue-300 flex items-center justify-center">
+                                                <i class="fas fa-tags text-blue-600 text-4xl"></i>
+                                            </div>`
+                                        }
+                                        <div class="absolute top-2 left-2">
+                                            <span class="px-3 py-1 text-sm rounded-full bg-red-500 text-white font-bold shadow-lg">
+                                                ${promo.potongan_harga}% OFF
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="p-4">
+                                        <h3 class="font-semibold text-gray-900 mb-2 truncate">${promo.nama}</h3>
+                                        <p class="text-sm text-gray-600 mb-3 truncate">${productName}</p>
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-lg font-bold text-indigo-600">Rp ${discountedPrice.toLocaleString('id-ID')}</p>
+                                                ${productPrice > 0 ? `<p class="text-sm text-gray-500 line-through">Rp ${productPrice.toLocaleString('id-ID')}</p>` : ''}
+                                            </div>
+                                            <button class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 p-2 rounded-lg transition-colors">
+                                                <i class="fas fa-shopping-cart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                        
+                        promoSlider.innerHTML += promoCards;
+                    } else {
+                        promoLoading.innerHTML = `
+                            <div class="text-center py-8">
+                                <div class="max-w-md mx-auto">
+                                    <div class="bg-blue-50 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                                        <i class="fas fa-tags text-blue-500 text-4xl"></i>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Belum ada promo</h3>
+                                    <p class="text-gray-600 mb-6">Promo akan segera tersedia. Silakan kembali lagi nanti.</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading promos:', error);
+                    document.getElementById('promoLoading').innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+                            <p class="text-gray-600">Gagal memuat promo</p>
+                        </div>
+                    `;
+                });
+        }
         
         // Touch support for mobile swiping
         let touchStartX = 0;
@@ -644,10 +737,15 @@
             clearInterval(autoScrollInterval);
         }
         
-        // Start auto-scroll on mobile
-        if (window.innerWidth < 768) {
-            startAutoScroll();
-        }
+        // Initialize sliders on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFeaturedPromos();
+            
+            // Start auto-scroll on mobile
+            if (window.innerWidth < 768) {
+                startAutoScroll();
+            }
+        });
         
         // Stop auto-scroll on user interaction
         document.getElementById('categoriesContainer').addEventListener('mouseenter', stopAutoScroll);

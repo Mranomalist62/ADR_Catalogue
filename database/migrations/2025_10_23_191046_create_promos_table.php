@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->string('nama', 255);
             $table->integer('potongan_harga')->nullable();
             $table->string('path_thumbnail', 255)->nullable();
+            $table->foreignId('product_id')->constrained('product')->onDelete('cascade');
             $table->timestamps();
         });
     }

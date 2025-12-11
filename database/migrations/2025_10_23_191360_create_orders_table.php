@@ -13,6 +13,8 @@ return new class extends Migration {
             $table->foreignId('id_produk')->constrained('product')->onDelete('cascade');
             $table->foreignId('id_promo')->nullable()->constrained('promo')->onDelete('set null');
             $table->integer('kuantitas');
+            $table->string('nama_promo')->nullable();
+            $table->integer('potongan_harga')->nullable();
             $table->integer('total_harga');
             $table->integer('total_instalment')->nullable();
             $table->timestamp('waktu_berlaku')->nullable();

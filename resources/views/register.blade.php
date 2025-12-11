@@ -198,21 +198,13 @@
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-gray-300"></div>
                 </div>
-                <div class="relative flex justify-center text-sm">
-                    <span class="px-2 bg-white text-gray-500">Atau daftar dengan</span>
-                </div>
             </div>
 
-            <!-- Social Register -->
-            <div class="grid grid-cols-2 gap-3 slide-in" style="animation-delay: 1.0s">
-                <button class="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
-                    <i class="fab fa-google text-red-500 mr-2"></i>
-                    Google
-                </button>
-                <button class="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
-                    <i class="fab fa-facebook text-blue-600 mr-2"></i>
-                    Facebook
-                </button>
+            <!-- Divider -->
+            <div class="relative my-6 slide-in" style="animation-delay: 1.0s">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
             </div>
         </div>
 
@@ -222,10 +214,6 @@
                 Sudah punya akun? 
                 <a href="{{ route('login') }}" class="font-medium text-white hover:underline">
                     Masuk di sini
-                </a>
-                <a href="{{ route('profile') }}" class="font-medium text-white hover:underline ml-4 inline-flex items-center transition-colors">
-                    <i class="fas fa-building mr-2"></i>
-                    Lihat Profil Perusahaan
                 </a>
             </p>
         </div>
