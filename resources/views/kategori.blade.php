@@ -17,7 +17,7 @@
         }
 
         .category-gradient {
-            background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
+            background: linear-gradient(135deg, #bfdbfe 0%, #93 5fd 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
         }
 
         .light-blue-gradient {

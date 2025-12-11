@@ -149,7 +149,7 @@
                          <span class="flex items-center">
                              <i class="fas fa-shopping-cart mr-2 text-sm group-hover:animate-pulse"></i>
                              <span class="relative hidden sm:inline">
-                                 Keranjang
+                                 Pesanan
                                  <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
                              </span>
                          </span>
