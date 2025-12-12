@@ -1,43 +1,67 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Promo - ADR Catalogue</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/promo.css') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
-        body { font-family: 'Poppins', sans-serif; }
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
         .promo-gradient {
             background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
         }
+
         .light-blue-gradient {
             background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 25%, #93c5fd 50%, #60a5fa 75%, #3b82f6 100%);
         }
+
         .promo-card {
             transition: all 0.3s ease;
         }
+
         .promo-card:hover {
             transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
+
         .slide-in {
             animation: slideIn 0.5s ease-out;
         }
+
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         .fade-in {
             animation: fadeIn 0.8s ease-out;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -51,169 +75,303 @@
                 <div class="flex items-center space-x-4">
                     <div class="flex-shrink-0 flex items-center group">
                         <div class="relative">
-                            <img class="h-10 w-auto transition-transform duration-300 group-hover:scale-110" src="{{ asset('images/asset/logo.png') }}" alt="ADR Catalogue">
-                            <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <img class="h-10 w-auto transition-transform duration-300 group-hover:scale-110"
+                                src="{{ asset('images/asset/logo.png') }}" alt="ADR Catalogue">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            </div>
                         </div>
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-1">
-                            <a href="{{ route('home') }}" class="nav-link group relative px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
+                            <a href="{{ route('home') }}"
+                                class="nav-link group relative px-4 py-2 {{ request()->routeIs('home') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
                                 <span class="flex items-center">
                                     <i class="fas fa-home mr-2 text-sm group-hover:animate-pulse"></i>
                                     <span class="relative">
                                         Beranda
-                                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                        @if(request()->routeIs('home'))
+                                            <span
+                                                class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                        @else
+                                            <span
+                                                class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                        @endif
                                     </span>
                                 </span>
                             </a>
-                            <a href="{{ route('promo') }}" class="nav-link group relative px-4 py-2 text-blue-600 font-medium transition-all duration-300">
+                            <a href="{{ route('promo') }}"
+                                class="nav-link group relative px-4 py-2 {{ request()->routeIs('promo') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
                                 <span class="flex items-center">
                                     <i class="fas fa-tags mr-2 text-sm group-hover:animate-pulse"></i>
                                     <span class="relative">
                                         Promo
-                                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                        @if(request()->routeIs('promo'))
+                                            <span
+                                                class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                        @else
+                                            <span
+                                                class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                        @endif
                                     </span>
                                 </span>
                             </a>
-                            <a href="{{ route('kategori') }}" class="nav-link group relative px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
+                            <a href="{{ route('kategori') }}"
+                                class="nav-link group relative px-4 py-2 {{ request()->routeIs('kategori') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
                                 <span class="flex items-center">
                                     <i class="fas fa-th-large mr-2 text-sm group-hover:animate-pulse"></i>
                                     <span class="relative">
                                         Kategori
-                                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                        @if(request()->routeIs('kategori'))
+                                            <span
+                                                class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                        @else
+                                            <span
+                                                class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                        @endif
                                     </span>
                                 </span>
                             </a>
+
                         </div>
                     </div>
                 </div>
 
                 <!-- Right side buttons -->
                 <div class="flex items-center space-x-2">
-                    <a href="{{ route('rekomendasi') }}" class="nav-link group relative px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
+                    <a href="{{ route('rekomendasi') }}"
+                        class="nav-link group relative px-4 py-2 {{ request()->routeIs('rekomendasi') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
                         <span class="flex items-center">
                             <i class="fas fa-star mr-2 text-sm group-hover:animate-pulse"></i>
-                            <span class="relative hidden sm:inline">
+                            <span class="relative">
                                 Rekomendasi
-                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                @if(request()->routeIs('rekomendasi'))
+                                    <span
+                                        class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                @else
+                                    <span
+                                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                @endif
                             </span>
                         </span>
                     </a>
-                    <a href="{{ route('checkout') }}" class="nav-link group relative px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
-                        <span class="flex items-center">
-                            <i class="fas fa-shopping-cart mr-2 text-sm group-hover:animate-pulse"></i>
-                            <span class="relative hidden sm:inline">
-                                Keranjang
-                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                    @auth('user')
+                        <!-- LOGGED IN USER MENU -->
+                        <a href="{{ route('pesanan') }}"
+                            class="nav-link group relative px-3 py-2 {{ request()->routeIs('pesanan') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
+                            <span class="flex items-center">
+                                <i class="fas fa-shopping-cart mr-2 text-sm group-hover:animate-pulse"></i>
+                                <span class="relative hidden sm:inline">
+                                    Pesanan
+                                    @if(request()->routeIs('pesanan'))
+                                        <span
+                                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                    @else
+                                        <span
+                                            class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                    @endif
+                                </span>
                             </span>
-                        </span>
-                    </a>
-                    <a href="{{ route('profile') }}" class="nav-link group relative px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
-                        <span class="flex items-center">
-                            <i class="fas fa-building mr-2 text-sm group-hover:animate-pulse"></i>
-                            <span class="relative hidden sm:inline">
-                                Profil
-                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                        </a>
+                        {{-- <a href="{{ route('user.chat') }}"
+                            class="nav-link group relative px-3 py-2 {{ request()->routeIs('user.chat') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
+                            <span class="flex items-center">
+                                <i class="fas fa-comments mr-2 text-sm group-hover:animate-pulse"></i>
+                                <span class="relative hidden sm:inline">
+                                    Chat
+                                    @if(request()->routeIs('user.chat'))
+                                    <span
+                                        class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                    @else
+                                    <span
+                                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                    @endif
+                                </span>
                             </span>
-                        </span>
-                    </a>
-                    <a href="{{ route('login') }}" class="group relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-                        <span class="flex items-center">
-                            <i class="fas fa-user mr-2 group-hover:animate-bounce"></i>
-                            <span class="hidden sm:inline">Masuk/Daftar</span>
-                        </span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
-                    </a>
-                    
+                        </a> --}}
+                        <a href="{{ route('profile') }}"
+                            class="nav-link group relative px-3 py-2 {{ request()->routeIs('profile') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
+                            <span class="flex items-center">
+                                <i class="fas fa-building mr-2 text-sm group-hover:animate-pulse"></i>
+                                <span class="relative hidden sm:inline">
+                                    Profil
+                                    @if(request()->routeIs('profile'))
+                                        <span
+                                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                    @else
+                                        <span
+                                            class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                    @endif
+                                </span>
+                            </span>
+                        </a>
+                        <form action="{{ route('logout') }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit"
+                                class="nav-link group relative px-3 py-2 text-red-600 hover:text-red-700 font-medium transition-all duration-300">
+                                <span class="flex items-center">
+                                    <i class="fas fa-sign-out-alt mr-2 text-sm group-hover:animate-pulse"></i>
+                                    <span class="relative hidden sm:inline">
+                                        Keluar
+                                        <span
+                                            class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-red-500 to-red-600 group-hover:w-full transition-all duration-300"></span>
+                                    </span>
+                                </span>
+                            </button>
+                        </form>
+                    @else
+                        <!-- GUEST MENU (Not Logged In) -->
+                        <a href="{{ route('profile') }}"
+                            class="nav-link group relative px-3 py-2 {{ request()->routeIs('profile') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
+                            <span class="flex items-center">
+                                <i class="fas fa-building mr-2 text-sm group-hover:animate-pulse"></i>
+                                <span class="relative hidden sm:inline">
+                                    Profil
+                                    @if(request()->routeIs('profile'))
+                                        <span
+                                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                    @else
+                                        <span
+                                            class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                    @endif
+                                </span>
+                            </span>
+                        </a>
+                        <a href="{{ route('login') }}"
+                            class="group relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                            <span class="flex items-center">
+                                <i class="fas fa-user mr-2 group-hover:animate-bounce"></i>
+                                <span class="hidden sm:inline">Masuk/Daftar</span>
+                            </span>
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity duration-300">
+                            </div>
+                        </a>
+                    @endauth
+
                     <!-- Mobile menu button -->
                     <div class="md:hidden">
-                        <button onclick="toggleMobileMenu()" class="group relative p-2 text-gray-700 hover:text-blue-600 transition-all duration-300">
+                        <button onclick="toggleMobileMenu()"
+                            class="group relative p-2 text-gray-700 hover:text-blue-600 transition-all duration-300">
                             <i class="fas fa-bars text-xl group-hover:rotate-12 transition-transform duration-300"></i>
-                            <div class="absolute inset-0 bg-blue-100 rounded-lg blur-md opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                            <div
+                                class="absolute inset-0 bg-blue-100 rounded-lg blur-md opacity-0 group-hover:opacity-50 transition-opacity duration-300">
+                            </div>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Mobile menu -->
         <div id="mobileMenu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg">
             <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="{{ route('home') }}" class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                <a href="{{ route('home') }}"
+                    class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('home') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-home mr-3 group-hover:animate-pulse"></i>
                     Beranda
                 </a>
-                <a href="{{ route('promo') }}" class="mobile-nav-link group block px-4 py-3 text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                <a href="{{ route('promo') }}"
+                    class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('promo') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-tags mr-3 group-hover:animate-pulse"></i>
                     Promo
                 </a>
-                <a href="{{ route('kategori') }}" class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                <a href="{{ route('kategori') }}"
+                    class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('kategori') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-th-large mr-3 group-hover:animate-pulse"></i>
                     Kategori
                 </a>
-                <a href="{{ route('rekomendasi') }}" class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                <a href="{{ route('rekomendasi') }}"
+                    class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('rekomendasi') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-star mr-3 group-hover:animate-pulse"></i>
                     Rekomendasi
                 </a>
-                <a href="{{ route('checkout') }}" class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
-                    <i class="fas fa-shopping-cart mr-3 group-hover:animate-pulse"></i>
-                    Keranjang
-                </a>
-                <a href="{{ route('profile') }}" class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
-                    <i class="fas fa-building mr-3 group-hover:animate-pulse"></i>
-                    Profil
-                </a>
-                <a href="{{ route('login') }}" class="mobile-nav-link group block px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-300 transform hover:scale-105">
-                    <i class="fas fa-user mr-3 group-hover:animate-bounce"></i>
-                    Masuk/Daftar
-                </a>
+
+                @auth('user')
+                    <!-- LOGGED IN USER MOBILE MENU -->
+                    <a href="{{ route('pesanan') }}"
+                        class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('pesanan') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                        <i class="fas fa-shopping-cart mr-3 group-hover:animate-pulse"></i>
+                        Pesanan
+                    </a>
+                    <a href="{{ route('user.chat') }}"
+                        class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('user.chat') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                        <i class="fas fa-comments mr-3 group-hover:animate-pulse"></i>
+                        Chat
+                    </a>
+                    <a href="{{ route('profile') }}"
+                        class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('profile') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                        <i class="fas fa-building mr-3 group-hover:animate-pulse"></i>
+                        Profil
+                    </a>
+                    <form action="{{ route('logout') }}" method="POST" class="block">
+                        @csrf
+                        <button type="submit"
+                            class="mobile-nav-link group block px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg font-medium transition-all duration-300 text-left w-full">
+                            <i class="fas fa-sign-out-alt mr-3 group-hover:animate-pulse"></i>
+                            Keluar
+                        </button>
+                    </form>
+                @else
+                    <!-- GUEST MOBILE MENU (Not Logged In) -->
+                    <a href="{{ route('profile') }}"
+                        class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('profile') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                        <i class="fas fa-building mr-3 group-hover:animate-pulse"></i>
+                        Profil
+                    </a>
+                    <a href="{{ route('login') }}"
+                        class="mobile-nav-link group block px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-user mr-3 group-hover:animate-bounce"></i>
+                        Masuk/Daftar
+                    </a>
+                @endauth
             </div>
         </div>
     </nav>
 
     <style>
-    .nav-link {
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .nav-link::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(59, 130, 246, 0.1);
-        transform: translate(-50%, -50%);
-        transition: width 0.6s, height 0.6s;
-    }
-    
-    .nav-link:hover::before {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .mobile-nav-link {
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .mobile-nav-link::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
-        transition: left 0.5s;
-    }
-    
-    .mobile-nav-link:hover::before {
-        left: 100%;
-    }
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .nav-link:hover::before {
+            width: 100px;
+            height: 100px;
+        }
+
+        .mobile-nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mobile-nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .mobile-nav-link:hover::before {
+            left: 100%;
+        }
     </style>
 
     <!-- Header Section -->
@@ -233,7 +391,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div class="flex flex-wrap gap-2">
-                    <button onclick="filterPromos('all')" class="filter-btn px-4 py-2 bg-indigo-600 text-white rounded-lg transition-colors">
+                    <button onclick="filterPromos('all')"
+                        class="filter-btn px-4 py-2 bg-indigo-600 text-white rounded-lg transition-colors">
                         Semua Promo
                     </button>
                 </div>
@@ -249,10 +408,11 @@
                 <h2 class="text-3xl font-bold text-gray-900 mb-2">Semua Promo</h2>
                 <p class="text-gray-600">Temukan penawaran terbaik untuk Anda</p>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Promo Card 1 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.1s">
+                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
+                    style="animation-delay: 0.1s">
                     <div class="relative">
                         <div class="bg-gradient-to-r from-blue-300 to-blue-500 h-48 flex items-center justify-center">
                             <div class="text-center text-white">
@@ -260,7 +420,8 @@
                                 <h3 class="text-xl font-bold">Elektronik Sale</h3>
                             </div>
                         </div>
-                        <span class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        <span
+                            class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                             -50%
                         </span>
                     </div>
@@ -276,14 +437,16 @@
                                 2 hari lagi
                             </div>
                         </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
+                        <button
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
                             <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
                         </button>
                     </div>
                 </div>
 
                 <!-- Promo Card 2 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.2s">
+                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
+                    style="animation-delay: 0.2s">
                     <div class="relative">
                         <div class="bg-gradient-to-r from-blue-200 to-blue-400 h-48 flex items-center justify-center">
                             <div class="text-center text-white">
@@ -291,7 +454,8 @@
                                 <h3 class="text-xl font-bold">Fashion Deal</h3>
                             </div>
                         </div>
-                        <span class="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        <span
+                            class="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                             -30%
                         </span>
                     </div>
@@ -307,14 +471,16 @@
                                 5 hari lagi
                             </div>
                         </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
+                        <button
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
                             <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
                         </button>
                     </div>
                 </div>
 
                 <!-- Promo Card 3 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.3s">
+                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
+                    style="animation-delay: 0.3s">
                     <div class="relative">
                         <div class="bg-gradient-to-r from-sky-200 to-sky-400 h-48 flex items-center justify-center">
                             <div class="text-center text-white">
@@ -322,7 +488,8 @@
                                 <h3 class="text-xl font-bold">Makanan Fest</h3>
                             </div>
                         </div>
-                        <span class="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        <span
+                            class="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                             Buy 2 Get 1
                         </span>
                     </div>
@@ -338,22 +505,26 @@
                                 1 minggu lagi
                             </div>
                         </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
+                        <button
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
                             <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
                         </button>
                     </div>
                 </div>
 
                 <!-- Promo Card 4 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.4s">
+                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
+                    style="animation-delay: 0.4s">
                     <div class="relative">
-                        <div class="bg-gradient-to-r from-indigo-200 to-indigo-400 h-48 flex items-center justify-center">
+                        <div
+                            class="bg-gradient-to-r from-indigo-200 to-indigo-400 h-48 flex items-center justify-center">
                             <div class="text-center text-white">
                                 <i class="fas fa-spa text-4xl mb-2"></i>
                                 <h3 class="text-xl font-bold">Beauty Special</h3>
                             </div>
                         </div>
-                        <span class="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        <span
+                            class="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                             -40%
                         </span>
                     </div>
@@ -369,14 +540,16 @@
                                 3 hari lagi
                             </div>
                         </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
+                        <button
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
                             <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
                         </button>
                     </div>
                 </div>
 
                 <!-- Promo Card 5 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.5s">
+                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
+                    style="animation-delay: 0.5s">
                     <div class="relative">
                         <div class="bg-gradient-to-r from-cyan-200 to-cyan-400 h-48 flex items-center justify-center">
                             <div class="text-center text-white">
@@ -384,7 +557,8 @@
                                 <h3 class="text-xl font-bold">Home Living</h3>
                             </div>
                         </div>
-                        <span class="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        <span
+                            class="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                             Gratis Ongkir
                         </span>
                     </div>
@@ -400,14 +574,16 @@
                                 4 hari lagi
                             </div>
                         </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
+                        <button
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
                             <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
                         </button>
                     </div>
                 </div>
 
                 <!-- Promo Card 6 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in" style="animation-delay: 0.6s">
+                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
+                    style="animation-delay: 0.6s">
                     <div class="relative">
                         <div class="bg-gradient-to-r from-blue-100 to-blue-300 h-48 flex items-center justify-center">
                             <div class="text-center text-white">
@@ -415,7 +591,8 @@
                                 <h3 class="text-xl font-bold">Gaming Zone</h3>
                             </div>
                         </div>
-                        <span class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        <span
+                            class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                             -60%
                         </span>
                     </div>
@@ -431,7 +608,8 @@
                                 6 hari lagi
                             </div>
                         </div>
-                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
+                        <button
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
                             <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
                         </button>
                     </div>
@@ -447,10 +625,10 @@
                 <h2 class="text-3xl font-bold mb-4">Jangan Lewatkan Promo!</h2>
                 <p class="text-lg mb-6 opacity-90">Dapatkan informasi promo terbaru langsung di inbox Anda</p>
                 <div class="max-w-md mx-auto flex gap-2">
-                    <input type="email" 
-                           placeholder="Masukkan email Anda" 
-                           class="flex-1 px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white">
-                    <button class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+                    <input type="email" placeholder="Masukkan email Anda"
+                        class="flex-1 px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white">
+                    <button
+                        class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
                         Subscribe
                     </button>
                 </div>
@@ -469,29 +647,39 @@
                     </div>
                     <p class="text-gray-400">Temukan produk terbaik dengan harga terjangkau</p>
                 </div>
-                
+
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Menu</h3>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('home') }}" class="text-blue-200 hover:text-white transition-colors">Beranda</a></li>
-                        <li><a href="{{ route('promo') }}" class="text-blue-200 hover:text-white transition-colors">Promo</a></li>
-                        <li><a href="{{ route('kategori') }}" class="text-blue-200 hover:text-white transition-colors">Kategori</a></li>
-                        <li><a href="{{ route('rekomendasi') }}" class="text-blue-200 hover:text-white transition-colors">Rekomendasi</a></li>
-                        <li><a href="{{ route('checkout') }}" class="text-blue-200 hover:text-white transition-colors">Keranjang</a></li>
-                        <li><a href="{{ route('profile') }}" class="text-blue-200 hover:text-white transition-colors">Profil</a></li>
+                        <li><a href="{{ route('home') }}"
+                                class="text-blue-200 hover:text-white transition-colors">Beranda</a></li>
+                        <li><a href="{{ route('promo') }}"
+                                class="text-blue-200 hover:text-white transition-colors">Promo</a></li>
+                        <li><a href="{{ route('kategori') }}"
+                                class="text-blue-200 hover:text-white transition-colors">Kategori</a></li>
+                        <li><a href="{{ route('rekomendasi') }}"
+                                class="text-blue-200 hover:text-white transition-colors">Rekomendasi</a></li>
+                        <li><a href="{{ route('checkout') }}"
+                                class="text-blue-200 hover:text-white transition-colors">Keranjang</a></li>
+                        <li><a href="{{ route('profile') }}"
+                                class="text-blue-200 hover:text-white transition-colors">Profil</a></li>
                     </ul>
                 </div>
-                
+
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Bantuan</h3>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('faq') }}" class="text-blue-200 hover:text-white transition-colors">FAQ</a></li>
-                        <li><a href="{{ route('pengiriman') }}" class="text-blue-200 hover:text-white transition-colors">Pengiriman</a></li>
-                        <li><a href="{{ route('pengembalian') }}" class="text-blue-200 hover:text-white transition-colors">Pengembalian</a></li>
-                        <li><a href="{{ route('kontak') }}" class="text-blue-200 hover:text-white transition-colors">Kontak</a></li>
+                        <li><a href="{{ route('faq') }}"
+                                class="text-blue-200 hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="{{ route('pengiriman') }}"
+                                class="text-blue-200 hover:text-white transition-colors">Pengiriman</a></li>
+                        <li><a href="{{ route('pengembalian') }}"
+                                class="text-blue-200 hover:text-white transition-colors">Pengembalian</a></li>
+                        <li><a href="{{ route('kontak') }}"
+                                class="text-blue-200 hover:text-white transition-colors">Kontak</a></li>
                     </ul>
                 </div>
-                
+
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Ikuti Kami</h3>
                     <div class="flex space-x-4">
@@ -510,7 +698,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="border-t border-blue-700 mt-8 pt-8 text-center text-blue-200">
                 <p>&copy; 2024 ADR Catalogue. All rights reserved.</p>
             </div>
@@ -522,10 +710,11 @@
             const menu = document.getElementById('mobileMenu');
             menu.classList.toggle('hidden');
         }
-        
+
     </script>
 
     <!-- Chat Bot Component (Available for all users) -->
     @include('components.chat_bot')
 </body>
+
 </html>
