@@ -107,38 +107,54 @@
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-1">
                             <a href="{{ route('home') }}"
-                                class="nav-link group relative px-4 py-2 text-blue-600 font-medium transition-all duration-300">
+                                class="nav-link group relative px-4 py-2 {{ request()->routeIs('home') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
                                 <span class="flex items-center">
                                     <i class="fas fa-home mr-2 text-sm group-hover:animate-pulse"></i>
                                     <span class="relative">
                                         Beranda
-                                        <span
-                                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                        @if(request()->routeIs('home'))
+                                            <span
+                                                class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                        @else
+                                            <span
+                                                class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                        @endif
                                     </span>
                                 </span>
                             </a>
                             <a href="{{ route('promo') }}"
-                                class="nav-link group relative px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
+                                class="nav-link group relative px-4 py-2 {{ request()->routeIs('promo') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
                                 <span class="flex items-center">
                                     <i class="fas fa-tags mr-2 text-sm group-hover:animate-pulse"></i>
                                     <span class="relative">
                                         Promo
-                                        <span
-                                            class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                        @if(request()->routeIs('promo'))
+                                            <span
+                                                class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                        @else
+                                            <span
+                                                class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                        @endif
                                     </span>
                                 </span>
                             </a>
                             <a href="{{ route('kategori') }}"
-                                class="nav-link group relative px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
+                                class="nav-link group relative px-4 py-2 {{ request()->routeIs('kategori') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
                                 <span class="flex items-center">
                                     <i class="fas fa-th-large mr-2 text-sm group-hover:animate-pulse"></i>
                                     <span class="relative">
                                         Kategori
-                                        <span
-                                            class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                        @if(request()->routeIs('kategori'))
+                                            <span
+                                                class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                        @else
+                                            <span
+                                                class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                        @endif
                                     </span>
                                 </span>
                             </a>
+
                         </div>
                     </div>
                 </div>
@@ -146,47 +162,68 @@
                 <!-- Right side buttons -->
                 <div class="flex items-center space-x-2">
                     <a href="{{ route('rekomendasi') }}"
-                        class="nav-link group relative px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
+                        class="nav-link group relative px-4 py-2 {{ request()->routeIs('rekomendasi') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
                         <span class="flex items-center">
                             <i class="fas fa-star mr-2 text-sm group-hover:animate-pulse"></i>
-                            <span class="relative hidden sm:inline">
+                            <span class="relative">
                                 Rekomendasi
-                                <span
-                                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                @if(request()->routeIs('rekomendasi'))
+                                    <span
+                                        class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                @else
+                                    <span
+                                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                @endif
                             </span>
                         </span>
                     </a>
-                    <a href="{{ route('pesanan') }}"
-                        class="nav-link group relative px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
-                        <span class="flex items-center">
-                            <i class="fas fa-shopping-cart mr-2 text-sm group-hover:animate-pulse"></i>
-                            <span class="relative hidden sm:inline">
-                                Pesanan
-                                <span
-                                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                    @auth('user')
+                        <!-- LOGGED IN USER MENU -->
+                        <a href="{{ route('pesanan') }}"
+                            class="nav-link group relative px-3 py-2 {{ request()->routeIs('pesanan') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
+                            <span class="flex items-center">
+                                <i class="fas fa-shopping-cart mr-2 text-sm group-hover:animate-pulse"></i>
+                                <span class="relative hidden sm:inline">
+                                    Pesanan
+                                    @if(request()->routeIs('pesanan'))
+                                        <span
+                                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                    @else
+                                        <span
+                                            class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                    @endif
+                                </span>
                             </span>
-                        </span>
-                    </a>
-                    @if(auth('user')->check())
-                        <a href="{{ route('user.chat') }}"
-                            class="nav-link group relative px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
+                        </a>
+                        {{-- <a href="{{ route('user.chat') }}"
+                            class="nav-link group relative px-3 py-2 {{ request()->routeIs('user.chat') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
                             <span class="flex items-center">
                                 <i class="fas fa-comments mr-2 text-sm group-hover:animate-pulse"></i>
                                 <span class="relative hidden sm:inline">
                                     Chat
+                                    @if(request()->routeIs('user.chat'))
+                                    <span
+                                        class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                    @else
                                     <span
                                         class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                    @endif
                                 </span>
                             </span>
-                        </a>
+                        </a> --}}
                         <a href="{{ route('profile') }}"
-                            class="nav-link group relative px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
+                            class="nav-link group relative px-3 py-2 {{ request()->routeIs('profile') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
                             <span class="flex items-center">
                                 <i class="fas fa-building mr-2 text-sm group-hover:animate-pulse"></i>
                                 <span class="relative hidden sm:inline">
                                     Profil
-                                    <span
-                                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                    @if(request()->routeIs('profile'))
+                                        <span
+                                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                    @else
+                                        <span
+                                            class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                    @endif
                                 </span>
                             </span>
                         </a>
@@ -205,14 +242,20 @@
                             </button>
                         </form>
                     @else
+                        <!-- GUEST MENU (Not Logged In) -->
                         <a href="{{ route('profile') }}"
-                            class="nav-link group relative px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-300">
+                            class="nav-link group relative px-3 py-2 {{ request()->routeIs('profile') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} font-medium transition-all duration-300">
                             <span class="flex items-center">
                                 <i class="fas fa-building mr-2 text-sm group-hover:animate-pulse"></i>
                                 <span class="relative hidden sm:inline">
                                     Profil
-                                    <span
-                                        class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                    @if(request()->routeIs('profile'))
+                                        <span
+                                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                                    @else
+                                        <span
+                                            class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                                    @endif
                                 </span>
                             </span>
                         </a>
@@ -226,7 +269,7 @@
                                 class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity duration-300">
                             </div>
                         </a>
-                    @endif
+                    @endauth
 
                     <!-- Mobile menu button -->
                     <div class="md:hidden">
@@ -246,38 +289,40 @@
         <div id="mobileMenu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg">
             <div class="px-2 pt-2 pb-3 space-y-1">
                 <a href="{{ route('home') }}"
-                    class="mobile-nav-link group block px-4 py-3 text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                    class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('home') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-home mr-3 group-hover:animate-pulse"></i>
                     Beranda
                 </a>
                 <a href="{{ route('promo') }}"
-                    class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                    class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('promo') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-tags mr-3 group-hover:animate-pulse"></i>
                     Promo
                 </a>
                 <a href="{{ route('kategori') }}"
-                    class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                    class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('kategori') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-th-large mr-3 group-hover:animate-pulse"></i>
                     Kategori
                 </a>
                 <a href="{{ route('rekomendasi') }}"
-                    class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                    class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('rekomendasi') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                     <i class="fas fa-star mr-3 group-hover:animate-pulse"></i>
                     Rekomendasi
                 </a>
-                <a href="{{ route('pesanan') }}"
-                    class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
-                    <i class="fas fa-shopping-cart mr-3 group-hover:animate-pulse"></i>
-                    pesanan
-                </a>
-                @if(auth('user')->check())
+
+                @auth('user')
+                    <!-- LOGGED IN USER MOBILE MENU -->
+                    <a href="{{ route('pesanan') }}"
+                        class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('pesanan') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                        <i class="fas fa-shopping-cart mr-3 group-hover:animate-pulse"></i>
+                        Pesanan
+                    </a>
                     <a href="{{ route('user.chat') }}"
-                        class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                        class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('user.chat') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                         <i class="fas fa-comments mr-3 group-hover:animate-pulse"></i>
                         Chat
                     </a>
                     <a href="{{ route('profile') }}"
-                        class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                        class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('profile') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                         <i class="fas fa-building mr-3 group-hover:animate-pulse"></i>
                         Profil
                     </a>
@@ -290,8 +335,9 @@
                         </button>
                     </form>
                 @else
+                    <!-- GUEST MOBILE MENU (Not Logged In) -->
                     <a href="{{ route('profile') }}"
-                        class="mobile-nav-link group block px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
+                        class="mobile-nav-link group block px-4 py-3 {{ request()->routeIs('profile') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} hover:bg-blue-50 rounded-lg font-medium transition-all duration-300">
                         <i class="fas fa-building mr-3 group-hover:animate-pulse"></i>
                         Profil
                     </a>
@@ -300,10 +346,12 @@
                         <i class="fas fa-user mr-3 group-hover:animate-bounce"></i>
                         Masuk/Daftar
                     </a>
-                @endif
+                @endauth
             </div>
         </div>
     </nav>
+
+
 
     <style>
         .nav-link {
@@ -985,9 +1033,13 @@
                 badgeElement.classList.add('hidden');
             }
         }
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
     </script>
 
-    <!-- Chat Bot Component (Available for all users) -->
+    <!-- Chat Bot Component -->
     @include('components.chat_bot')
 </body>
 
