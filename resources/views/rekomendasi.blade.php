@@ -614,8 +614,6 @@
                                 class="text-blue-200 hover:text-white transition-colors">Kategori</a></li>
                         <li><a href="{{ route('rekomendasi') }}"
                                 class="text-blue-200 hover:text-white transition-colors">Rekomendasi</a></li>
-                        <li><a href="{{ route('checkout') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Keranjang</a></li>
                         <li><a href="{{ route('profile') }}"
                                 class="text-blue-200 hover:text-white transition-colors">Profil</a></li>
                     </ul>

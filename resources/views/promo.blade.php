@@ -388,16 +388,6 @@
 
     <!-- Filter Section (Simplified) -->
     <section class="py-8 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="filterPromos('all')"
-                        class="filter-btn px-4 py-2 bg-indigo-600 text-white rounded-lg transition-colors">
-                        Semua Promo
-                    </button>
-                </div>
-            </div>
-        </div>
     </section>
 
 
@@ -618,7 +608,7 @@
         </div>
     </section>
 
-    <!-- Newsletter Section -->
+    {{-- <!-- Newsletter Section -->
     <section class="py-16 bg-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-gradient-to-r from-blue-400 to-blue-600 rounded-2xl p-8 text-center text-white">
@@ -634,7 +624,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- Footer -->
     <footer class="bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900 text-white py-12">
@@ -659,8 +649,6 @@
                                 class="text-blue-200 hover:text-white transition-colors">Kategori</a></li>
                         <li><a href="{{ route('rekomendasi') }}"
                                 class="text-blue-200 hover:text-white transition-colors">Rekomendasi</a></li>
-                        <li><a href="{{ route('checkout') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Keranjang</a></li>
                         <li><a href="{{ route('profile') }}"
                                 class="text-blue-200 hover:text-white transition-colors">Profil</a></li>
                     </ul>

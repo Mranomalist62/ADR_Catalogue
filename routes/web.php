@@ -29,12 +29,6 @@ Route::get('/product/{id}', fn($id) => view('product', compact('id')))->name('pr
     Route::get('/profile', fn() => view('profile'))->name('profile');
 
 
-
-
-Route::get('/alamat', fn() => view('alamat'))->name('alamat');
-Route::get('/listalamat', fn() => view('alamat_list'))->name('listalamat');
-Route::get('/addalamat', fn() => view('alamat_add'))->name('addalamat');
-
 Route::get('/banner', fn() => view('admin_banner'))->name('banner');
 Route::get('/pesanan', fn() => view('pesanan'))->name('pesanan');
 
@@ -44,13 +38,13 @@ Route::get('/pengiriman', fn() => view('pengiriman'))->name('pengiriman');
 Route::get('/pengembalian', fn() => view('pengembalian'))->name('pengembalian');
 Route::get('/kontak', fn() => view('kontak'))->name('kontak');
 
-// ==========================================================
-// CHECKOUT ROUTES (PUBLIC)
-// ==========================================================
+// // ==========================================================
+// // CHECKOUT ROUTES (PUBLIC)
+// // ==========================================================
 
-Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
-Route::get('/order/confirmation/{id}', [CheckoutController::class, 'confirmation'])->name('order.confirmation');
+// Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+// Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+// Route::get('/order/confirmation/{id}', [CheckoutController::class, 'confirmation'])->name('order.confirmation');
 
 // ==========================================================
 // CHATBOT (PUBLIC)
@@ -76,9 +70,18 @@ Route::post('/admin/logout', [AdminAuth::class, 'logout'])->name('admin.logout')
 
 Route::middleware(['auth.user'])->group(function () {
 
-    // 👇 DUPLICATE: /promo exists above as public
     Route::get('/promo', fn() => view('promo'))->name('promo'); // DUPLICATE
     Route::post('/logout', [UserAuth::class, 'logout'])->name('logout'); // DUPLICATE LOGOUT BELOW
+
+
+    //Pembayaran
+    Route::get('/pembayaran', fn() => view('Pembayaran') )->name('pembayaran');
+
+    //Alamat
+    Route::get('/alamat', fn() => view('alamat'))->name('alamat');
+    Route::get('/listalamat', fn() => view('alamat_list'))->name('listalamat');
+    Route::get('/addalamat', fn() => view('alamat_add'))->name('addalamat');
+
 
     // Chat routes
     Route::get('/chat', [ChatController::class, 'userChat'])->name('user.chat');
@@ -151,8 +154,11 @@ Route::prefix('admin/api')->middleware('auth.admin')->group(function () {
     Route::apiResource('categories', CategoryController::class)
         ->only(['store', 'update', 'destroy']);
 
+    Route::get('/addresses/default/', [AddressController::class, 'getDefaultAddress'])->name('alamat.default');
     Route::get('addresses', [AddressController::class, 'index']);
     Route::get('addresses/{id}', [AddressController::class, 'show']);
+
+
 
     Route::apiResource('promo', PromoController::class)
         ->except(['index', 'show']);
@@ -165,6 +171,7 @@ Route::prefix('admin/api')->middleware('auth.admin')->group(function () {
 // ==========================================================
 
 Route::prefix('user/api')->middleware('auth.user')->group(function () {
+    Route::get('addresses/default', [AddressController::class, 'getDefaultAddress'])->name('alamat.default');
     Route::apiResource('addresses', AddressController::class);
     Route::post('addresses/{id}/select', [AddressController::class, 'select']);
     Route::apiResource('orders', OrderController::class);

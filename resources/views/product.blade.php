@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -381,7 +383,7 @@
                         {{-- Bayar Button --}}
                         <button id="pay-button"
                             class="mt-4 w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-credit-card mr-2"></i>Bayar Sekarang
+                            <i class="fas fa-credit-card mr-2"></i>Beli Sekarang
                         </button>
 
                         {{-- Note: Single item only --}}
@@ -544,7 +546,7 @@
             localStorage.setItem('checkout_product', JSON.stringify(checkoutData));
 
             // Redirect to checkout page
-            window.location.href = '/checkout'; // Update with your actual checkout route
+            window.location.href = '/pembayaran'; // Update with your actual checkout route
         };
 
         // Load related products (products from same category)
