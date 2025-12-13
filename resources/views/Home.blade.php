@@ -477,70 +477,8 @@
 
                 <!-- Categories Container -->
                 <div id="categoriesContainer" class="scroll-container overflow-x-auto flex space-x-6 pb-6 px-2 md:px-4">
-                    <div class="category-card flex-shrink-0 w-48 md:w-56 cursor-pointer"
-                        onclick="window.location.href='#'">
-                        <div
-                            class="bg-gradient-to-br from-blue-100 to-blue-300 rounded-2xl p-8 text-center h-48 flex flex-col items-center justify-center">
-                            <i class="fas fa-laptop text-4xl md:text-5xl text-blue-700 mb-4"></i>
-                            <h3 class="font-semibold text-gray-800 text-lg">Elektronik</h3>
-                        </div>
-                    </div>
-                    <div class="category-card flex-shrink-0 w-48 md:w-56 cursor-pointer"
-                        onclick="window.location.href='#'">
-                        <div
-                            class="bg-gradient-to-br from-blue-50 to-blue-200 rounded-2xl p-8 text-center h-48 flex flex-col items-center justify-center">
-                            <i class="fas fa-tshirt text-4xl md:text-5xl text-blue-600 mb-4"></i>
-                            <h3 class="font-semibold text-gray-800 text-lg">Fashion</h3>
-                        </div>
-                    </div>
-                    <div class="category-card flex-shrink-0 w-48 md:w-56 cursor-pointer"
-                        onclick="window.location.href='#'">
-                        <div
-                            class="bg-gradient-to-br from-sky-100 to-sky-300 rounded-2xl p-8 text-center h-48 flex flex-col items-center justify-center">
-                            <i class="fas fa-utensils text-4xl md:text-5xl text-sky-700 mb-4"></i>
-                            <h3 class="font-semibold text-gray-800 text-lg">Makanan</h3>
-                        </div>
-                    </div>
-                    <div class="category-card flex-shrink-0 w-48 md:w-56 cursor-pointer"
-                        onclick="window.location.href='#'">
-                        <div
-                            class="bg-gradient-to-br from-indigo-100 to-indigo-300 rounded-2xl p-8 text-center h-48 flex flex-col items-center justify-center">
-                            <i class="fas fa-couch text-4xl md:text-5xl text-indigo-700 mb-4"></i>
-                            <h3 class="font-semibold text-gray-800 text-lg">Perabotan</h3>
-                        </div>
-                    </div>
-                    <div class="category-card flex-shrink-0 w-48 md:w-56 cursor-pointer"
-                        onclick="window.location.href='#'">
-                        <div
-                            class="bg-gradient-to-br from-cyan-100 to-cyan-300 rounded-2xl p-8 text-center h-48 flex flex-col items-center justify-center">
-                            <i class="fas fa-spa text-4xl md:text-5xl text-cyan-700 mb-4"></i>
-                            <h3 class="font-semibold text-gray-800 text-lg">Kosmetik</h3>
-                        </div>
-                    </div>
-                    <div class="category-card flex-shrink-0 w-48 md:w-56 cursor-pointer"
-                        onclick="window.location.href='#'">
-                        <div
-                            class="bg-gradient-to-br from-blue-200 to-blue-400 rounded-2xl p-8 text-center h-48 flex flex-col items-center justify-center">
-                            <i class="fas fa-gamepad text-4xl md:text-5xl text-blue-800 mb-4"></i>
-                            <h3 class="font-semibold text-white text-lg">Gaming</h3>
-                        </div>
-                    </div>
-                    <div class="category-card flex-shrink-0 w-48 md:w-56 cursor-pointer"
-                        onclick="window.location.href='#'">
-                        <div
-                            class="bg-gradient-to-br from-slate-200 to-slate-400 rounded-2xl p-8 text-center h-48 flex flex-col items-center justify-center">
-                            <i class="fas fa-dumbbell text-4xl md:text-5xl text-slate-700 mb-4"></i>
-                            <h3 class="font-semibold text-gray-800 text-lg">Olahraga</h3>
-                        </div>
-                    </div>
-                    <div class="category-card flex-shrink-0 w-48 md:w-56 cursor-pointer"
-                        onclick="window.location.href='#'">
-                        <div
-                            class="bg-gradient-to-br from-gray-100 to-gray-300 rounded-2xl p-8 text-center h-48 flex flex-col items-center justify-center">
-                            <i class="fas fa-book text-4xl md:text-5xl text-gray-700 mb-4"></i>
-                            <h3 class="font-semibold text-gray-800 text-lg">Buku</h3>
-                        </div>
-                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -707,8 +645,6 @@
                                 class="text-blue-200 hover:text-white transition-colors">Kategori</a></li>
                         <li><a href="{{ route('rekomendasi') }}"
                                 class="text-blue-200 hover:text-white transition-colors">Rekomendasi</a></li>
-                        <li><a href="{{ route('checkout') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Keranjang</a></li>
                         <li><a href="{{ route('profile') }}"
                                 class="text-blue-200 hover:text-white transition-colors">Profil</a></li>
                     </ul>
@@ -1037,6 +973,205 @@
             const menu = document.getElementById('mobileMenu');
             menu.classList.toggle('hidden');
         }
+
+        const randomColors = [
+            'from-blue-100 to-blue-300 text-blue-700',
+            'from-blue-50 to-blue-200 text-blue-600',
+            'from-sky-100 to-sky-300 text-sky-700',
+            'from-indigo-100 to-indigo-300 text-indigo-700',
+            'from-cyan-100 to-cyan-300 text-cyan-700',
+            'from-emerald-100 to-emerald-300 text-emerald-700',
+            'from-teal-100 to-teal-300 text-teal-700',
+            'from-amber-100 to-amber-300 text-amber-700',
+            'from-purple-100 to-purple-300 text-purple-700',
+            'from-pink-100 to-pink-300 text-pink-700',
+            'from-rose-100 to-rose-300 text-rose-700',
+            'from-violet-100 to-violet-300 text-violet-700'
+        ];
+
+        // Function to get a random color combination
+        function getRandomColor() {
+            return randomColors[Math.floor(Math.random() * randomColors.length)];
+        }
+
+        // Function to load categories
+        async function loadCategories() {
+            try {
+                const response = await fetch('/public/categories');
+                const result = await response.json();
+
+                if (result.success) {
+                    const categories = result.data;
+                    const container = document.getElementById('categoriesContainer');
+
+                    // Clear existing static content and add loading indicator
+                    container.innerHTML = '<div class="flex space-x-6 w-full">' +
+                        Array(4).fill().map(() => `
+                            <div class="flex-shrink-0 w-48 md:w-56">
+                                <div class="bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl p-8 text-center h-48 flex flex-col items-center justify-center animate-pulse">
+                                    <div class="w-12 h-12 md:w-16 md:h-16 bg-gray-400 rounded-full mb-4"></div>
+                                    <div class="h-4 bg-gray-400 rounded w-24"></div>
+                                </div>
+                            </div>
+                        `).join('') + '</div>';
+
+                    // Wait a moment for smooth transition
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // Clear and create dynamic categories
+                    container.innerHTML = '';
+
+                    categories.forEach(category => {
+                        const randomColor = getRandomColor().split(' ');
+                        const gradientClass = `${randomColor[0]} ${randomColor[1]}`;
+                        const textColorClass = randomColor[2];
+
+                        // Create category card
+                        const categoryCard = document.createElement('div');
+                        categoryCard.className = 'category-card flex-shrink-0 w-48 md:w-56 cursor-pointer';
+                        categoryCard.setAttribute('data-category-id', category.id);
+
+                        // Add click handler
+                        categoryCard.addEventListener('click', () => {
+                            window.location.href = `/categories/${category.id}`;
+                        });
+
+                        // Check if category has thumbnail
+                        const hasThumbnail = category.path_thumbnail && category.path_thumbnail.trim() !== '';
+
+                        // Create card content
+                        categoryCard.innerHTML = `
+                            <div class="bg-gradient-to-br ${gradientClass} rounded-2xl p-8 text-center h-48 flex flex-col items-center justify-center transition-all duration-300 hover:shadow-xl">
+                                <div class="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mb-4" style="background: rgba(255,255,255,0.3)">
+                                    <span class="text-2xl md:text-3xl font-bold ${textColorClass}">${category.nama.charAt(0)}</span>
+                                </div>
+
+                                <div class="w-full px-1">
+                                    <h3 class="font-semibold text-gray-800 text-lg mb-1 truncate" title="${category.nama}">
+                                        ${category.nama}
+                                    </h3>
+                                </div>
+                            </div>
+                        `;
+
+
+                        container.appendChild(categoryCard);
+                    });
+
+                    // If no categories found
+                    if (categories.length === 0) {
+                        container.innerHTML = `
+                            <div class="w-full text-center py-12">
+                                <i class="fas fa-inbox text-4xl text-gray-400 mb-4"></i>
+                                <p class="text-gray-600">Belum ada kategori</p>
+                                <p class="text-sm text-gray-500 mt-1">Kategori akan muncul di sini</p>
+                            </div>
+                        `;
+                    }
+
+                } else {
+                    throw new Error(result.message || 'Failed to load categories');
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                const container = document.getElementById('categoriesContainer');
+                container.innerHTML = `
+                    <div class="w-full text-center py-12">
+                        <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-4"></i>
+                        <p class="text-gray-600">Gagal memuat kategori</p>
+                        <button onclick="loadCategories()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm">
+                            Coba Lagi
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Add this function to your existing DOMContentLoaded event listener
+        document.addEventListener('DOMContentLoaded', function () {
+            loadRecommendedProducts();
+            loadCategories(); // Add this line
+
+            // Your existing functions remain unchanged
+            // ... all your existing toggleMobileMenu, scrollCategories, etc...
+        });
+
+        // Update the scrollCategories function to work with dynamic content
+        function scrollCategories(direction) {
+            const container = document.getElementById('categoriesContainer');
+            if (!container.children.length) return;
+
+            // Get the first category card for width calculation
+            const firstCard = container.querySelector('.category-card');
+            if (!firstCard) return;
+
+            const cardWidth = firstCard.offsetWidth;
+            const gap = 24; // space-x-6 = 24px
+            const scrollAmount = cardWidth + gap;
+
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+
+        categoriesContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        categoriesContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        // Add CSS for better category card styling
+        const style = document.createElement('style');
+        style.textContent = `
+            .category-card {
+                transition: transform 0.3s ease;
+            }
+
+            .category-card:hover {
+                transform: translateY(-4px);
+            }
+
+            .category-card:active {
+                transform: translateY(-2px);
+            }
+
+            #categoriesContainer {
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Hide scrollbar but keep functionality */
+            #categoriesContainer::-webkit-scrollbar {
+                height: 4px;
+            }
+
+            #categoriesContainer::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 2px;
+            }
+
+            #categoriesContainer::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 2px;
+            }
+
+            #categoriesContainer::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Function to refresh categories (optional, can be called manually)
+        function refreshCategories() {
+            loadCategories();
+        }
+
     </script>
 
     <!-- Chat Bot Component -->

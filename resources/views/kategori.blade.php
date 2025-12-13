@@ -398,27 +398,12 @@
     <section class="py-8 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div class="relative flex-1 max-w-md">
+                <div class="relative flex-1">
                     <input type="text" placeholder="Cari kategori..."
                         class="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400"></i>
                     </div>
-                </div>
-
-                <div class="flex gap-2">
-                    <button onclick="filterCategories('all')"
-                        class="filter-btn px-4 py-2 bg-indigo-600 text-white rounded-lg transition-colors">
-                        Semua
-                    </button>
-                    <button onclick="filterCategories('popular')"
-                        class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 rounded-lg transition-colors">
-                        Populer
-                    </button>
-                    <button onclick="filterCategories('new')"
-                        class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 rounded-lg transition-colors">
-                        Terbaru
-                    </button>
                 </div>
             </div>
         </div>
@@ -494,8 +479,6 @@
                                 class="text-blue-200 hover:text-white transition-colors">Kategori</a></li>
                         <li><a href="{{ route('rekomendasi') }}"
                                 class="text-blue-200 hover:text-white transition-colors">Rekomendasi</a></li>
-                        <li><a href="{{ route('checkout') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Keranjang</a></li>
                         <li><a href="{{ route('profile') }}"
                                 class="text-blue-200 hover:text-white transition-colors">Profil</a></li>
                     </ul>
