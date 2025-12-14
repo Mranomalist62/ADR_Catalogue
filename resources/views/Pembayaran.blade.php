@@ -373,7 +373,7 @@
                         <div class="space-y-3">
                             <label
                                 class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                                <input type="radio" name="payMethod" value="qris" class="scale-110">
+                                <input type="radio" name="payMethod" value="transfer" class="scale-110">
                                 <span class="font-medium text-gray-700">Transfer</span>
                             </label>
                             <label
@@ -383,10 +383,22 @@
                             </label>
                             <label
                                 class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                                <input type="radio" name="payMethod" value="cod" class="scale-110">
+                                <input type="radio" name="payMethod" value="cash" class="scale-110">
                                 <span class="font-medium text-gray-700">Cash On Delivery</span>
                             </label>
                         </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl mt-6">
+                        <button id="pay-button"
+                            class="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">
+                            <i class="fas fa-credit-card mr-2"></i>Bayar Sekarang
+                        </button>
+
+                        <p class="text-xs text-gray-500 text-center mt-2">
+                            Dengan menekan tombol ini, Anda menyetujui
+                            <a href="#" class="text-blue-500 hover:underline">syarat dan ketentuan</a>
+                        </p>
                     </div>
 
                 </div>
@@ -394,131 +406,131 @@
             </div>
 
             <script>
-                const paymentType = document.getElementById("paymentType");
-                const cicilanBox = document.getElementById("cicilanBox");
-                const transferBox = document.getElementById("transferBox");
-                const uploadBox = document.getElementById("uploadBox");
-
-                paymentType.addEventListener("change", function () {
-                    if (this.value === "cicilan") {
-                        // Tampilkan durasi cicilan, sembunyikan metode transfer & upload bayar langsung
-                        cicilanBox.classList.remove("hidden");
-                        transferBox.classList.add("hidden");
-                        uploadBox.classList.add("hidden");
-                    } else {
-                        // Tampilkan metode transfer + upload bayar langsung, sembunyikan cicilan
-                        cicilanBox.classList.add("hidden");
-                        transferBox.classList.remove("hidden");
-                        uploadBox.classList.remove("hidden");
-                    }
-                });
-
-                function toggleMobileMenu() {
-                    const menu = document.getElementById('mobileMenu');
-                    menu.classList.toggle('hidden');
-                }
-
                 document.addEventListener('DOMContentLoaded', function () {
-                    // Function to display product from localStorage
-                    function loadProductFromLocalStorage() {
-                        const container = document.getElementById('product-detail-container');
-                        const productData = JSON.parse(localStorage.getItem('checkout_product'));
+                    // ===== 1. PAYMENT TYPE TOGGLE =====
+                    const paymentType = document.getElementById("paymentType");
+                    const cicilanBox = document.getElementById("cicilanBox");
+                    const transferBox = document.getElementById("transferBox");
+                    const uploadBox = document.getElementById("uploadBox");
 
-                        if (!productData) {
-                            container.innerHTML = `
-                                <div class="text-center py-8">
-                                    <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-4"></i>
-                                    <p class="text-gray-600">Data produk tidak ditemukan</p>
-                                    <p class="text-sm text-gray-500 mt-1">Silakan kembali ke halaman produk</p>
-                                    <a href="/products" class="mt-4 inline-block px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                                        Kembali Belanja
-                                    </a>
-                                </div>
-                            `;
-                            return null;
-                        }
-
-                        // Calculate subtotal (price × quantity)
-                        const quantity = productData.quantity || 1;
-                        const subtotal = productData.final_price * quantity;
-
-                        // Format currency (IDR)
-                        const formatCurrency = (amount) => {
-                            return 'Rp ' + amount.toLocaleString('id-ID');
-                        };
-
-                        // Render the product details
-                        container.innerHTML = `
-                            <div class="flex gap-4">
-                                <div class="w-32 h-32 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                                    ${productData.image ?
-                                `<img src="${productData.image}" alt="${productData.name}" class="w-full h-full object-cover">` :
-                                `<i class="fas fa-box text-3xl text-gray-400"></i>`
+                    if (paymentType && cicilanBox && transferBox && uploadBox) {
+                        paymentType.addEventListener("change", function () {
+                            if (this.value === "cicilan") {
+                                cicilanBox.classList.remove("hidden");
+                                transferBox.classList.add("hidden");
+                                uploadBox.classList.add("hidden");
+                            } else {
+                                cicilanBox.classList.add("hidden");
+                                transferBox.classList.remove("hidden");
+                                uploadBox.classList.remove("hidden");
                             }
-                                </div>
-                                <div class="flex-1">
-                                    <p class="font-medium text-gray-900 text-lg">${productData.name}</p>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        ${productData.discount_percentage > 0 ? `
-                                            <span class="text-gray-500 line-through text-sm">
-                                                ${formatCurrency(productData.original_price)}
-                                            </span>
-                                        ` : ''}
-                                        <span class="text-blue-700 font-semibold">
-                                            ${formatCurrency(productData.final_price)}
-                                        </span>
-                                        ${productData.discount_percentage > 0 ? `
-                                            <span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded">
-                                                -${productData.discount_percentage}%
-                                            </span>
-                                        ` : ''}
-                                    </div>
+                        });
 
-                                    <!-- Quantity Selector -->
-                                    <div class="mt-4 flex items-center gap-3">
-                                        <p class="text-gray-600">Jumlah:</p>
-                                        <div class="flex items-center border rounded-lg">
-                                            <button id="decrease-qty" class="px-3 py-1 text-gray-600 hover:bg-gray-100">
-                                                <i class="fas fa-minus text-xs"></i>
-                                            </button>
-                                            <input type="number" id="product-quantity"
-                                                value="${quantity}" min="1" max="99"
-                                                class="w-16 text-center border-x py-1" readonly>
-                                            <button id="increase-qty" class="px-3 py-1 text-gray-600 hover:bg-gray-100">
-                                                <i class="fas fa-plus text-xs"></i>
-                                            </button>
+                        // Trigger initial state
+                        paymentType.dispatchEvent(new Event('change'));
+                    }
+
+                    // ===== 2. MOBILE MENU =====
+                    function toggleMobileMenu() {
+                        const menu = document.getElementById('mobileMenu');
+                        if (menu) menu.classList.toggle('hidden');
+                    }
+
+                    // ===== 3. PRODUCT LOADING =====
+                    function loadProduct() {
+                        const container = document.getElementById('product-detail-container');
+                        if (!container) return null;
+
+                        try {
+                            const productData = JSON.parse(localStorage.getItem('checkout_product'));
+
+                            if (!productData) {
+                                container.innerHTML = `
+                                    <div class="text-center py-8">
+                                        <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-4"></i>
+                                        <p class="text-gray-600">Data produk tidak ditemukan</p>
+                                        <p class="text-sm text-gray-500 mt-1">Silakan kembali ke halaman produk</p>
+                                        <a href="/products" class="mt-4 inline-block px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                            Kembali Belanja
+                                        </a>
+                                    </div>
+                                `;
+                                return null;
+                            }
+
+                            const quantity = productData.quantity || 1;
+                            const subtotal = productData.final_price * quantity;
+
+                            container.innerHTML = `
+                                <div class="flex gap-4">
+                                    <div class="w-32 h-32 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                                        ${productData.image ?
+                                    `<img src="${productData.image}" alt="${productData.name}" class="w-full h-full object-cover">` :
+                                    `<i class="fas fa-box text-3xl text-gray-400"></i>`
+                                }
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-900 text-lg">${escapeHtml(productData.name)}</p>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            ${productData.discount_percentage > 0 ? `
+                                                <span class="text-gray-500 line-through text-sm">
+                                                    Rp ${productData.original_price.toLocaleString('id-ID')}
+                                                </span>
+                                            ` : ''}
+                                            <span class="text-blue-700 font-semibold">
+                                                Rp ${productData.final_price.toLocaleString('id-ID')}
+                                            </span>
+                                            ${productData.discount_percentage > 0 ? `
+                                                <span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded">
+                                                    -${productData.discount_percentage}%
+                                                </span>
+                                            ` : ''}
+                                        </div>
+
+                                        <div class="mt-4 flex items-center gap-3">
+                                            <p class="text-gray-600">Jumlah:</p>
+                                            <div class="flex items-center border rounded-lg">
+                                                <button id="decrease-qty" class="px-3 py-1 text-gray-600 hover:bg-gray-100">
+                                                    <i class="fas fa-minus text-xs"></i>
+                                                </button>
+                                                <input type="number" id="product-quantity"
+                                                    value="${quantity}" min="1" max="99"
+                                                    class="w-16 text-center border-x py-1" readonly>
+                                                <button id="increase-qty" class="px-3 py-1 text-gray-600 hover:bg-gray-100">
+                                                    <i class="fas fa-plus text-xs"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-6 pt-4 border-t">
+                                            <p class="text-gray-800 font-semibold">
+                                                Subtotal: <span id="product-subtotal" class="text-blue-700">Rp ${subtotal.toLocaleString('id-ID')}</span>
+                                            </p>
                                         </div>
                                     </div>
-
-                                    <!-- Subtotal -->
-                                    <div class="mt-6 pt-4 border-t">
-                                        <p class="text-gray-800 font-semibold">
-                                            Subtotal: <span id="product-subtotal" class="text-blue-700">${formatCurrency(subtotal)}</span>
-                                        </p>
-                                    </div>
-
-                                    <!-- Hidden inputs for form submission -->
-                                    <input type="hidden" id="product-id" value="${productData.id}">
-                                    <input type="hidden" id="product-price" value="${productData.final_price}">
                                 </div>
-                            </div>
-                        `;
+                            `;
 
-                        // Attach quantity change handlers
-                        setupQuantityControls(productData.final_price);
+                            setupQuantityControls(productData.final_price);
+                            return productData;
 
-                        return productData;
+                        } catch (error) {
+                            console.error('Error loading product:', error);
+                            container.innerHTML = `<p class="text-red-500">Error loading product data</p>`;
+                            return null;
+                        }
                     }
 
-                    // Handle quantity changes
                     function setupQuantityControls(unitPrice) {
                         const quantityInput = document.getElementById('product-quantity');
                         const decreaseBtn = document.getElementById('decrease-qty');
                         const increaseBtn = document.getElementById('increase-qty');
                         const subtotalElement = document.getElementById('product-subtotal');
 
+                        if (!quantityInput || !decreaseBtn || !increaseBtn || !subtotalElement) return;
+
                         function updateSubtotal() {
-                            const quantity = parseInt(quantityInput.value);
+                            const quantity = parseInt(quantityInput.value) || 1;
                             const subtotal = quantity * unitPrice;
                             subtotalElement.textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
 
@@ -531,7 +543,7 @@
                         }
 
                         decreaseBtn.addEventListener('click', () => {
-                            let value = parseInt(quantityInput.value);
+                            let value = parseInt(quantityInput.value) || 1;
                             if (value > 1) {
                                 quantityInput.value = value - 1;
                                 updateSubtotal();
@@ -539,54 +551,27 @@
                         });
 
                         increaseBtn.addEventListener('click', () => {
-                            let value = parseInt(quantityInput.value);
+                            let value = parseInt(quantityInput.value) || 1;
                             if (value < 99) {
                                 quantityInput.value = value + 1;
                                 updateSubtotal();
                             }
                         });
-
-                        // Initial calculation
-                        updateSubtotal();
                     }
 
-                    // Load the product data
-                    const productData = loadProductFromLocalStorage();
-
-                    // If you want to clear localStorage after page load (optional):
-                    // localStorage.removeItem('checkout_product');
-                });
-
-
-                document.addEventListener('DOMContentLoaded', function () {
-                    // DOM Elements
+                    // ===== 4. ADDRESS LOADING =====
                     const addressContainer = document.getElementById('address-container');
                     const addressActionButton = document.getElementById('address-action-button');
                     const selectedAddressId = document.getElementById('selected-address-id');
                     const payButton = document.getElementById('pay-button');
 
-                    // Check if required elements exist
-                    if (!addressContainer) {
-                        console.error('Address container (#address-container) not found!');
-                        return;
-                    }
+                    async function loadAddress() {
+                        if (!addressContainer) {
+                            console.warn('Address container not found');
+                            return;
+                        }
 
-                    if (!addressActionButton) {
-                        console.error('Address action button (#address-action-button) not found!');
-                        return;
-                    }
-
-                    // Initialize
-                    initAddressSection();
-
-                    // Main initialization function
-                    async function initAddressSection() {
-                        showLoadingState();
-                        await loadAddressData();
-                    }
-
-                    // Show loading state
-                    function showLoadingState() {
+                        // Show loading
                         addressContainer.innerHTML = `
                             <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
                                 <div class="flex items-center">
@@ -596,23 +581,16 @@
                             </div>
                         `;
 
-                        // Set button to default state while loading
-                        updateAddressButton('Ganti Alamat', '{{ route("listalamat") }}', 'blue');
-                    }
-
-                    // Load address data from API
-                    async function loadAddressData() {
                         try {
+                            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
                             const response = await fetch('/user/api/addresses/default', {
                                 headers: {
                                     'Accept': 'application/json',
-                                    'X-CSRF-TOKEN': getCsrfToken()
+                                    'X-CSRF-TOKEN': csrfToken
                                 }
                             });
 
-                            if (!response.ok) {
-                                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                            }
+                            if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                             const result = await response.json();
 
@@ -620,25 +598,25 @@
                                 if (result.data) {
                                     // Address found
                                     displayAddress(result.data);
-                                    enablePayment(true);
+                                    setPaymentEnabled(true);
                                 } else {
-                                    // No address found
+                                    // No address
                                     displayNoAddress();
-                                    enablePayment(false);
+                                    setPaymentEnabled(false);
                                 }
                             } else {
                                 throw new Error(result.message || 'Gagal memuat alamat');
                             }
-
                         } catch (error) {
                             console.error('Error loading address:', error);
-                            displayError(error.message);
-                            enablePayment(false);
+                            displayAddressError(error.message);
+                            setPaymentEnabled(false);
                         }
                     }
 
-                    // Display address when found
                     function displayAddress(address) {
+                        if (!addressContainer) return;
+
                         addressContainer.innerHTML = `
                             <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
                                 <div class="flex justify-between items-start mb-2">
@@ -648,22 +626,25 @@
                                     </span>
                                 </div>
                                 <p class="text-gray-600 text-sm leading-relaxed">
-                                    ${formatAddressText(address.desk_alamat)}
+                                    ${escapeHtml(address.desk_alamat).replace(/\n/g, '<br>')}
                                 </p>
                             </div>
                         `;
 
-                        // Update button to "Ganti Alamat"
-                        updateAddressButton('Ganti Alamat', '{{ route("listalamat") }}', 'blue');
-
-                        // Store address ID
                         if (selectedAddressId) {
                             selectedAddressId.value = address.id;
                         }
+
+                        if (addressActionButton) {
+                            addressActionButton.innerHTML = 'Ganti Alamat';
+                            addressActionButton.onclick = () => window.location.href = '{{ route("listalamat") }}';
+                            addressActionButton.className = 'mt-4 w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700';
+                        }
                     }
 
-                    // Display when no address exists
                     function displayNoAddress() {
+                        if (!addressContainer) return;
+
                         addressContainer.innerHTML = `
                             <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
                                 <div class="flex items-start">
@@ -673,33 +654,25 @@
                                         <p class="text-gray-600 text-sm mt-1">
                                             Anda perlu menambahkan alamat untuk melanjutkan pembayaran.
                                         </p>
-                                        <p class="text-gray-500 text-xs mt-2">
-                                            <i class="fas fa-info-circle mr-1"></i>
-                                            Klik tombol "Tambahkan Alamat" di bawah
-                                        </p>
                                     </div>
                                 </div>
                             </div>
                         `;
 
-                        // Update button to "Tambahkan Alamat"
-                        updateAddressButton(
-                            '<i class="fas fa-plus mr-2"></i>Tambahkan Alamat',
-                            '{{ route("addalamat") }}',
-                            'yellow'
-                        );
-
-                        // Clear address ID
                         if (selectedAddressId) {
                             selectedAddressId.value = '';
                         }
 
-                        // Show warning message
-                        showAddressWarning();
+                        if (addressActionButton) {
+                            addressActionButton.innerHTML = '<i class="fas fa-plus mr-2"></i>Tambahkan Alamat';
+                            addressActionButton.onclick = () => window.location.href = '{{ route("addalamat") }}';
+                            addressActionButton.className = 'mt-4 w-full py-3 bg-yellow-500 text-white rounded-lg font-semibold hover:bg-yellow-600';
+                        }
                     }
 
-                    // Display error state
-                    function displayError(errorMessage) {
+                    function displayAddressError(errorMessage) {
+                        if (!addressContainer) return;
+
                         addressContainer.innerHTML = `
                             <div class="bg-red-50 rounded-lg p-4 border border-red-200">
                                 <div class="flex items-start">
@@ -707,143 +680,210 @@
                                     <div>
                                         <p class="font-medium text-gray-800">Gagal memuat alamat</p>
                                         <p class="text-gray-600 text-sm mt-1">${escapeHtml(errorMessage)}</p>
-                                        <button onclick="window.location.reload()"
-                                                class="mt-3 px-4 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600">
-                                            <i class="fas fa-redo mr-1"></i>Muat Ulang Halaman
-                                        </button>
                                     </div>
                                 </div>
                             </div>
                         `;
-
-                        // Keep button as "Ganti Alamat" on error
-                        updateAddressButton('Ganti Alamat', '{{ route("listalamat") }}', 'blue');
                     }
 
-                    // Update address button text, link, and color
-                    function updateAddressButton(text, link, color = 'blue') {
-                        addressActionButton.innerHTML = text;
-
-                        // Set onclick handler
-                        addressActionButton.onclick = function () {
-                            window.location.href = link;
-                        };
-
-                        // Update button color
-                        addressActionButton.className = 'mt-4 w-full py-3 text-white rounded-lg font-semibold hover:opacity-90';
-
-                        if (color === 'yellow') {
-                            addressActionButton.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
-                            addressActionButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                        } else {
-                            addressActionButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
-                            addressActionButton.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
-                        }
-                    }
-
-                    // Show/hide address warning
-                    function showAddressWarning(show = true) {
-                        let warningElement = document.getElementById('address-warning');
-
-                        if (show && !warningElement) {
-                            warningElement = document.createElement('div');
-                            warningElement.id = 'address-warning';
-                            warningElement.className = 'mt-3 p-3 bg-red-50 border border-red-200 rounded-lg';
-                            warningElement.innerHTML = `
-                                <div class="flex items-center text-red-700">
-                                    <i class="fas fa-exclamation-circle mr-2"></i>
-                                    <span class="text-sm font-medium">Tambahkan alamat untuk melanjutkan pembayaran</span>
-                                </div>
-                            `;
-
-                            // Insert after address container
-                            addressContainer.parentNode.insertBefore(warningElement, addressContainer.nextSibling);
-
-                        } else if (!show && warningElement) {
-                            warningElement.remove();
-                        }
-                    }
-
-                    // Enable/disable payment button
-                    function enablePayment(enable = true) {
-                        if (!payButton) return;
-
-                        if (enable) {
-                            // Enable payment button
-                            payButton.disabled = false;
-                            payButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                            payButton.innerHTML = '<i class="fas fa-credit-card mr-2"></i>Bayar Sekarang';
-                            payButton.onclick = handlePayment;
-
-                            // Remove warning if exists
-                            showAddressWarning(false);
-
-                        } else {
-                            // Disable payment button
-                            payButton.disabled = true;
-                            payButton.classList.add('opacity-50', 'cursor-not-allowed');
-                            payButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Bayar';
-                            payButton.onclick = function () {
-                                window.location.href = '{{ route("addalamat") }}';
-                            };
-                        }
-                    }
-
-                    // Payment handler
-                    async function handlePayment() {
-                        const addressId = selectedAddressId?.value;
-
-                        if (!addressId) {
-                            alert('Silakan tambahkan alamat pengiriman terlebih dahulu');
+                    // ===== 5. PAYMENT BUTTON CONTROL =====
+                    function setPaymentEnabled(enabled) {
+                        if (!payButton) {
+                            console.warn('Pay button not found');
                             return;
                         }
 
-                        // Show loading on payment button
+                        if (enabled) {
+                            payButton.disabled = false;
+                            payButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                            payButton.innerHTML = '<i class="fas fa-credit-card mr-2"></i>Bayar Sekarang';
+                            payButton.onclick = processPayment;
+                        } else {
+                            payButton.disabled = true;
+                            payButton.classList.add('opacity-50', 'cursor-not-allowed');
+                            payButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Tambahkan Alamat Terlebih Dahulu';
+                            payButton.onclick = () => window.location.href = '{{ route("addalamat") }}';
+                        }
+                    }
+
+                    async function processPayment() {
+                        if (!payButton) return;
+
+                        const addressId = selectedAddressId?.value;
+                        const productData = JSON.parse(localStorage.getItem('checkout_product'));
+
+                        // Get selected payment method
+                        const paymentMethod = document.querySelector('input[name="payMethod"]:checked')?.value || 'transfer';
+
+                        if (!addressId) {
+                            alert('Silakan tambahkan alamat terlebih dahulu');
+                            return;
+                        }
+
+                        if (!productData) {
+                            alert('Data produk tidak ditemukan');
+                            return;
+                        }
+
+                        // Show loading
                         const originalText = payButton.innerHTML;
                         payButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
                         payButton.disabled = true;
 
                         try {
-                            // TODO: Your payment processing logic here
-                            console.log('Processing payment with address ID:', addressId);
+                            // STEP 1: Create order via API
+                            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-                            // For now, simulate payment processing
-                            await new Promise(resolve => setTimeout(resolve, 1000));
-                            alert('Payment processing would start here');
+                            const orderResponse = await fetch('user/api/orders', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken
+                                },
+                                body: JSON.stringify({
+                                    id_produk: productData.id,
+                                    kuantitas: productData.quantity || 1,
+                                    payment_method: paymentMethod,
+                                    address_id: addressId
+                                })
+                            });
+
+                            const orderResult = await orderResponse.json();
+
+                            if (!orderResponse.ok) {
+                                throw new Error(orderResult.message || `HTTP ${orderResponse.status}: Gagal membuat pesanan`);
+                            }
+
+                            if (orderResult.success) {
+                                console.log('Order created:', orderResult.data);
+
+                                // STEP 2: Clear localStorage
+                                localStorage.removeItem('checkout_product');
+
+                                // STEP 3: Redirect to pesanan page with the new order ID
+                                const orderId = orderResult.data.id;
+
+                                // Show success message before redirect
+                                showSuccessAlert('Pesanan berhasil dibuat!', () => {
+                                    window.location.href = `/pesanan`;
+                                });
+
+                            } else {
+                                throw new Error(orderResult.message || 'Gagal membuat pesanan');
+                            }
 
                         } catch (error) {
-                            console.error('Payment error:', error);
-                            alert('Gagal memproses pembayaran: ' + error.message);
+                            console.error('Order creation error:', error);
+
+                            // Show user-friendly error message
+                            let errorMessage = 'Gagal membuat pesanan: ';
+
+                            if (error.message.includes('stock') || error.message.includes('Stock')) {
+                                errorMessage += 'Stok produk tidak mencukupi.';
+                            } else if (error.message.includes('address') || error.message.includes('alamat')) {
+                                errorMessage += 'Alamat tidak valid.';
+                            } else if (error.message.includes('HTTP')) {
+                                errorMessage += 'Terjadi kesalahan server. Silakan coba lagi.';
+                            } else {
+                                errorMessage += error.message;
+                            }
+
+                            showErrorAlert(errorMessage);
+
                         } finally {
-                            // Restore button state
+                            // Restore button
                             payButton.innerHTML = originalText;
                             payButton.disabled = false;
                         }
                     }
 
-                    // Helper: Get CSRF token safely
-                    function getCsrfToken() {
-                        const metaTag = document.querySelector('meta[name="csrf-token"]');
-                        return metaTag ? metaTag.getAttribute('content') : '';
+                    // Success alert with callback
+                    function showSuccessAlert(message) {
+                        const modal = document.createElement('div');
+                        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+                        modal.innerHTML = `
+                            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+                                <div class="flex items-start mb-4">
+                                    <div class="flex-shrink-0 h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h3 class="text-lg font-semibold text-gray-900">Berhasil!</h3>
+                                        <div class="mt-2">
+                                            <p class="text-gray-600">${message}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-6 flex justify-end">
+                                    <a href="/pesanan"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                                        Lihat Pesanan
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+
+                        document.body.appendChild(modal);
+
+                        // Remove modal when clicking outside
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) {
+                                modal.remove();
+                            }
+                        });
                     }
 
-                    // Helper: Format address text with line breaks
-                    function formatAddressText(text) {
-                        if (!text) return '';
-                        return escapeHtml(text).replace(/\n/g, '<br>');
+                    // Error alert
+                    function showErrorAlert(message) {
+                        const modal = document.createElement('div');
+                        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+                        modal.innerHTML = `
+                            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+                                <div class="flex items-start mb-4">
+                                    <div class="flex-shrink-0 h-12 w-12 bg-red-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h3 class="text-lg font-semibold text-gray-900">Gagal</h3>
+                                        <div class="mt-2">
+                                            <p class="text-gray-600">${message}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-6 flex justify-end">
+                                    <button onclick="this.closest('.fixed').remove()"
+                                            class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                                        Tutup
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+
+                        document.body.appendChild(modal);
                     }
 
-                    // Helper: Escape HTML to prevent XSS
+                    // ===== 6. HELPER FUNCTIONS =====
                     function escapeHtml(text) {
+                        if (!text) return '';
                         const div = document.createElement('div');
                         div.textContent = text;
                         return div.innerHTML;
                     }
 
-                    // Expose reload function for error retry
-                    window.reloadAddressData = loadAddressData;
-                });
+                    // ===== 7. INITIALIZE EVERYTHING =====
+                    // Load product data
+                    loadProduct();
 
+                    // Load address data
+                    loadAddress();
+
+                    // Set initial payment button state (disabled until address loads)
+                    setPaymentEnabled(false);
+
+                    // Expose toggleMobileMenu globally
+                    window.toggleMobileMenu = toggleMobileMenu;
+                });
             </script>
 
 

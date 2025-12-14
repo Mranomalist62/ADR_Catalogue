@@ -395,7 +395,7 @@
 
                         // Redirect after 1.5 seconds
                         setTimeout(() => {
-                            window.location.href = '/listalamat';
+                            window.location.href = '/listalamat'; // or /listalamat depending on your routes
                         }, 1500);
 
                     } else {

@@ -14,16 +14,20 @@ class Order extends Model
     protected $fillable = [
         'id_pemesan',
         'id_produk',
-        'nama_produk',          // Snapshot: product name at time of purchase
-        'harga_produk',         // Snapshot: product price at time of purchase
-        'nama_promo',           // Snapshot: promo name at time of purchase
-        'potongan_harga',       // Snapshot: discount percentage at time
+        'id_alamat',
+        'nama_produk',
+        'harga_produk',
+        'nama_promo',
+        'potongan_harga',
         'kuantitas',
         'total_harga',
         'total_instalment',
         'waktu_berlaku',
         'status',
-        'payment_method'
+        'payment_method',
+        'alamat_pengiriman',
+        'nama_penerima',
+        'telepon_penerima'
     ];
 
     protected $casts = [
@@ -31,26 +35,41 @@ class Order extends Model
         'total_harga' => 'decimal:2',
         'potongan_harga' => 'decimal:2',
         'total_instalment' => 'decimal:2',
+        'waktu_berlaku' => 'datetime',
     ];
 
+    /**
+     * Get the user who made the order
+     */
     public function user()
     {
         return $this->belongsTo(User::class, 'id_pemesan');
     }
 
+    /**
+     * Get the address for the order
+     * FIXED: Specify foreign key 'id_alamat' and local key 'id'
+     */
     public function address()
     {
-        return $this->belongsTo(Address::class);
+        return $this->belongsTo(Address::class, 'id_alamat');
     }
 
+    /**
+     * Get the payment for the order
+     */
     public function payment()
     {
-        return $this->hasOne(Payment::class);
+        return $this->hasOne(Payment::class, 'order_id');
     }
 
+    /**
+     * Get the product for the order
+     * FIXED: This was missing! Add this relationship
+     */
     public function product()
     {
-        return $this->belongsTo(Product::class, 'id_produk')->withTrashed();
+        return $this->belongsTo(Product::class, 'id_produk');
     }
 
     /**
@@ -70,17 +89,6 @@ class Order extends Model
             return ($this->potongan_harga / 100) * $this->getOriginalTotalAttribute();
         }
         return 0;
-    }
-
-    /**
-     * Accessor for price per item after discount
-     */
-    public function getHargaPerItemAttribute()
-    {
-        if ($this->potongan_harga > 0) {
-            return $this->harga_produk - (($this->potongan_harga / 100) * $this->harga_produk);
-        }
-        return $this->harga_produk;
     }
 
     /**

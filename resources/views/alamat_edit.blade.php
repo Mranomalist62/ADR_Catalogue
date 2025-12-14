@@ -387,7 +387,7 @@
                 // Disable submit button and show loading
                 const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> ' +
-                                    (isEditMode ? 'Mengupdate...' : 'Menyimpan...');
+                    (isEditMode ? 'Mengupdate...' : 'Menyimpan...');
                 submitBtn.disabled = true;
 
                 try {
@@ -531,7 +531,7 @@
                 cancelBtn.href = '{{ route("listalamat") }}';
             }
         });
-        </script>
+    </script>
 </body>
 
 </html>

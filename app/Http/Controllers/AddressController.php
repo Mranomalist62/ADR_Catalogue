@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AddressController extends Controller
 {
@@ -142,20 +143,27 @@ class AddressController extends Controller
     }
 
     // PUT /api/user/addresses/{id}
-    public function update(Request $request, $id)
+   public function update(Request $request, $id)
     {
-        $address = Address::where('id_user', Auth::id())->find($id);
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'desk_alamat' => 'required|string'
+        ]);
+
+        $userId = Auth::guard('user')->id();
+
+        // Find address belonging to user
+        $address = Address::where('id_user', $userId)->find($id);
 
         if (!$address) {
             return response()->json(['success' => false, 'message' => 'Address not found'], 404);
         }
 
-        $request->validate([
-            'nama' => 'sometimes|string|max:255',
-            'desk_alamat' => 'sometimes|string',
+        // Update address
+        $address->update([
+            'nama' => $request->nama,
+            'desk_alamat' => $request->desk_alamat
         ]);
-
-        $address->update($request->only(['nama', 'desk_alamat']));
 
         return response()->json([
             'success' => true,
@@ -167,16 +175,25 @@ class AddressController extends Controller
     // DELETE /api/user/addresses/{id}
     public function destroy($id)
     {
-        $address = Address::where('id_user', Auth::id())->find($id);
+        $userId = Auth::guard('user')->id();
+
+        $address = Address::where('id_user', $userId)->find($id);
 
         if (!$address) {
             return response()->json(['success' => false, 'message' => 'Address not found'], 404);
         }
 
-        // If this was selected default, unselect it
+        // If deleting the default address, make another one default
         if ($address->selected) {
-            $address->selected = false;
-            $address->save();
+            // Find another address to make default
+            $anotherAddress = Address::where('id_user', $userId)
+                                    ->where('id', '!=', $id)
+                                    ->first();
+
+            if ($anotherAddress) {
+                $anotherAddress->selected = 1;
+                $anotherAddress->save();
+            }
         }
 
         $address->delete();
@@ -188,25 +205,33 @@ class AddressController extends Controller
     }
 
     // POST /api/user/addresses/{id}/select
-    public function select($id)
+        public function select($id)
     {
-        $address = Address::where('id_user', Auth::id())->find($id);
+        $userId = Auth::guard('user')->id();
 
-        if (!$address) {
-            return response()->json(['success' => false, 'message' => 'Address not found'], 404);
+        // Find the address to select
+        $addressToSelect = Address::where('id_user', $userId)->find($id);
+
+        if (!$addressToSelect) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Address not found'
+            ], 404);
         }
 
-        // Unselect all user addresses
-        Address::where('id_user', Auth::id())->update(['selected' => false]);
+        // Start transaction to ensure data consistency
+        DB::transaction(function () use ($userId, $addressToSelect) {
+            // Set ALL addresses for this user to 0 (not selected)
+            Address::where('id_user', $userId)->update(['selected' => 0]);
 
-        // Select this one
-        $address->selected = true;
-        $address->save();
+            // Set the chosen address to 1 (selected)
+            $addressToSelect->selected = 1;
+            $addressToSelect->save();
+        });
 
         return response()->json([
             'success' => true,
-            'message' => 'Address selected as default',
-            'data' => $address
+            'message' => 'Address set as default successfully'
         ]);
     }
 }

@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -295,69 +296,32 @@
 
         {{-- CARD LIST ALAMAT --}}
         <div class="bg-white rounded-2xl shadow-xl p-8">
-
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-800 mb-6">Alamat Tersimpan</h2>
 
-                <a href="/alamat/tambah"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition">
-                    + Tambah Alamat
-                </a>
+                <div>
+                    <a href="{{ route('pembayaran') }}"
+                        class="inline-flex items-center mr-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Kembali
+                    </a>
+
+                    <a href="{{ route('addalamat') }}"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition">
+                        <i class="fas fa-plus mr-2"></i>Tambah Alamat
+                    </a>
+
+                </div>
             </div>
 
-            {{-- DATA DUMMY --}}
-            @php
-                $dummyAlamat = [
-                    [
-                        "nama" => "Budi Santoso",
-                        "telepon" => "081234567890",
-                        "alamat" => "Jl. Melati No. 21, Jakarta Barat",
-                        "kota" => "Jakarta Barat",
-                        "kode_pos" => "11220"
-                    ],
-                    [
-                        "nama" => "Siti Aisyah",
-                        "telepon" => "089512345678",
-                        "alamat" => "Gg. Mawar, Bandung Utara",
-                        "kota" => "Bandung",
-                        "kode_pos" => "40132"
-                    ],
-                    [
-                        "nama" => "Jonathan",
-                        "telepon" => "082233445566",
-                        "alamat" => "Jl. Kenanga Blok A3, Surabaya",
-                        "kota" => "Surabaya",
-                        "kode_pos" => "60293"
-                    ],
-                ];
-            @endphp
-
-            <div class="space-y-5 mt-4">
-                @foreach ($dummyAlamat as $a)
-                    <div class="border rounded-xl p-5 shadow-sm bg-gray-50 hover:bg-gray-100 transition">
-                        <p class="text-lg font-semibold text-gray-800">{{ $a['nama'] }}</p>
-
-                        <p class="text-gray-700 mt-1">{{ $a['alamat'] }}</p>
-                        <p class="text-gray-700">{{ $a['kota'] }} - {{ $a['kode_pos'] }}</p>
-
-                        <p class="text-gray-500 text-sm mt-1">
-                            Telepon: {{ $a['telepon'] }}
-                        </p>
-
-                        <div class="flex justify-end mt-3 space-x-3">
-                            <button
-                                class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                                Pilih Alamat
-                            </button>
-
-                            <button class="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
-                                Hapus
-                            </button>
-                        </div>
-                    </div>
-                @endforeach
+            <!-- Address Container - Will be populated by JavaScript -->
+            <div id="addresses-container">
+                <!-- Loading state -->
+                <div class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                    <p class="mt-2 text-gray-600">Memuat alamat...</p>
+                </div>
             </div>
-
         </div>
 
     </div>
@@ -367,6 +331,328 @@
             const menu = document.getElementById('mobileMenu');
             menu.classList.toggle('hidden');
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load addresses on page load
+            loadAddresses();
+
+            async function loadAddresses() {
+                const container = document.getElementById('addresses-container');
+
+                try {
+                    const response = await fetch('/user/api/addresses/', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') || ''
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        displayAddresses(result.data, container);
+                    } else {
+                        throw new Error(result.message || 'Gagal memuat alamat');
+                    }
+
+                } catch (error) {
+                    console.error('Error loading addresses:', error);
+                    container.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-4"></i>
+                            <p class="text-gray-600">Gagal memuat alamat</p>
+                            <p class="text-sm text-gray-500 mt-1">${error.message}</p>
+                            <button onclick="loadAddresses()"
+                                    class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                Coba Lagi
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            function displayAddresses(addresses, container) {
+                if (!addresses || addresses.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-map-marker-alt text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600">Belum ada alamat tersimpan</p>
+                            <p class="text-sm text-gray-500 mt-1">Tambahkan alamat pertama Anda</p>
+                            <a href="{{ route('addalamat') }}"
+                            class="mt-4 inline-block px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                Tambah Alamat
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="space-y-5 mt-4" id="addresses-list">
+                        ${addresses.map((address, index) => createAddressCard(address, index)).join('')}
+                    </div>
+                `;
+
+                // FIXED: Use attachEventListeners() instead of attachDeleteListeners()
+                attachEventListeners(); // ← THIS IS THE FIX
+            }
+
+            function createAddressCard(address, index) {
+                // Split address lines for better display
+                const addressLines = address.desk_alamat.split('\n');
+
+                return `
+                    <div class="border rounded-xl p-5 shadow-sm bg-gray-50 hover:bg-gray-100 transition relative"
+                        data-address-id="${address.id}">
+
+                        <!-- Badge Section - Top Right -->
+                        ${address.selected ? `
+                            <div class="absolute top-3 right-3">
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
+                                    <i class="fas fa-check-circle mr-1"></i>Utama
+                                </span>
+                            </div>
+                        ` : `
+                            <div class="absolute top-3 right-3">
+                                <span class="bg-gray-100 text-gray-600 text-xs font-medium px-2 py-1 rounded">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>Non-Utama
+                                </span>
+                            </div>
+                        `}
+
+                        <!-- Address Name -->
+                        <p class="text-lg font-semibold text-gray-800" data-address-name>${escapeHtml(address.nama)}</p>
+
+                        <!-- Address Details -->
+                        <div class="mt-2 space-y-1">
+                            ${addressLines.map(line => `
+                                <p class="text-gray-700">${escapeHtml(line)}</p>
+                            `).join('')}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex justify-between items-center mt-4">
+                            <!-- LEFT: Set as Default Button (only if not already default) -->
+                            ${!address.selected ? `
+                                <div>
+                                    <button class="select-address-btn px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                                            data-address-id="${address.id}">
+                                        <i class="fas fa-check-circle mr-1"></i>Jadikan Utama
+                                    </button>
+                                </div>
+                            ` : '<div></div>' /* Empty div to maintain layout when no default button */}
+
+                            <!-- RIGHT: Edit and Delete buttons -->
+                            <div class="flex space-x-2">
+                                <!-- Edit Button -->
+                                <button class="edit-address-btn px-4 py-2 text-sm bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
+                                        data-address-id="${address.id}">
+                                    <i class="fas fa-edit mr-1"></i>Edit
+                                </button>
+
+                                <!-- Delete Button -->
+                                <button class="delete-address-btn px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                                        data-address-id="${address.id}">
+                                    <i class="fas fa-trash mr-1"></i>Hapus
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            async function editAddress(addressId) {
+                try {
+                    const response = await fetch(`/user/api/addresses/${addressId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') || ''
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Store in localStorage and redirect to EDIT ROUTE
+                        localStorage.setItem('editAddressData', JSON.stringify(result.data));
+                        window.location.href = `/editalamat/${addressId}`;
+                    } else {
+                        throw new Error(result.message || 'Gagal memuat data alamat');
+                    }
+                } catch (error) {
+                    console.error('Error loading address:', error);
+                    alert('Gagal memuat data alamat: ' + error.message);
+                }
+            }
+
+            function attachEventListeners() {
+                // Edit buttons
+                document.querySelectorAll('.edit-address-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const addressId = this.getAttribute('data-address-id');
+                        editAddress(addressId);
+                    });
+                });
+
+                // Delete buttons
+                document.querySelectorAll('.delete-address-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const addressId = this.getAttribute('data-address-id');
+
+                        if (confirm(`Apakah Anda yakin ingin menghapus alamat ini?`)) {
+                            deleteAddress(addressId);
+                        }
+                    });
+                });
+
+                // Select buttons (make default)
+                document.querySelectorAll('.select-address-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const addressId = this.getAttribute('data-address-id');
+                        selectAddressAsDefault(addressId);
+                    });
+                });
+            }
+
+            async function deleteAddress(addressId) {
+                const button = document.querySelector(`.delete-address-btn[data-address-id="${addressId}"]`);
+                const card = document.querySelector(`[data-address-id="${addressId}"]`);
+
+                if (!button || !card) return;
+
+                // Show loading on button
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Menghapus...';
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(`/user/api/addresses/${addressId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') || ''
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Remove card with fade out animation
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateX(-20px)';
+                        card.style.transition = 'all 0.3s ease';
+
+                        setTimeout(() => {
+                            card.remove();
+
+                            // Check if no addresses left
+                            const remainingCards = document.querySelectorAll('[data-address-id]');
+                            if (remainingCards.length === 0) {
+                                loadAddresses(); // Reload to show empty state
+                            }
+
+                            // Show success message
+                            showMessage('Alamat berhasil dihapus', 'success');
+                        }, 300);
+
+                    } else {
+                        throw new Error(result.message || 'Gagal menghapus alamat');
+                    }
+
+                } catch (error) {
+                    console.error('Error deleting address:', error);
+
+                    // Restore button
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+
+                    // Show error
+                    showMessage('Gagal menghapus alamat: ' + error.message, 'error');
+                }
+            }
+
+            async function selectAddressAsDefault(addressId) {
+                const button = document.querySelector(`.select-address-btn[data-address-id="${addressId}"]`);
+
+                if (!button) return;
+
+                // Show loading on button
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Memproses...';
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(`/user/api/addresses/${addressId}/select`, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') || ''
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Reload addresses to show updated "Utama" badge
+                        loadAddresses();
+                        showMessage('Alamat utama berhasil diubah', 'success');
+                    } else {
+                        throw new Error(result.message || 'Gagal mengubah alamat utama');
+                    }
+
+                } catch (error) {
+                    console.error('Error selecting address:', error);
+
+                    // Restore button
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+
+                    // Show error
+                    showMessage('Gagal mengubah alamat utama: ' + error.message, 'error');
+                }
+            }
+
+            // Helper functions
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function showMessage(message, type = 'info') {
+                // Remove existing messages
+                const existingMsg = document.getElementById('flash-message');
+                if (existingMsg) existingMsg.remove();
+
+                const colors = {
+                    'success': 'bg-green-100 border-green-400 text-green-700',
+                    'error': 'bg-red-100 border-red-400 text-red-700',
+                    'info': 'bg-blue-100 border-blue-400 text-blue-700'
+                };
+
+                const messageDiv = document.createElement('div');
+                messageDiv.id = 'flash-message';
+                messageDiv.className = `fixed top-4 right-4 ${colors[type]} px-6 py-3 rounded-lg shadow-lg z-50 max-w-md`;
+                messageDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'} mr-3"></i>
+                        <span>${escapeHtml(message)}</span>
+                    </div>
+                `;
+
+                document.body.appendChild(messageDiv);
+
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 5000);
+            }
+
+            // Expose loadAddresses globally for retry button
+            window.loadAddresses = loadAddresses;
+        });
     </script>
 
 </body>

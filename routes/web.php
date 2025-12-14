@@ -81,6 +81,7 @@ Route::middleware(['auth.user'])->group(function () {
     Route::get('/alamat', fn() => view('alamat'))->name('alamat');
     Route::get('/listalamat', fn() => view('alamat_list'))->name('listalamat');
     Route::get('/addalamat', fn() => view('alamat_add'))->name('addalamat');
+    Route::get('/editalamat/{id}', function($id) {return view('alamat_edit', ['addressId' => $id]);})->name('alamat.edit');
 
 
     // Chat routes
