@@ -12,6 +12,7 @@ use App\Http\Controllers\PromoController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PaymentController;
 
 // ==========================================================
 // PUBLIC WEB ROUTES (Views)
@@ -30,7 +31,7 @@ Route::get('/product/{id}', fn($id) => view('product', compact('id')))->name('pr
 
 
 Route::get('/banner', fn() => view('admin_banner'))->name('banner');
-Route::get('/pesanan', fn() => view('pesanan'))->name('pesanan');
+
 
 // Help pages
 Route::get('/faq', fn() => view('faq'))->name('faq');
@@ -39,12 +40,13 @@ Route::get('/pengembalian', fn() => view('pengembalian'))->name('pengembalian');
 Route::get('/kontak', fn() => view('kontak'))->name('kontak');
 
 // // ==========================================================
-// // CHECKOUT ROUTES (PUBLIC)
+// // ROUTES (PUBLIC)
 // // ==========================================================
 
 // Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 // Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 // Route::get('/order/confirmation/{id}', [CheckoutController::class, 'confirmation'])->name('order.confirmation');
+
 
 // ==========================================================
 // CHATBOT (PUBLIC)
@@ -58,6 +60,7 @@ Route::post('/chat/bot', [ChatController::class, 'getBotResponse'])->name('chat.
 
 Route::post('/register', [UserAuth::class, 'register'])->name('register.submit');
 Route::post('/login', [UserAuth::class, 'login'])->name('login.submit');
+
 
 // Admin auth
 Route::get('/admin/login', fn() => view('admin_login'))->name('admin.login');
@@ -76,6 +79,7 @@ Route::middleware(['auth.user'])->group(function () {
 
     //Pembayaran
     Route::get('/pembayaran', fn() => view('Pembayaran') )->name('pembayaran');
+    Route::get('/pesanan', fn() => view('pesanan'))->name('pesanan');
 
     //Alamat
     Route::get('/alamat', fn() => view('alamat'))->name('alamat');
@@ -88,6 +92,8 @@ Route::middleware(['auth.user'])->group(function () {
     Route::get('/chat', [ChatController::class, 'userChat'])->name('user.chat');
     Route::post('/chat/send', [ChatController::class, 'sendUserMessage'])->name('chat.send.user');
     Route::get('/chat/refresh', [ChatController::class, 'getUserChatForRefresh'])->name('chat.refresh.user');
+
+
 });
 
 // ==========================================================
@@ -139,6 +145,11 @@ Route::prefix('public')->group(function () {
     // Promo
     Route::get('/promo', [PromoController::class, 'index']);
     Route::get('/promo/{id}', [PromoController::class, 'show']);
+
+    // Order
+    Route::get('/return/{order}', [PaymentController::class, 'handleReturn']);
+    Route::get('/pending/{order}', [PaymentController::class, 'handlePending']);
+    Route::get('/error/{order}', [PaymentController::class, 'handleError']);
 });
 
 // ==========================================================
@@ -165,6 +176,15 @@ Route::prefix('admin/api')->middleware('auth.admin')->group(function () {
         ->except(['index', 'show']);
 
     Route::apiResource('orders', OrderController::class);
+
+    Route::prefix('payments')->group(function () {
+        Route::get('/order/{order}', [PaymentController::class, 'show']);
+        Route::post('/create', [PaymentController::class, 'create']);
+        Route::get('/history', [PaymentController::class, 'history']);
+        Route::get('/{payment}', [PaymentController::class, 'detail']);
+        Route::get('/status/{order}', [PaymentController::class, 'checkStatus']);
+        Route::post('/{order}/cancel', [PaymentController::class, 'cancel']);
+    });
 });
 
 // ==========================================================
@@ -173,9 +193,20 @@ Route::prefix('admin/api')->middleware('auth.admin')->group(function () {
 
 Route::prefix('user/api')->middleware('auth.user')->group(function () {
     Route::get('addresses/default', [AddressController::class, 'getDefaultAddress'])->name('alamat.default');
-    Route::apiResource('addresses', AddressController::class);
     Route::post('addresses/{id}/select', [AddressController::class, 'select']);
-    Route::apiResource('orders', OrderController::class);
+    Route::apiResource('addresses', AddressController::class);
+    Route::apiResource('orders', OrderController::class)->except(['update', 'destroy']);
+
+
+
+    Route::prefix('payments')->group(function () {
+        Route::get('/order/{order}', [PaymentController::class, 'show']);
+        Route::post('/create', [PaymentController::class, 'create']);
+        Route::get('/history', [PaymentController::class, 'history']);
+        Route::get('/{payment}', [PaymentController::class, 'detail']);
+        Route::get('/status/{order}', [PaymentController::class, 'checkStatus']);
+        Route::post('/{order}/cancel', [PaymentController::class, 'cancel']);
+    });
 });
 
 // ==========================================================
