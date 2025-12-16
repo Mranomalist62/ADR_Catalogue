@@ -63,10 +63,6 @@ class Order extends Model
         return $this->hasOne(Payment::class, 'order_id');
     }
 
-    /**
-     * Get the product for the order
-     * FIXED: This was missing! Add this relationship
-     */
     public function product()
     {
         return $this->belongsTo(Product::class, 'id_produk');

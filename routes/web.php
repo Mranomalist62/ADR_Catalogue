@@ -33,20 +33,12 @@ Route::get('/product/{id}', fn($id) => view('product', compact('id')))->name('pr
 Route::get('/banner', fn() => view('admin_banner'))->name('banner');
 
 
+
 // Help pages
 Route::get('/faq', fn() => view('faq'))->name('faq');
 Route::get('/pengiriman', fn() => view('pengiriman'))->name('pengiriman');
 Route::get('/pengembalian', fn() => view('pengembalian'))->name('pengembalian');
 Route::get('/kontak', fn() => view('kontak'))->name('kontak');
-
-// // ==========================================================
-// // ROUTES (PUBLIC)
-// // ==========================================================
-
-// Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-// Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
-// Route::get('/order/confirmation/{id}', [CheckoutController::class, 'confirmation'])->name('order.confirmation');
-
 
 // ==========================================================
 // CHATBOT (PUBLIC)
@@ -146,10 +138,9 @@ Route::prefix('public')->group(function () {
     Route::get('/promo', [PromoController::class, 'index']);
     Route::get('/promo/{id}', [PromoController::class, 'show']);
 
-    // Order
-    Route::get('/return/{order}', [PaymentController::class, 'handleReturn']);
-    Route::get('/pending/{order}', [PaymentController::class, 'handlePending']);
-    Route::get('/error/{order}', [PaymentController::class, 'handleError']);
+    // Payment
+    Route::post('/payments/notification', [PaymentController::class, 'handleNotification']);
+
 });
 
 // ==========================================================
@@ -184,6 +175,10 @@ Route::prefix('admin/api')->middleware('auth.admin')->group(function () {
         Route::get('/{payment}', [PaymentController::class, 'detail']);
         Route::get('/status/{order}', [PaymentController::class, 'checkStatus']);
         Route::post('/{order}/cancel', [PaymentController::class, 'cancel']);
+        Route::get('/return/{orderId}', [PaymentController::class, 'paymentReturn']);
+        Route::get('/error/{orderId}', [PaymentController::class, 'paymentError']);
+        Route::get('/pending/{orderId}', [PaymentController::class, 'paymentPending']);
+        Route::get('/unfinished/{orderId}', [PaymentController::class, 'paymentUnfinished']);
     });
 });
 
@@ -206,6 +201,10 @@ Route::prefix('user/api')->middleware('auth.user')->group(function () {
         Route::get('/{payment}', [PaymentController::class, 'detail']);
         Route::get('/status/{order}', [PaymentController::class, 'checkStatus']);
         Route::post('/{order}/cancel', [PaymentController::class, 'cancel']);
+        Route::get('/return/{orderId}', [PaymentController::class, 'paymentReturn']);
+        Route::get('/error/{orderId}', [PaymentController::class, 'paymentError']);
+        Route::get('/pending/{orderId}', [PaymentController::class, 'paymentPending']);
+        Route::get('/unfinished/{orderId}', [PaymentController::class, 'paymentUnfinished']);
     });
 });
 

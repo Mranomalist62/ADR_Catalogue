@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
-    /**
-     * Get current authenticated guard (user or admin)
-     */
     private function getCurrentGuard()
     {
         if (Auth::guard('admin')->check()) {
@@ -73,13 +70,15 @@ class PaymentController extends Controller
     public function show($orderId)
     {
         try {
-            $order = Order::with(['orderItems.product', 'user', 'address'])
+            // FIXED: Changed orderItems to product
+            $order = Order::with(['product', 'user', 'address'])
                          ->findOrFail($orderId);
 
             // Check authorization based on guard
             $this->authorizeOrderAccess($order);
 
-            $payment = Payment::where('order_id', $orderId)->first();
+            // FIXED: Changed order_id to id_order
+            $payment = Payment::where('id_order', $orderId)->first();
 
             // Add permission flag in response
             $guard = $this->getCurrentGuard();
@@ -115,12 +114,21 @@ class PaymentController extends Controller
      * Initialize Midtrans payment for an order
      * POST /api/payments/create
      */
-    public function create(Request $request)
+     public function create(Request $request)
     {
         $guard = $this->getCurrentGuard();
 
+        // Log the incoming request
+        Log::info('Payment create request received', [
+            'guard' => $guard,
+            'order_id' => $request->order_id,
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent()
+        ]);
+
         // Only users can create payments, not admins
         if ($guard !== 'user') {
+            Log::warning('Non-user trying to create payment', ['guard' => $guard]);
             return response()->json([
                 'success' => false,
                 'message' => 'Only users can initiate payments'
@@ -128,10 +136,11 @@ class PaymentController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'order_id' => 'required|exists:orders,id'
+            'order_id' => 'required|exists:order,id'
         ]);
 
         if ($validator->fails()) {
+            Log::warning('Payment validation failed', ['errors' => $validator->errors()->all()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Validation error',
@@ -140,22 +149,66 @@ class PaymentController extends Controller
         }
 
         $orderId = $request->order_id;
-        $order = Order::with('orderItems.product')->find($orderId);
+        $order = Order::with(['product', 'address'])->find($orderId);
+
+        if (!$order) {
+            Log::error('Order not found for payment', ['order_id' => $orderId]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
 
         // Check if user owns this order
         $userId = $this->getCurrentUserId();
         if ($order->id_pemesan != $userId) {
+            Log::warning('User trying to pay for another user\'s order', [
+                'user_id' => $userId,
+                'order_user_id' => $order->id_pemesan
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'You can only pay for your own orders'
             ], 403);
         }
 
-        // Validate order can be paid
-        if ($order->status == 'paid') {
+        // Check if payment already exists
+        $existingPayment = Payment::where('id_order', $orderId)->first();
+        if ($existingPayment) {
+            // If payment already exists and is pending, return existing token
+            if ($existingPayment->status === 'pending' && $existingPayment->snap_token) {
+                Log::info('Returning existing pending payment', [
+                    'order_id' => $orderId,
+                    'payment_id' => $existingPayment->id
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Existing payment found',
+                    'data' => [
+                        'snap_token' => $existingPayment->snap_token,
+                        'midtrans_order_id' => $existingPayment->transaction_id,
+                        'payment_id' => $existingPayment->id,
+                        'client_key' => config('services.midtrans.client_key'),
+                    ]
+                ]);
+            }
+
+            // If payment exists but not pending, check if we can create new one
+            if (in_array($existingPayment->status, ['settlement', 'capture', 'success'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order has already been paid'
+                ], 400);
+            }
+        }
+
+        // Validate order can be paid (check order status, not payment status)
+        if (in_array($order->status, ['paid', 'completed', 'shipped', 'delivered'])) {
+            Log::info('Order already completed', ['order_id' => $orderId, 'status' => $order->status]);
             return response()->json([
                 'success' => false,
-                'message' => 'Order has already been paid'
+                'message' => 'Order has already been completed'
             ], 400);
         }
 
@@ -163,23 +216,57 @@ class PaymentController extends Controller
         $midtransOrderId = 'PLMB-' . $orderId . '-' . time();
 
         try {
+            Log::info('Calling Midtrans Snap API', [
+                'order_id' => $orderId,
+                'midtrans_order_id' => $midtransOrderId,
+                'amount' => $order->total_harga
+            ]);
+
             // Call Midtrans Snap API
             $snapToken = $this->createSnapTransaction($order, $midtransOrderId);
 
-            // Create pending payment record
-            $payment = Payment::create([
+            Log::info('Midtrans Snap token received', [
                 'order_id' => $orderId,
-                'payment_method' => 'pending',
-                'amount' => $order->total_harga,
-                'status' => 'pending',
-                'transaction_id' => $midtransOrderId,
-                'payment_date' => null,
+                'token_length' => strlen($snapToken),
+                'token_preview' => substr($snapToken, 0, 20) . '...'
             ]);
+
+            // CRITICAL FIX: Create or update payment record
+            // The error was because 'id_order' might be a foreign key that doesn't auto-increment
+            if ($existingPayment) {
+                // Update existing payment
+                $existingPayment->update([
+                    'payment_method' => 'midtrans',
+                    'amount' => $order->total_harga,
+                    'status' => 'pending',
+                    'transaction_id' => $midtransOrderId,
+                    'snap_token' => $snapToken,
+                    'payment_date' => null,
+                ]);
+                $payment = $existingPayment;
+            } else {
+                // Create new payment - MAKE SURE id_order is included
+                $payment = Payment::create([
+                    'id_order' => $orderId, // This is essential!
+                    'payment_method' => 'midtrans',
+                    'amount' => $order->total_harga,
+                    'status' => 'pending',
+                    'transaction_id' => $midtransOrderId,
+                    'snap_token' => $snapToken,
+                    'payment_date' => null,
+                ]);
+            }
 
             // Update order with Midtrans order ID
             $order->update([
                 'midtrans_order_id' => $midtransOrderId,
-                'status' => 'payment_pending'
+                'status' => 'payment pending' // Or keep as 'pending' if you prefer
+            ]);
+
+            Log::info('Payment record created/updated', [
+                'payment_id' => $payment->id,
+                'order_id' => $orderId,
+                'action' => $existingPayment ? 'updated' : 'created'
             ]);
 
             return response()->json([
@@ -190,10 +277,10 @@ class PaymentController extends Controller
                     'midtrans_order_id' => $midtransOrderId,
                     'payment_id' => $payment->id,
                     'client_key' => config('services.midtrans.client_key'),
-                    'redirect_urls' => [
-                        'finish' => route('api.payment.return', $order->id),
-                        'error' => route('api.payment.error', $order->id),
-                        'pending' => route('api.payment.pending', $order->id),
+                    'debug' => [
+                        'order_total' => $order->total_harga,
+                        'order_status' => $order->status,
+                        'product_name' => $order->nama_produk
                     ]
                 ]
             ]);
@@ -204,15 +291,298 @@ class PaymentController extends Controller
                 'user_id' => $userId,
                 'guard' => $guard,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
+                'midtrans_order_id' => $midtransOrderId ?? 'not_generated'
             ]);
 
             return response()->json([
                 'success' => false,
                 'message' => 'Payment gateway error',
-                'error' => env('APP_DEBUG') ? $e->getMessage() : 'Internal server error'
+                'error' => env('APP_DEBUG') ? $e->getMessage() : 'Internal server error',
+                'debug' => env('APP_DEBUG') ? [
+                    'exception' => get_class($e),
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile()
+                ] : null
             ], 500);
         }
+    }
+
+    /**
+     * Payment return callback (when user finishes payment)
+     * GET /api/payments/return/{orderId}
+     */
+    public function paymentReturn($orderId)
+    {
+        try {
+            $order = Order::find($orderId);
+
+            if (!$order) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order not found'
+                ], 404);
+            }
+
+            // Check authorization based on guard
+            $this->authorizeOrderAccess($order);
+
+            // Get latest payment status
+            $payment = Payment::where('id_order', $orderId)->latest()->first();
+
+            $guard = $this->getCurrentGuard();
+            $canModify = ($guard === 'admin');
+
+            if ($payment && in_array($payment->status, ['settlement', 'capture'])) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Payment successful',
+                    'data' => [
+                        'order' => $order,
+                        'payment' => $payment,
+                        'status' => 'success',
+                        'permissions' => [
+                            'can_modify' => $canModify,
+                            'guard_type' => $guard
+                        ]
+                    ]
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment is being processed',
+                'data' => [
+                    'order' => $order,
+                    'payment' => $payment,
+                    'status' => 'pending',
+                    'permissions' => [
+                        'can_modify' => $canModify,
+                        'guard_type' => $guard
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            $statusCode = $e->getCode() ?: 500;
+            if ($statusCode < 100 || $statusCode >= 600) {
+                $statusCode = 500;
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => env('APP_DEBUG') ? $e->getTraceAsString() : null
+            ], $statusCode);
+        }
+    }
+
+    /**
+     * Payment error callback
+     * GET /api/payments/error/{orderId}
+     */
+    public function paymentError($orderId)
+    {
+        try {
+            $order = Order::find($orderId);
+
+            if (!$order) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order not found'
+                ], 404);
+            }
+
+            // Check authorization based on guard
+            $this->authorizeOrderAccess($order);
+
+            $payment = Payment::where('id_order', $orderId)->latest()->first();
+
+            $guard = $this->getCurrentGuard();
+            $canModify = ($guard === 'admin');
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment failed or was cancelled',
+                'data' => [
+                    'order' => $order,
+                    'payment' => $payment,
+                    'status' => 'error',
+                    'permissions' => [
+                        'can_modify' => $canModify,
+                        'guard_type' => $guard
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            $statusCode = $e->getCode() ?: 500;
+            if ($statusCode < 100 || $statusCode >= 600) {
+                $statusCode = 500;
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => env('APP_DEBUG') ? $e->getTraceAsString() : null
+            ], $statusCode);
+        }
+    }
+
+    /**
+     * Payment pending callback
+     * GET /api/payments/pending/{orderId}
+     */
+    public function paymentPending($orderId)
+    {
+        try {
+            $order = Order::find($orderId);
+
+            if (!$order) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order not found'
+                ], 404);
+            }
+
+            // Check authorization based on guard
+            $this->authorizeOrderAccess($order);
+
+            $payment = Payment::where('id_order', $orderId)->latest()->first();
+
+            $guard = $this->getCurrentGuard();
+            $canModify = ($guard === 'admin');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment is pending. We will notify you once it\'s completed.',
+                'data' => [
+                    'order' => $order,
+                    'payment' => $payment,
+                    'status' => 'pending',
+                    'permissions' => [
+                        'can_modify' => $canModify,
+                        'guard_type' => $guard
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            $statusCode = $e->getCode() ?: 500;
+            if ($statusCode < 100 || $statusCode >= 600) {
+                $statusCode = 500;
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => env('APP_DEBUG') ? $e->getTraceAsString() : null
+            ], $statusCode);
+        }
+    }
+
+    /**
+     * Handle Midtrans webhook notification (NO GUARD CHECK - This is called by Midtrans)
+     * POST /api/payments/notification
+     */
+    public function handleNotification(Request $request)
+    {
+        Log::info('Midtrans notification received', [
+            'payload' => $request->all(),
+            'ip' => $request->ip()
+        ]);
+
+        try {
+            // Verify the notification is from Midtrans (optional: verify signature)
+            $notification = $request->all();
+
+            // Get transaction details
+            $orderId = $notification['order_id'] ?? null;
+            $transactionStatus = $notification['transaction_status'] ?? null;
+            $fraudStatus = $notification['fraud_status'] ?? null;
+            $paymentType = $notification['payment_type'] ?? null;
+
+            if (!$orderId || !$transactionStatus) {
+                Log::error('Invalid notification payload', ['notification' => $notification]);
+                return response()->json(['status' => 'error', 'message' => 'Invalid payload'], 400);
+            }
+
+            // Find payment by transaction_id (Midtrans order_id)
+            $payment = Payment::where('transaction_id', $orderId)->first();
+
+            if (!$payment) {
+                Log::error('Payment not found for notification', ['order_id' => $orderId]);
+                return response()->json(['status' => 'error', 'message' => 'Payment not found'], 404);
+            }
+
+            // Update payment status
+            $oldStatus = $payment->status;
+            $payment->update([
+                'status' => $transactionStatus,
+                'payment_method' => $paymentType,
+                'raw_response' => json_encode($notification),
+                'payment_date' => in_array($transactionStatus, ['settlement', 'capture']) ? now() : null,
+            ]);
+
+            // Update order status based on payment
+            $order = Order::find($payment->id_order);
+            if ($order) {
+                $orderStatus = $this->mapPaymentToOrderStatus($transactionStatus, $fraudStatus);
+                $oldOrderStatus = $order->status;
+                $order->update(['status' => $orderStatus]);
+
+                Log::info('Order status updated', [
+                    'order_id' => $order->id,
+                    'old_status' => $oldOrderStatus,
+                    'new_status' => $orderStatus,
+                    'payment_status' => $transactionStatus
+                ]);
+            }
+
+            Log::info('Notification processed successfully', [
+                'payment_id' => $payment->id,
+                'old_status' => $oldStatus,
+                'new_status' => $transactionStatus,
+                'order_id' => $order->id ?? null
+            ]);
+
+            return response()->json(['status' => 'ok']);
+
+        } catch (\Exception $e) {
+            Log::error('Error processing Midtrans notification', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'payload' => $request->all()
+            ]);
+
+            return response()->json(['status' => 'error', 'message' => 'Processing failed'], 500);
+        }
+    }
+
+    /**
+     * Map Midtrans payment status to order status
+     */
+    private function mapPaymentToOrderStatus($paymentStatus, $fraudStatus = null)
+    {
+        $statusMap = [
+            'capture' => 'paid',
+            'settlement' => 'paid',
+            'pending' => 'payment pending',
+            'deny' => 'payment failed',
+            'expire' => 'payment expired',
+            'cancel' => 'cancelled',
+        ];
+
+        $orderStatus = $statusMap[$paymentStatus] ?? 'pending';
+
+        // Handle fraud cases
+        if ($fraudStatus === 'challenge') {
+            return 'payment_challenge';
+        } elseif ($fraudStatus === 'deny') {
+            return 'payment_failed';
+        }
+
+        return $orderStatus;
     }
 
     /**
@@ -230,7 +600,8 @@ class PaymentController extends Controller
 
         if ($guard === 'admin') {
             // Admin can see all payments or filter by specific user
-            $query = Payment::with(['order.orderItems.product', 'order.user']);
+            // FIXED: Changed order.orderItems.product to order.product
+            $query = Payment::with(['order.product', 'order.user']);
 
             if ($userId) {
                 $query->whereHas('order', function($q) use ($userId) {
@@ -244,7 +615,7 @@ class PaymentController extends Controller
             $query = Payment::whereHas('order', function($q) use ($userId) {
                     $q->where('id_pemesan', $userId);
                 })
-                ->with(['order.orderItems.product']);
+                ->with(['order.product']); // FIXED: Changed orderItems.product to product
         } else {
             return response()->json([
                 'success' => false,
@@ -287,7 +658,8 @@ class PaymentController extends Controller
      */
     public function detail($paymentId)
     {
-        $payment = Payment::with(['order.orderItems.product', 'order.user', 'order.address'])
+        // FIXED: Changed order.orderItems.product to order.product
+        $payment = Payment::with(['order.product', 'order.user', 'order.address'])
                          ->find($paymentId);
 
         if (!$payment) {
@@ -344,7 +716,8 @@ class PaymentController extends Controller
             ], $e->getCode() ?: 403);
         }
 
-        $payment = Payment::where('order_id', $orderId)->first();
+        // FIXED: Changed order_id to id_order
+        $payment = Payment::where('id_order', $orderId)->first();
 
         if (!$payment) {
             return response()->json([
@@ -426,7 +799,8 @@ class PaymentController extends Controller
             ], 401);
         }
 
-        $payment = Payment::where('order_id', $orderId)->first();
+        // FIXED: Changed order_id to id_order
+        $payment = Payment::where('id_order', $orderId)->first();
 
         if (!$payment) {
             return response()->json([
@@ -510,54 +884,47 @@ class PaymentController extends Controller
         ]);
     }
 
-    /**
-     * Admin-only: Get payments statistics
-     * GET /api/payments/statistics
-     */
-    public function getStatistics(Request $request)
+    public function paymentUnfinished($orderId)
     {
-        // Only admin can view statistics
-        if ($this->getCurrentGuard() !== 'admin') {
+        try {
+            $order = Order::find($orderId);
+
+            if (!$order) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order not found'
+                ], 404);
+            }
+
+            // Check authorization
+            $this->authorizeOrderAccess($order);
+
+            $payment = Payment::where('id_order', $orderId)->latest()->first();
+            $guard = $this->getCurrentGuard();
+            $canModify = ($guard === 'admin');
+
+            // DON'T update status - just return info
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment window closed',
+                'data' => [
+                    'order' => $order,
+                    'payment' => $payment,
+                    'status' => 'unfinished', // Special status
+                    'action_required' => true, // Frontend can show "Continue Payment" button
+                    'permissions' => [
+                        'can_modify' => $canModify,
+                        'guard_type' => $guard
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Only administrators can view statistics'
-            ], 403);
+                'message' => $e->getMessage()
+            ], $e->getCode() ?: 500);
         }
-
-        $startDate = $request->get('start_date', now()->subDays(30)->format('Y-m-d'));
-        $endDate = $request->get('end_date', now()->format('Y-m-d'));
-
-        $statistics = [
-            'total_payments' => Payment::whereBetween('created_at', [$startDate, $endDate])->count(),
-            'total_amount' => Payment::whereBetween('created_at', [$startDate, $endDate])->sum('amount'),
-            'successful_payments' => Payment::whereIn('status', ['settlement', 'capture', 'success'])
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->count(),
-            'pending_payments' => Payment::where('status', 'pending')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->count(),
-            'failed_payments' => Payment::whereIn('status', ['failed', 'deny', 'expire'])
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->count(),
-            'payment_methods' => Payment::selectRaw('payment_method, COUNT(*) as count, SUM(amount) as total')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->groupBy('payment_method')
-                ->get(),
-            'daily_summary' => Payment::selectRaw('DATE(created_at) as date, COUNT(*) as count, SUM(amount) as total')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->groupBy('date')
-                ->orderBy('date', 'desc')
-                ->get()
-        ];
-
-        return response()->json([
-            'success' => true,
-            'data' => $statistics,
-            'period' => [
-                'start_date' => $startDate,
-                'end_date' => $endDate
-            ]
-        ]);
     }
 
     /**
@@ -568,27 +935,237 @@ class PaymentController extends Controller
         $finalStatuses = ['settlement', 'capture', 'success', 'deny', 'expire', 'cancel'];
         return in_array($status, $finalStatuses);
     }
-
-    /**
-     * Create Snap transaction on Midtrans
-     */
     private function createSnapTransaction(Order $order, $midtransOrderId)
     {
-        // ... (same as before, no changes needed)
         $serverKey = config('services.midtrans.server_key');
+        $clientKey = config('services.midtrans.client_key');
         $isProduction = config('services.midtrans.is_production', false);
+
+        Log::info('Creating Snap transaction', [
+            'midtrans_order_id' => $midtransOrderId,
+            'order_total_harga' => $order->total_harga,
+            'order_harga_produk' => $order->harga_produk,
+            'order_kuantitas' => $order->kuantitas,
+            'order_potongan_harga' => $order->potongan_harga,
+        ]);
+
+        if (empty($serverKey)) {
+            throw new \Exception('Midtrans server key is not configured');
+        }
 
         $baseUrl = $isProduction
             ? 'https://app.midtrans.com/snap/v1/transactions'
             : 'https://app.sandbox.midtrans.com/snap/v1/transactions';
 
+        // CRITICAL FIX: Calculate item price AFTER discount
+        $hargaProduk = (int) $order->harga_produk; // Original price: 150,000
+        $potonganPersen = (float) $order->potongan_harga; // Discount percentage: 20%
+
+        // Calculate price per item after discount
+        $hargaSetelahDiskon = $hargaProduk;
+        if ($potonganPersen > 0) {
+            $hargaSetelahDiskon = $hargaProduk - ($hargaProduk * $potonganPersen / 100);
+        }
+
+        // Round to integer (Midtrans requires integer)
+        $hargaSetelahDiskon = (int) round($hargaSetelahDiskon); // Should be 120,000
+
+        // Verify calculation matches order total
+        $calculatedTotal = $hargaSetelahDiskon * (int) $order->kuantitas;
+        $orderTotal = (int) $order->total_harga;
+
+        Log::info('Price calculations', [
+            'original_price' => $hargaProduk,
+            'discount_percentage' => $potonganPersen,
+            'price_after_discount' => $hargaSetelahDiskon,
+            'quantity' => (int) $order->kuantitas,
+            'calculated_total' => $calculatedTotal,
+            'order_total' => $orderTotal,
+            'match' => $calculatedTotal === $orderTotal
+        ]);
+
+        // Use order total directly to avoid rounding issues
+        $grossAmount = $orderTotal; // 120,000
+
         // Prepare transaction details
         $transactionDetails = [
             'order_id' => $midtransOrderId,
-            'gross_amount' => (int) $order->total_harga,
+            'gross_amount' => $grossAmount,
         ];
 
-        // ... rest of the method unchanged
-        // (keep your existing implementation here)
+        // Prepare item details - SIMPLIFIED: Just one item with discounted price
+        $itemDetails = [[
+            'id' => $order->id_produk ?? 'product-' . $order->id,
+            'price' => $hargaSetelahDiskon, // Use discounted price: 120,000
+            'quantity' => (int) $order->kuantitas, // 1
+            'name' => $order->nama_produk ?? 'Produk',
+        ]];
+
+        // Prepare customer details
+        $customerName = $order->nama_penerima ?? ($order->user->nama ?? 'Customer');
+        $customerEmail = $order->user->email ?? 'customer@example.com';
+        $customerPhone = $order->telepon_penerima ?? ($order->user->telepon ?? '');
+
+        $customerDetails = [
+            'first_name' => $customerName,
+            'email' => $customerEmail,
+            'phone' => $customerPhone,
+        ];
+
+
+        $payload = [
+            'transaction_details' => $transactionDetails,
+            'item_details' => $itemDetails,
+            'customer_details' => $customerDetails,
+            'callbacks' => [
+                 'finish' => url("/user/api/payments/return/{$order->id}"),
+                'error' => url("/user/api/payments/error/{$order->id}"),
+                'pending' => url("/user/api/payments/pending/{$order->id}"),
+                'close' => url("/user/api/payments/unfinished/{$order->id}"),
+            ],
+
+            'enabled_payments' => [
+                'credit_card',
+                'bca_va',
+                'bni_va',
+                'bri_va',
+                'permata_va',
+                'other_va',
+                'gopay', // Enables GoPay and its QRIS
+            ],
+            'credit_card' => [
+                'secure' => true,
+
+            ],
+            'expiry' => [
+                'start_time' => date("Y-m-d H:i:s O", time()),
+                'unit' => 'minutes',
+                'duration' => 1440 // Payment expires in 24 hours
+            ],
+];
+
+        // Verify item sum equals gross amount
+        $itemSum = array_sum(array_map(function($item) {
+            return $item['price'] * $item['quantity'];
+        }, $itemDetails));
+
+        Log::info('Payload verification', [
+            'gross_amount' => $grossAmount,
+            'item_sum' => $itemSum,
+            'match' => $grossAmount === $itemSum,
+            'item_details' => $itemDetails
+        ]);
+
+        if ($grossAmount !== $itemSum) {
+            Log::error('Item sum mismatch', [
+                'gross_amount' => $grossAmount,
+                'item_sum' => $itemSum,
+                'difference' => $grossAmount - $itemSum
+            ]);
+
+            // FIX: If there's a mismatch due to rounding, adjust the price
+            if (abs($grossAmount - $itemSum) <= 1) {
+                $itemDetails[0]['price'] = $grossAmount; // Use exact total as price
+                Log::info('Adjusted for rounding difference', [
+                    'new_price' => $itemDetails[0]['price']
+                ]);
+            } else {
+                throw new \Exception('Item total does not match gross amount. Gross: ' . $grossAmount . ', Items: ' . $itemSum);
+            }
+        }
+
+        Log::info('Midtrans payload prepared', [
+            'payload' => $payload,
+            'payload_size' => strlen(json_encode($payload))
+        ]);
+
+        // Send request to Midtrans
+        try {
+            $httpClient = Http::withOptions([
+                'verify' => false, // Disable SSL verification
+                'timeout' => 30,
+                'connect_timeout' => 10,
+            ])->withBasicAuth($serverKey, '')
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ]);
+
+            $response = $httpClient->post($baseUrl, $payload);
+
+            Log::info('Midtrans API response', [
+                'status_code' => $response->status(),
+                'response_body' => $response->body(),
+            ]);
+
+            if (!$response->successful()) {
+                $error = $response->json();
+                Log::error('Midtrans API error response', [
+                    'error_message' => $error['error_message'] ?? 'Unknown error',
+                    'error_code' => $error['status_code'] ?? 'No code',
+                    'full_response' => $error
+                ]);
+                throw new \Exception('Midtrans API error: ' . ($error['error_message'] ?? $response->body()));
+            }
+
+            $data = $response->json();
+
+            if (!isset($data['token'])) {
+                Log::error('Midtrans response missing token', ['response' => $data]);
+                throw new \Exception('Midtrans response missing token');
+            }
+
+            Log::info('Midtrans token generated successfully');
+            return $data['token'];
+
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            Log::error('Midtrans connection failed', [
+                'error' => $e->getMessage(),
+                'url' => $baseUrl
+            ]);
+            throw new \Exception('Cannot connect to Midtrans server. Check your internet connection.');
+        } catch (\Exception $e) {
+            Log::error('Midtrans API call failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
+
+    // Also fix the checkMidtransStatus method if it exists but isn't shown:
+    private function checkMidtransStatus($transactionId)
+    {
+        $serverKey = config('services.midtrans.server_key');
+        $isProduction = config('services.midtrans.is_production', false);
+
+        $baseUrl = $isProduction
+            ? "https://api.midtrans.com/v2/{$transactionId}/status"
+            : "https://api.sandbox.midtrans.com/v2/{$transactionId}/status";
+
+        try {
+            $response = Http::withOptions([
+                'verify' => false, // Disable SSL verification
+                'timeout' => 30,
+                'connect_timeout' => 10,
+            ])->withBasicAuth($serverKey, '')
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ])
+            ->get($baseUrl);
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            return null;
+        } catch (\Exception $e) {
+            Log::error('Error checking Midtrans status', [
+                'transaction_id' => $transactionId,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
     }
 }
