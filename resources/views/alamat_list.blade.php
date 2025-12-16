@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kategori - ADR Catalogue</title>
+    <title>Daftar Alamat - ADR Catalogue</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
@@ -15,66 +16,12 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
-
-        .category-gradient {
-            background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
-        }
-
-        .light-blue-gradient {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 25%, #93c5fd 50%, #60a5fa 75%, #3b82f6 100%);
-        }
-
-        .category-card {
-            transition: all 0.3s ease;
-        }
-
-        .category-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .category-icon {
-            transition: all 0.3s ease;
-        }
-
-        .category-card:hover .category-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .slide-in {
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200">
-    <!-- Modern Navbar -->
+<body class="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 min-h-screen">
+
+    {{-- NAVBAR --}}
     <nav class="bg-white/95 backdrop-blur-md shadow-xl sticky top-0 z-50 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -336,192 +283,48 @@
         </div>
     </nav>
 
-    <style>
-        .nav-link {
-            position: relative;
-            overflow: hidden;
-        }
 
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(59, 130, 246, 0.1);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
+    <div class="max-w-4xl mx-auto px-4 py-10">
 
-        .nav-link:hover::before {
-            width: 100px;
-            height: 100px;
-        }
-
-        .mobile-nav-link {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mobile-nav-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .mobile-nav-link:hover::before {
-            left: 100%;
-        }
-    </style>
-
-    <!-- Header Section -->
-    <section class="category-gradient text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-            <div class="text-center slide-in">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">Jelajahi Kategori</h1>
-                <p class="text-xl opacity-90 max-w-2xl mx-auto">
-                    Temukan berbagai kategori produk yang sesuai dengan kebutuhan Anda
-                </p>
-            </div>
+        {{-- TITLE --}}
+        <div class="mb-10">
+            <p class="text-gray-600 text-sm mb-2">
+                Beranda / Checkout / <span class="font-semibold text-gray-800">Daftar Alamat</span>
+            </p>
+            <h1 class="text-3xl font-bold text-gray-800">Daftar Alamat Anda</h1>
         </div>
-    </section>
 
-    <!-- Search and Filter Section -->
-    <section class="py-8 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div class="relative flex-1">
-                    <input type="text" placeholder="Cari kategori..."
-                        class="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Categories Grid -->
-    <section class="py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div id="category-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">Kategori Pilihan</h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Temukan produk berkualitas dari berbagai kategori terpercaya
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
-                        <i class="fas fa-box text-2xl text-indigo-600"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">1,000+</h3>
-                    <p class="text-gray-600">Produk Tersedia</p>
-                </div>
-
-                <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-                        <i class="fas fa-tags text-2xl text-green-600"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">50+</h3>
-                    <p class="text-gray-600">Promo Aktif</p>
-                </div>
-
-                <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4">
-                        <i class="fas fa-users text-2xl text-purple-600"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">10,000+</h3>
-                    <p class="text-gray-600">Pelanggan Puas</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900 text-white py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <img class="h-8 w-auto mr-2" src="{{ asset('images/asset/logo.png') }}" alt="ADR Catalogue">
-                        <span class="text-xl font-bold">ADR Catalogue</span>
-                    </div>
-                    <p class="text-gray-400">Temukan produk terbaik dengan harga terjangkau</p>
-                </div>
+        {{-- CARD LIST ALAMAT --}}
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">Alamat Tersimpan</h2>
 
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Menu</h3>
-                    <ul class="space-y-2">
-                        <li><a href="{{ route('home') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Beranda</a></li>
-                        <li><a href="{{ route('promo') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Promo</a></li>
-                        <li><a href="{{ route('kategori') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Kategori</a></li>
-                        <li><a href="{{ route('rekomendasi') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Rekomendasi</a></li>
-                        <li><a href="{{ route('profile') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Profil</a></li>
-                    </ul>
-                </div>
+                    <a href="{{ route('pembayaran') }}"
+                        class="inline-flex items-center mr-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Kembali
+                    </a>
 
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Bantuan</h3>
-                    <ul class="space-y-2">
-                        <li><a href="{{ route('faq') }}"
-                                class="text-blue-200 hover:text-white transition-colors">FAQ</a></li>
-                        <li><a href="{{ route('pengiriman') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Pengiriman</a></li>
-                        <li><a href="{{ route('pengembalian') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Pengembalian</a></li>
-                        <li><a href="{{ route('kontak') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Kontak</a></li>
-                    </ul>
-                </div>
+                    <a href="{{ route('addalamat') }}"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition">
+                        <i class="fas fa-plus mr-2"></i>Tambah Alamat
+                    </a>
 
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Ikuti Kami</h3>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-blue-200 hover:text-white transition-colors">
-                            <i class="fab fa-facebook-f text-xl"></i>
-                        </a>
-                        <a href="#" class="text-blue-200 hover:text-white transition-colors">
-                            <i class="fab fa-instagram text-xl"></i>
-                        </a>
-                        <a href="#" class="text-blue-200 hover:text-white transition-colors">
-                            <i class="fab fa-twitter text-xl"></i>
-                        </a>
-                        <a href="#" class="text-blue-200 hover:text-white transition-colors">
-                            <i class="fab fa-youtube text-xl"></i>
-                        </a>
-                    </div>
                 </div>
             </div>
 
-            <div class="border-t border-blue-700 mt-8 pt-8 text-center text-blue-200">
-                <p>&copy; 2024 ADR Catalogue. All rights reserved.</p>
+            <!-- Address Container - Will be populated by JavaScript -->
+            <div id="addresses-container">
+                <!-- Loading state -->
+                <div class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                    <p class="mt-2 text-gray-600">Memuat alamat...</p>
+                </div>
             </div>
         </div>
-    </footer>
+
+    </div>
 
     <script>
         function toggleMobileMenu() {
@@ -529,112 +332,329 @@
             menu.classList.toggle('hidden');
         }
 
-        function filterCategories(type) {
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-indigo-600', 'text-white');
-                btn.classList.add('bg-gray-200', 'text-gray-700');
-            });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load addresses on page load
+            loadAddresses();
 
-            event.target.classList.remove('bg-gray-200', 'text-gray-700');
-            event.target.classList.add('bg-indigo-600', 'text-white');
+            async function loadAddresses() {
+                const container = document.getElementById('addresses-container');
 
-            // Here you would typically filter the categories based on the type
-            console.log('Filtering categories by:', type);
-        }
-
-        // Search functionality
-        document.querySelector('input[placeholder="Cari kategori..."]').addEventListener('input', function (e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const categoryCards = document.querySelectorAll('.category-card');
-
-            categoryCards.forEach(card => {
-                const categoryName = card.querySelector('h3').textContent.toLowerCase();
-                if (categoryName.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", loadCategories);
-
-        function loadCategories() {
-            const grid = document.getElementById("category-grid");
-
-            fetch('/public/categories', {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (!data.success || !data.data) return;
-
-                    grid.innerHTML = ""; // Clear placeholder
-
-                    data.data.forEach((cat, index) => {
-                        const productCount = cat.products_count ?? 0; // fallback
-
-                        // nice random gradient color
-                        const gradients = [
-                            "from-blue-400 to-blue-600",
-                            "from-purple-400 to-purple-600",
-                            "from-teal-400 to-teal-600",
-                            "from-amber-400 to-amber-600",
-                            "from-rose-400 to-rose-600",
-                            "from-green-400 to-green-600"
-                        ];
-                        const gradient = gradients[index % gradients.length];
-
-                        // Category card HTML
-                        const card = `
-                            <div class="category-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer slide-in"
-                                onclick="redirectToCategory('${cat.id}')">
-
-                                <div class="bg-gradient-to-br ${gradient} p-8 text-center">
-                                    <div class="category-icon inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4 overflow-hidden">
-                                        ${cat.path_thumbnail
-                                ? `<img src="/${cat.path_thumbnail}" class="w-full h-full object-cover rounded-full">`
-                                : `<i class="fas fa-box text-3xl text-white"></i>`
-                            }
-                                    </div>
-
-                                    <h3 class="text-xl font-bold text-white mb-2 whitespace-nowrap overflow-hidden text-ellipsis">${cat.nama}</h3>
-                                    <p class="text-white/80 text-sm">${productCount} Produk</p>
-                                </div>
-
-                                <div class="p-4">
-                                    <div class="flex items-center justify-between text-sm text-gray-600">
-                                        <span>
-                                            <i class="fas fa-tag text-gray-500 mr-1"></i> Kategori
-                                        </span>
-                                        <span><i class="fas fa-arrow-right text-blue-500"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-
-                        grid.insertAdjacentHTML("beforeend", card);
+                try {
+                    const response = await fetch('/user/api/addresses/', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') || ''
+                        }
                     });
-                })
-                .catch(err => {
-                    console.error("Error fetching categories:", err);
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        displayAddresses(result.data, container);
+                    } else {
+                        throw new Error(result.message || 'Gagal memuat alamat');
+                    }
+
+                } catch (error) {
+                    console.error('Error loading addresses:', error);
+                    container.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-4"></i>
+                            <p class="text-gray-600">Gagal memuat alamat</p>
+                            <p class="text-sm text-gray-500 mt-1">${error.message}</p>
+                            <button onclick="loadAddresses()"
+                                    class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                Coba Lagi
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            function displayAddresses(addresses, container) {
+                if (!addresses || addresses.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-map-marker-alt text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600">Belum ada alamat tersimpan</p>
+                            <p class="text-sm text-gray-500 mt-1">Tambahkan alamat pertama Anda</p>
+                            <a href="{{ route('addalamat') }}"
+                            class="mt-4 inline-block px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                Tambah Alamat
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="space-y-5 mt-4" id="addresses-list">
+                        ${addresses.map((address, index) => createAddressCard(address, index)).join('')}
+                    </div>
+                `;
+
+                // FIXED: Use attachEventListeners() instead of attachDeleteListeners()
+                attachEventListeners(); // ← THIS IS THE FIX
+            }
+
+            function createAddressCard(address, index) {
+                // Split address lines for better display
+                const addressLines = address.desk_alamat.split('\n');
+
+                return `
+                    <div class="border rounded-xl p-5 shadow-sm bg-gray-50 hover:bg-gray-100 transition relative"
+                        data-address-id="${address.id}">
+
+                        <!-- Badge Section - Top Right -->
+                        ${address.selected ? `
+                            <div class="absolute top-3 right-3">
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
+                                    <i class="fas fa-check-circle mr-1"></i>Utama
+                                </span>
+                            </div>
+                        ` : `
+                            <div class="absolute top-3 right-3">
+                                <span class="bg-gray-100 text-gray-600 text-xs font-medium px-2 py-1 rounded">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>Non-Utama
+                                </span>
+                            </div>
+                        `}
+
+                        <!-- Address Name -->
+                        <p class="text-lg font-semibold text-gray-800" data-address-name>${escapeHtml(address.nama)}</p>
+
+                        <!-- Address Details -->
+                        <div class="mt-2 space-y-1">
+                            ${addressLines.map(line => `
+                                <p class="text-gray-700">${escapeHtml(line)}</p>
+                            `).join('')}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex justify-between items-center mt-4">
+                            <!-- LEFT: Set as Default Button (only if not already default) -->
+                            ${!address.selected ? `
+                                <div>
+                                    <button class="select-address-btn px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                                            data-address-id="${address.id}">
+                                        <i class="fas fa-check-circle mr-1"></i>Jadikan Utama
+                                    </button>
+                                </div>
+                            ` : '<div></div>' /* Empty div to maintain layout when no default button */}
+
+                            <!-- RIGHT: Edit and Delete buttons -->
+                            <div class="flex space-x-2">
+                                <!-- Edit Button -->
+                                <button class="edit-address-btn px-4 py-2 text-sm bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
+                                        data-address-id="${address.id}">
+                                    <i class="fas fa-edit mr-1"></i>Edit
+                                </button>
+
+                                <!-- Delete Button -->
+                                <button class="delete-address-btn px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                                        data-address-id="${address.id}">
+                                    <i class="fas fa-trash mr-1"></i>Hapus
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            async function editAddress(addressId) {
+                try {
+                    const response = await fetch(`/user/api/addresses/${addressId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') || ''
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Store in localStorage and redirect to EDIT ROUTE
+                        localStorage.setItem('editAddressData', JSON.stringify(result.data));
+                        window.location.href = `/editalamat/${addressId}`;
+                    } else {
+                        throw new Error(result.message || 'Gagal memuat data alamat');
+                    }
+                } catch (error) {
+                    console.error('Error loading address:', error);
+                    alert('Gagal memuat data alamat: ' + error.message);
+                }
+            }
+
+            function attachEventListeners() {
+                // Edit buttons
+                document.querySelectorAll('.edit-address-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const addressId = this.getAttribute('data-address-id');
+                        editAddress(addressId);
+                    });
                 });
-        }
-        function redirectToCategory(categoryId) {
-            // Redirect to rekomendasi page with category filter
-            window.location.href = '{{ route("rekomendasi") }}?category=' + categoryId;
-        }
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
-        }
+
+                // Delete buttons
+                document.querySelectorAll('.delete-address-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const addressId = this.getAttribute('data-address-id');
+
+                        if (confirm(`Apakah Anda yakin ingin menghapus alamat ini?`)) {
+                            deleteAddress(addressId);
+                        }
+                    });
+                });
+
+                // Select buttons (make default)
+                document.querySelectorAll('.select-address-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const addressId = this.getAttribute('data-address-id');
+                        selectAddressAsDefault(addressId);
+                    });
+                });
+            }
+
+            async function deleteAddress(addressId) {
+                const button = document.querySelector(`.delete-address-btn[data-address-id="${addressId}"]`);
+                const card = document.querySelector(`[data-address-id="${addressId}"]`);
+
+                if (!button || !card) return;
+
+                // Show loading on button
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Menghapus...';
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(`/user/api/addresses/${addressId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') || ''
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Remove card with fade out animation
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateX(-20px)';
+                        card.style.transition = 'all 0.3s ease';
+
+                        setTimeout(() => {
+                            card.remove();
+
+                            // Check if no addresses left
+                            const remainingCards = document.querySelectorAll('[data-address-id]');
+                            if (remainingCards.length === 0) {
+                                loadAddresses(); // Reload to show empty state
+                            }
+
+                            // Show success message
+                            showMessage('Alamat berhasil dihapus', 'success');
+                        }, 300);
+
+                    } else {
+                        throw new Error(result.message || 'Gagal menghapus alamat');
+                    }
+
+                } catch (error) {
+                    console.error('Error deleting address:', error);
+
+                    // Restore button
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+
+                    // Show error
+                    showMessage('Gagal menghapus alamat: ' + error.message, 'error');
+                }
+            }
+
+            async function selectAddressAsDefault(addressId) {
+                const button = document.querySelector(`.select-address-btn[data-address-id="${addressId}"]`);
+
+                if (!button) return;
+
+                // Show loading on button
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Memproses...';
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(`/user/api/addresses/${addressId}/select`, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') || ''
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Reload addresses to show updated "Utama" badge
+                        loadAddresses();
+                        showMessage('Alamat utama berhasil diubah', 'success');
+                    } else {
+                        throw new Error(result.message || 'Gagal mengubah alamat utama');
+                    }
+
+                } catch (error) {
+                    console.error('Error selecting address:', error);
+
+                    // Restore button
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+
+                    // Show error
+                    showMessage('Gagal mengubah alamat utama: ' + error.message, 'error');
+                }
+            }
+
+            // Helper functions
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function showMessage(message, type = 'info') {
+                // Remove existing messages
+                const existingMsg = document.getElementById('flash-message');
+                if (existingMsg) existingMsg.remove();
+
+                const colors = {
+                    'success': 'bg-green-100 border-green-400 text-green-700',
+                    'error': 'bg-red-100 border-red-400 text-red-700',
+                    'info': 'bg-blue-100 border-blue-400 text-blue-700'
+                };
+
+                const messageDiv = document.createElement('div');
+                messageDiv.id = 'flash-message';
+                messageDiv.className = `fixed top-4 right-4 ${colors[type]} px-6 py-3 rounded-lg shadow-lg z-50 max-w-md`;
+                messageDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'} mr-3"></i>
+                        <span>${escapeHtml(message)}</span>
+                    </div>
+                `;
+
+                document.body.appendChild(messageDiv);
+
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 5000);
+            }
+
+            // Expose loadAddresses globally for retry button
+            window.loadAddresses = loadAddresses;
+        });
     </script>
 
-    <!-- Chat Bot Component (Available for all users) -->
-    @include('components.chat_bot')
 </body>
 
 </html>

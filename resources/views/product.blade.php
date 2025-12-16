@@ -4,77 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kategori - ADR Catalogue</title>
+    <title>Detail Produk - ADR Catalogue</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
         }
-
-        .category-gradient {
-            background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 25%, #60a5fa 50%, #3b82f6 75%, #2563eb 100%);
-        }
-
-        .light-blue-gradient {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 25%, #93c5fd 50%, #60a5fa 75%, #3b82f6 100%);
-        }
-
-        .category-card {
-            transition: all 0.3s ease;
-        }
-
-        .category-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .category-icon {
-            transition: all 0.3s ease;
-        }
-
-        .category-card:hover .category-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .slide-in {
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200">
-    <!-- Modern Navbar -->
+<body class="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 min-h-screen">
+
+    {{-- NAVBAR --}}
     <nav class="bg-white/95 backdrop-blur-md shadow-xl sticky top-0 z-50 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -336,305 +283,348 @@
         </div>
     </nav>
 
-    <style>
-        .nav-link {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(59, 130, 246, 0.1);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .nav-link:hover::before {
-            width: 100px;
-            height: 100px;
-        }
-
-        .mobile-nav-link {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mobile-nav-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .mobile-nav-link:hover::before {
-            left: 100%;
-        }
-    </style>
-
-    <!-- Header Section -->
-    <section class="category-gradient text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-            <div class="text-center slide-in">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">Jelajahi Kategori</h1>
-                <p class="text-xl opacity-90 max-w-2xl mx-auto">
-                    Temukan berbagai kategori produk yang sesuai dengan kebutuhan Anda
-                </p>
+    <div class="max-w-6xl mx-auto px-4 py-10" id="product-container">
+        <!-- Loading State -->
+        <div id="loading" class="text-center py-20">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent">
             </div>
+            <p class="mt-4 text-gray-600 text-lg">Memuat produk...</p>
         </div>
-    </section>
 
-    <!-- Search and Filter Section -->
-    <section class="py-8 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div class="relative flex-1">
-                    <input type="text" placeholder="Cari kategori..."
-                        class="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
-                    </div>
-                </div>
-            </div>
+        <!-- Error State -->
+        <div id="error" class="hidden text-center py-20">
+            <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
+            <h3 class="text-2xl font-medium text-gray-900 mb-2">Produk tidak ditemukan</h3>
+            <p class="text-gray-600 mb-6">Produk yang Anda cari tidak tersedia atau telah dihapus.</p>
+            <a href="{{ route('home') }}"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium">
+                <i class="fas fa-home mr-2"></i>Kembali ke Beranda
+            </a>
         </div>
-    </section>
 
-    <!-- Categories Grid -->
-    <section class="py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div id="category-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <!-- Product Content (initially hidden) -->
+        <div id="product-content" class="hidden">
+            {{-- Breadcrumb --}}
+            <p id="breadcrumb" class="text-sm text-gray-600 mb-6">
+                <a href="{{ route('home') }}" class="hover:underline">Beranda</a> /
+                <a href="{{ route('rekomendasi') }}" class="hover:underline">Rekomendasi</a> /
+                <span id="breadcrumb-product" class="text-gray-900 font-medium">Memuat...</span>
+            </p>
 
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">Kategori Pilihan</h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Temukan produk berkualitas dari berbagai kategori terpercaya
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
-                        <i class="fas fa-box text-2xl text-indigo-600"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">1,000+</h3>
-                    <p class="text-gray-600">Produk Tersedia</p>
-                </div>
-
-                <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-                        <i class="fas fa-tags text-2xl text-green-600"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">50+</h3>
-                    <p class="text-gray-600">Promo Aktif</p>
-                </div>
-
-                <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4">
-                        <i class="fas fa-users text-2xl text-purple-600"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">10,000+</h3>
-                    <p class="text-gray-600">Pelanggan Puas</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900 text-white py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <img class="h-8 w-auto mr-2" src="{{ asset('images/asset/logo.png') }}" alt="ADR Catalogue">
-                        <span class="text-xl font-bold">ADR Catalogue</span>
-                    </div>
-                    <p class="text-gray-400">Temukan produk terbaik dengan harga terjangkau</p>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Menu</h3>
-                    <ul class="space-y-2">
-                        <li><a href="{{ route('home') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Beranda</a></li>
-                        <li><a href="{{ route('promo') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Promo</a></li>
-                        <li><a href="{{ route('kategori') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Kategori</a></li>
-                        <li><a href="{{ route('rekomendasi') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Rekomendasi</a></li>
-                        <li><a href="{{ route('profile') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Profil</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Bantuan</h3>
-                    <ul class="space-y-2">
-                        <li><a href="{{ route('faq') }}"
-                                class="text-blue-200 hover:text-white transition-colors">FAQ</a></li>
-                        <li><a href="{{ route('pengiriman') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Pengiriman</a></li>
-                        <li><a href="{{ route('pengembalian') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Pengembalian</a></li>
-                        <li><a href="{{ route('kontak') }}"
-                                class="text-blue-200 hover:text-white transition-colors">Kontak</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Ikuti Kami</h3>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-blue-200 hover:text-white transition-colors">
-                            <i class="fab fa-facebook-f text-xl"></i>
-                        </a>
-                        <a href="#" class="text-blue-200 hover:text-white transition-colors">
-                            <i class="fab fa-instagram text-xl"></i>
-                        </a>
-                        <a href="#" class="text-blue-200 hover:text-white transition-colors">
-                            <i class="fab fa-twitter text-xl"></i>
-                        </a>
-                        <a href="#" class="text-blue-200 hover:text-white transition-colors">
-                            <i class="fab fa-youtube text-xl"></i>
-                        </a>
+            {{-- Main Content --}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
+                {{-- FOTO PRODUK --}}
+                <div class="md:col-span-1">
+                    <div class="bg-white rounded-xl shadow-lg p-4">
+                        <div id="product-image"
+                            class="aspect-square bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                            <!-- Image will be loaded here -->
+                            <i class="fas fa-box text-gray-400 text-4xl"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="border-t border-blue-700 mt-8 pt-8 text-center text-blue-200">
-                <p>&copy; 2024 ADR Catalogue. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+                {{-- DETAIL + CARD KANAN --}}
+                <div class="md:col-span-2 flex flex-col md:flex-row justify-between gap-8">
+                    {{-- DETAIL PRODUK --}}
+                    <div class="flex-1">
+                        <h1 id="product-name" class="text-3xl font-bold text-gray-900">Memuat...</h1>
 
-    <script>
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
-        }
+                        {{-- Price with discount calculation --}}
+                        <div id="price-container" class="mt-2">
+                            <p id="product-price" class="text-blue-700 text-2xl font-semibold">Rp0</p>
+                            <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
+                                <p id="original-price" class="text-sm text-gray-500 line-through hidden"></p>
+                                <p id="discount-badge" class="hidden text-sm text-red-500 font-medium mt-1"></p>
+                            </div>
 
-        function filterCategories(type) {
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-indigo-600', 'text-white');
-                btn.classList.add('bg-gray-200', 'text-gray-700');
-            });
+                        </div>
 
-            event.target.classList.remove('bg-gray-200', 'text-gray-700');
-            event.target.classList.add('bg-indigo-600', 'text-white');
+                        {{-- Category --}}
+                        <div id="category" class="mt-4">
+                            <span class="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full">
+                                <i class="fas fa-tag mr-1"></i><span id="category-name">Memuat...</span>
+                            </span>
+                        </div>
 
-            // Here you would typically filter the categories based on the type
-            console.log('Filtering categories by:', type);
-        }
+                        {{-- Description --}}
+                        <div class="mt-6">
+                            <h3 class="text-lg font-semibold text-gray-800">Deskripsi</h3>
+                            <p id="product-description" class="text-gray-600 mt-2 leading-relaxed">
+                                Memuat deskripsi produk...
+                            </p>
+                        </div>
+                    </div>
 
-        // Search functionality
-        document.querySelector('input[placeholder="Cari kategori..."]').addEventListener('input', function (e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const categoryCards = document.querySelectorAll('.category-card');
+                    {{-- CARD BAYAR (KANAN) --}}
+                    <div class="w-full md:w-72 bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Pembelian</h3>
 
-            categoryCards.forEach(card => {
-                const categoryName = card.querySelector('h3').textContent.toLowerCase();
-                if (categoryName.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
+                        {{-- Price Summary --}}
+                        <div class="space-y-3 mb-6">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Harga Satuan</span>
+                                <span id="unit-price" class="font-medium">Rp0</span>
+                            </div>
 
-        document.addEventListener("DOMContentLoaded", loadCategories);
+                            <div id="discount-row" class="flex justify-between text-sm hidden">
+                                <span class="text-green-600">Diskon</span>
+                                <span id="discount-value" class="font-medium text-green-600">-Rp0</span>
+                            </div>
 
-        function loadCategories() {
-            const grid = document.getElementById("category-grid");
-
-            fetch('/public/categories', {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (!data.success || !data.data) return;
-
-                    grid.innerHTML = ""; // Clear placeholder
-
-                    data.data.forEach((cat, index) => {
-                        const productCount = cat.products_count ?? 0; // fallback
-
-                        // nice random gradient color
-                        const gradients = [
-                            "from-blue-400 to-blue-600",
-                            "from-purple-400 to-purple-600",
-                            "from-teal-400 to-teal-600",
-                            "from-amber-400 to-amber-600",
-                            "from-rose-400 to-rose-600",
-                            "from-green-400 to-green-600"
-                        ];
-                        const gradient = gradients[index % gradients.length];
-
-                        // Category card HTML
-                        const card = `
-                            <div class="category-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer slide-in"
-                                onclick="redirectToCategory('${cat.id}')">
-
-                                <div class="bg-gradient-to-br ${gradient} p-8 text-center">
-                                    <div class="category-icon inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4 overflow-hidden">
-                                        ${cat.path_thumbnail
-                                ? `<img src="/${cat.path_thumbnail}" class="w-full h-full object-cover rounded-full">`
-                                : `<i class="fas fa-box text-3xl text-white"></i>`
-                            }
-                                    </div>
-
-                                    <h3 class="text-xl font-bold text-white mb-2 whitespace-nowrap overflow-hidden text-ellipsis">${cat.nama}</h3>
-                                    <p class="text-white/80 text-sm">${productCount} Produk</p>
-                                </div>
-
-                                <div class="p-4">
-                                    <div class="flex items-center justify-between text-sm text-gray-600">
-                                        <span>
-                                            <i class="fas fa-tag text-gray-500 mr-1"></i> Kategori
-                                        </span>
-                                        <span><i class="fas fa-arrow-right text-blue-500"></i></span>
-                                    </div>
+                            <div class="border-t pt-3">
+                                <div class="flex justify-between text-lg">
+                                    <span class="font-semibold text-gray-800">Total</span>
+                                    <span id="total-price" class="font-bold text-blue-700">Rp0</span>
                                 </div>
                             </div>
-                        `;
+                        </div>
 
-                        grid.insertAdjacentHTML("beforeend", card);
-                    });
-                })
-                .catch(err => {
-                    console.error("Error fetching categories:", err);
-                });
+                        {{-- Bayar Button --}}
+                        <button id="pay-button"
+                            class="mt-4 w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-credit-card mr-2"></i>Beli Sekarang
+                        </button>
+
+                        {{-- Note: Single item only --}}
+                        <p class="text-xs text-gray-500 text-center mt-3">
+                            <i class="fas fa-info-circle mr-1"></i>Hanya 1 item per transaksi
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Chat Admin --}}
+            <div class="mt-10 flex justify-center">
+                <div class="bg-white rounded-full shadow-lg flex items-center px-6 py-3 w-full md:w-2/3">
+                    <span class="flex-1 text-gray-600 font-medium">Punya pertanyaan tentang produk ini?</span>
+                    <button
+                        class="px-6 py-2 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-comment-dots mr-2"></i>Chat Admin
+                    </button>
+                </div>
+            </div>
+
+            {{-- PRODUK TERKAIT --}}
+            <h2 class="mt-12 text-xl font-bold text-gray-900 mb-4">Produk Terkait</h2>
+            <div id="related-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Related products will be loaded here -->
+                <div class="text-center py-8">
+                    <div
+                        class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent">
+                    </div>
+                    <p class="mt-2 text-gray-600 text-sm">Memuat produk terkait...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get product ID from URL
+        const pathSegments = window.location.pathname.split('/');
+        const productId = pathSegments[pathSegments.length - 1];
+
+        let productData = null;
+        let unitPrice = 0;
+        let discountAmount = 0;
+        let finalPrice = 0;
+
+        // Load product data on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            loadProductData();
+        });
+
+        async function loadProductData() {
+            try {
+                const response = await fetch(`/public/products/${productId}`);
+                if (!response.ok) throw new Error('Product not found');
+
+                const data = await response.json();
+
+                if (data.success) {
+                    productData = data.data;
+                    displayProductData();
+                    loadRelatedProducts();
+                } else {
+                    throw new Error(data.message || 'Failed to load product');
+                }
+            } catch (error) {
+                console.error('Error loading product:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').classList.remove('hidden');
+            }
         }
-        function redirectToCategory(categoryId) {
-            // Redirect to rekomendasi page with category filter
-            window.location.href = '{{ route("rekomendasi") }}?category=' + categoryId;
+
+        function displayProductData() {
+            const product = productData;
+
+            // Calculate prices
+            unitPrice = product.harga_satuan || 0;
+            discountAmount = product.promo ? product.promo.potongan_harga : 0;
+            finalPrice = discountAmount > 0 ?
+                unitPrice - (unitPrice * discountAmount / 100) :
+                unitPrice;
+
+            // Update breadcrumb
+            document.getElementById('breadcrumb-product').textContent = product.nama;
+
+            // Update product name
+            document.getElementById('product-name').textContent = product.nama;
+
+            // Update image
+            const imageContainer = document.getElementById('product-image');
+            if (product.path_thumbnail) {
+                imageContainer.innerHTML = `
+                    <img src="${product.path_thumbnail}" alt="${product.nama}"
+                         class="w-full h-full object-cover">
+                `;
+            }
+
+            // Update price display
+            const priceElement = document.getElementById('product-price');
+            const originalPriceElement = document.getElementById('original-price');
+            const discountBadge = document.getElementById('discount-badge');
+            const discountRow = document.getElementById('discount-row');
+            const discountValue = document.getElementById('discount-value');
+
+            if (discountAmount > 0) {
+                // Show discounted price
+                priceElement.textContent = `Rp ${finalPrice.toLocaleString('id-ID')}`;
+                originalPriceElement.textContent = `Rp ${unitPrice.toLocaleString('id-ID')}`;
+                originalPriceElement.classList.remove('hidden');
+
+                // Show discount badge
+                discountBadge.textContent = `-${discountAmount}%`;
+                discountBadge.classList.remove('hidden');
+
+                // Show discount in summary
+                const discountAmountValue = unitPrice - finalPrice;
+                discountValue.textContent = `-Rp ${discountAmountValue.toLocaleString('id-ID')}`;
+                discountRow.classList.remove('hidden');
+            } else {
+                // Regular price
+                priceElement.textContent = `Rp ${unitPrice.toLocaleString('id-ID')}`;
+                originalPriceElement.classList.add('hidden');
+                discountBadge.classList.add('hidden');
+                discountRow.classList.add('hidden');
+            }
+
+            // Update summary prices
+            document.getElementById('unit-price').textContent = `Rp ${unitPrice.toLocaleString('id-ID')}`;
+            document.getElementById('total-price').textContent = `Rp ${finalPrice.toLocaleString('id-ID')}`;
+
+            // Update category
+            if (product.category) {
+                document.getElementById('category-name').textContent = product.category.nama;
+            }
+
+            // Update description
+            document.getElementById('product-description').textContent =
+                product.desc || 'Tidak ada deskripsi tersedia.';
+
+            // Show content
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('product-content').classList.remove('hidden');
         }
+
+        // Pay button click handler
+        document.getElementById('pay-button').onclick = function () {
+            if (!productData) return;
+
+            // Store product data for checkout
+            const checkoutData = {
+                id: productData.id,
+                name: productData.nama,
+                original_price: unitPrice,
+                discount_percentage: discountAmount,
+                final_price: finalPrice,
+                image: productData.path_thumbnail,
+                category: productData.category?.nama || 'Uncategorized'
+            };
+
+            // Save to localStorage for checkout page
+            localStorage.setItem('checkout_product', JSON.stringify(checkoutData));
+
+            // Redirect to checkout page
+            window.location.href = '/pembayaran'; // Update with your actual checkout route
+        };
+
+        // Load related products (products from same category)
+        async function loadRelatedProducts() {
+            if (!productData || !productData.id_kategori) return;
+
+            try {
+                const response = await fetch(`/public/products/category/${productData.id_kategori}?limit=4`);
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    displayRelatedProducts(data.data);
+                }
+            } catch (error) {
+                console.error('Error loading related products:', error);
+            }
+        }
+
+        function displayRelatedProducts(products) {
+            const container = document.getElementById('related-products');
+            container.innerHTML = '';
+
+            // Filter out current product
+            const filteredProducts = products.filter(p => p.id !== productData.id).slice(0, 4);
+
+            if (filteredProducts.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <i class="fas fa-box-open text-gray-400 text-4xl mb-4"></i>
+                        <p class="text-gray-600">Tidak ada produk terkait</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredProducts.forEach(product => {
+                const productCard = createRelatedProductCard(product);
+                container.appendChild(productCard);
+            });
+        }
+
+        function createRelatedProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow cursor-pointer';
+            card.onclick = function () {
+                window.location.href = `/product/${product.id}`;
+            };
+
+            const price = product.promo && product.promo.potongan_harga > 0 ?
+                product.harga_satuan - (product.harga_satuan * product.promo.potongan_harga / 100) :
+                product.harga_satuan;
+
+            card.innerHTML = `
+                <div class="aspect-square bg-gray-200 rounded-lg mb-3 flex items-center justify-center overflow-hidden">
+                    ${product.path_thumbnail ?
+                    `<img src="${product.path_thumbnail}" alt="${product.nama}" class="w-full h-full object-cover">` :
+                    `<i class="fas fa-box text-gray-400 text-2xl"></i>`
+                }
+                </div>
+                <h3 class="text-gray-800 font-medium text-sm line-clamp-2 mb-1">${product.nama}</h3>
+                <div class="flex items-center justify-between">
+                    <p class="text-blue-700 font-semibold">Rp ${price.toLocaleString('id-ID')}</p>
+                    ${product.promo && product.promo.potongan_harga > 0 ?
+                    `<span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">-${product.promo.potongan_harga}%</span>` : ''
+                }
+                </div>
+            `;
+
+            return card;
+        }
+
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
             menu.classList.toggle('hidden');
         }
+
     </script>
 
-    <!-- Chat Bot Component (Available for all users) -->
-    @include('components.chat_bot')
 </body>
 
 </html>

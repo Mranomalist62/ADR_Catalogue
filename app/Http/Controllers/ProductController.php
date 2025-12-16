@@ -8,6 +8,7 @@ use App\Models\Promo;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Order;
 
 class ProductController extends Controller
 {
@@ -26,7 +27,7 @@ class ProductController extends Controller
         ]);
     }
 
-    // GET /api/products/{id} - Show specific product
+    // GET /public/products/{id} - Show specific product
     public function show($id)
     {
         $product = Product::with(['category', 'promo'])->find($id);
@@ -43,6 +44,151 @@ class ProductController extends Controller
             'data' => $product
         ]);
     }
+
+
+
+    public function recommended(Request $request)
+    {
+        try {
+            $perPage = $request->get('per_page', 8); // Default 8 per page
+            $page = $request->get('page', 1);
+
+            $totalOrders = Order::count();
+
+            if ($totalOrders == 0) {
+                $products = Product::with(['category', 'promo'])
+                    ->orderBy('created_at', 'DESC')
+                    ->paginate($perPage, ['*'], 'page', $page);
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $products->items(),
+                    'pagination' => [
+                        'current_page' => $products->currentPage(),
+                        'last_page' => $products->lastPage(),
+                        'per_page' => $products->perPage(),
+                        'total' => $products->total(),
+                        'has_more' => $products->hasMorePages()
+                    ],
+                    'message' => 'Newest products (no orders yet)'
+                ]);
+            }
+
+            $products = Product::with(['category', 'promo'])
+                ->withCount(['orders as total_orders' => function($query) {
+                    $query->where('status', 'completed');
+                }])
+                ->orderBy('total_orders', 'DESC')
+                ->orderBy('updated_at', 'DESC')
+                ->paginate($perPage, ['*'], 'page', $page);
+
+            return response()->json([
+                'success' => true,
+                'data' => $products->items(),
+                'pagination' => [
+                    'current_page' => $products->currentPage(),
+                    'last_page' => $products->lastPage(),
+                    'per_page' => $products->perPage(),
+                    'total' => $products->total(),
+                    'has_more' => $products->hasMorePages()
+                ],
+                'message' => 'Popular products based on order count'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch recommended products',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function terbaru(Request $request)
+    {
+        try {
+            $perPage = $request->get('per_page', 8);
+            $page = $request->get('page', 1);
+
+            $products = Product::with(['category', 'promo'])
+                ->orderBy('created_at', 'DESC')
+                ->orderBy('updated_at', 'DESC')
+                ->paginate($perPage, ['*'], 'page', $page);
+
+            return response()->json([
+                'success' => true,
+                'data' => $products->items(),
+                'pagination' => [
+                    'current_page' => $products->currentPage(),
+                    'last_page' => $products->lastPage(),
+                    'per_page' => $products->perPage(),
+                    'total' => $products->total(),
+                    'has_more' => $products->hasMorePages()
+                ],
+                'message' => 'Newest products'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch newest products',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function diskon(Request $request)
+    {
+        try {
+            $perPage = $request->get('per_page', 8);
+            $page = $request->get('page', 1);
+
+            $products = Product::whereHas('promo', function($query) {
+                    $query->where('potongan_harga', '>', 0);
+                })
+                ->with(['category', 'promo'])
+                ->join('promo', 'product.id', '=', 'promo.product_id')
+                ->orderBy('promo.potongan_harga', 'DESC')
+                ->orderBy('product.updated_at', 'DESC')
+                ->select('product.*')
+                ->paginate($perPage, ['*'], 'page', $page);
+
+            // Fallback if no discounts
+            if ($products->isEmpty()) {
+                $products = Product::with(['category', 'promo'])
+                    ->orderBy('created_at', 'DESC')
+                    ->paginate($perPage, ['*'], 'page', $page);
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $products->items(),
+                    'pagination' => $products->pagination,
+                    'message' => 'Newest products (no discounts available)'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $products->items(),
+                'pagination' => [
+                    'current_page' => $products->currentPage(),
+                    'last_page' => $products->lastPage(),
+                    'per_page' => $products->perPage(),
+                    'total' => $products->total(),
+                    'has_more' => $products->hasMorePages()
+                ],
+                'message' => 'Discounted products'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch discounted products',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 
     // POST /api/products - Create new product
     public function store(Request $request)
@@ -214,34 +360,158 @@ class ProductController extends Controller
         ]);
     }
 
-    // GET /api/products/category/{categoryId} - Get products by category
-    public function byCategory($categoryId)
+    public function search(Request $request)
     {
-        $products = Product::with('category')
-            ->where('id_kategori', $categoryId)
-            ->get();
+        try {
+            $perPage = $request->get('per_page', 8);
+            $page = $request->get('page', 1);
 
-        return response()->json([
-            'success' => true,
-            'data' => $products
-        ]);
+            // Get filter parameters
+            $search = $request->get('q', '');
+            $categoryId = $request->get('category_id');
+            $sortBy = $request->get('sort_by', 'rekomendasi');
+            $tab = $request->get('tab'); // 'recommended', null, etc
+            $onlyDiscount = $request->get('only_discount', false);
+
+            // Start query
+            $query = Product::with(['category', 'promo']);
+
+            // Apply tab-specific logic
+            if ($onlyDiscount) {
+                // For diskon tab
+                $query->whereHas('promo', function($q) {
+                    $q->where('potongan_harga', '>', 0);
+                });
+            } elseif ($tab === 'recommended') {
+                // For rekomendasi tab - prioritize popular products
+                $query->withCount(['orders as total_orders' => function($q) {
+                    $q->where('status', 'completed');
+                }]);
+            }
+            // For terbaru tab, we'll sort by created_at later
+
+            // Apply search
+            if (!empty($search)) {
+                $query->where(function($q) use ($search) {
+                    $q->where('nama', 'LIKE', "%{$search}%")
+                    ->orWhere('desc', 'LIKE', "%{$search}%");
+                });
+            }
+
+            // Apply category filter
+            if (!empty($categoryId) && $categoryId !== 'all') {
+                $query->where('id_kategori', $categoryId);
+            }
+
+            // Apply sorting based on tab
+            if ($tab === 'recommended') {
+                // For rekomendasi tab, sort by popularity first
+                $query->orderBy('total_orders', 'DESC');
+            } elseif ($onlyDiscount) {
+                // For diskon tab, sort by discount amount
+                $query->join('promo', 'product.id', '=', 'promo.product_id')
+                    ->orderBy('promo.potongan_harga', 'DESC');
+            }
+
+            // Apply user-selected sorting
+            switch ($sortBy) {
+                case 'harga_terendah':
+                    $query->orderBy('harga_satuan', 'ASC');
+                    break;
+                case 'harga_tertinggi':
+                    $query->orderBy('harga_satuan', 'DESC');
+                    break;
+                case 'terbaru':
+                    $query->orderBy('created_at', 'DESC');
+                    break;
+                case 'rekomendasi':
+                    // Already handled above
+                    break;
+            }
+
+            // Add secondary sorting
+            $query->orderBy('updated_at', 'DESC');
+
+            // Execute query with pagination
+            $products = $query->paginate($perPage, ['*'], 'page', $page);
+
+            return response()->json([
+                'success' => true,
+                'data' => $products->items(),
+                'pagination' => [
+                    'current_page' => $products->currentPage(),
+                    'last_page' => $products->lastPage(),
+                    'per_page' => $products->perPage(),
+                    'total' => $products->total(),
+                    'has_more' => $products->hasMorePages()
+                ],
+                'filters' => [
+                    'search' => $search,
+                    'category_id' => $categoryId,
+                    'sort_by' => $sortBy,
+                    'tab' => $tab
+                ],
+                'message' => 'Products found'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to search products',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    // GET /api/products/search/{keyword} - Search products
-    public function search($keyword)
+    // GET /public/products/by-category/{categoryId} - Get products by category
+    public function byCategory($categoryId, Request $request)
     {
-        $products = Product::with('category')
-            ->where('nama', 'like', "%{$keyword}%")
-            ->orWhere('desc', 'like', "%{$keyword}%")
-            ->get();
+        try {
+            $perPage = $request->get('per_page', 8);
+            $page = $request->get('page', 1);
+            $limit = $request->get('limit'); // For product detail page related products
 
-        return response()->json([
-            'success' => true,
-            'data' => $products
-        ]);
+            $query = Product::with(['category', 'promo'])
+                ->where('id_kategori', $categoryId)
+                ->orderBy('created_at', 'DESC');
+
+            // If limit is specified, use take() instead of paginate()
+            if ($limit) {
+                $products = $query->take($limit)->get();
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $products,
+                    'message' => 'Products by category (limited)'
+                ]);
+            }
+
+            // Otherwise, use pagination
+            $products = $query->paginate($perPage, ['*'], 'page', $page);
+
+            return response()->json([
+                'success' => true,
+                'data' => $products->items(),
+                'pagination' => [
+                    'current_page' => $products->currentPage(),
+                    'last_page' => $products->lastPage(),
+                    'per_page' => $products->perPage(),
+                    'total' => $products->total(),
+                    'has_more' => $products->hasMorePages()
+                ],
+                'message' => 'Products by category'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch products by category',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    // POST /api/products/{id}/thumbnail - Update only thumbnail
+    // POST /public/products/{id}/thumbnail - Update only thumbnail
     public function updateThumbnail(Request $request, $id)
     {
         $product = Product::find($id);

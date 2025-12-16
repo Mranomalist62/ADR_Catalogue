@@ -76,9 +76,8 @@ class userAuth extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json([
-            'message' => 'User logged out successfully',
-        ]);
+        return redirect()->intended(route('home'))
+            ->with('success', 'Logout berhasil.');
     }
 
     public function profile(Request $request){
