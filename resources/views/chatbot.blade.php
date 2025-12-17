@@ -12,7 +12,7 @@
 
     <div class="header">
         <a href="{{ url()->previous() }}" class="back-btn">Kembali</a>
-        <h1>Customer Service</h1>
+        <h1>ChatBot</h1>
     </div>
 
     <div class="chat-wrapper">
@@ -63,7 +63,7 @@
             chatbox.scrollTop = chatbox.scrollHeight;
             input.value = '';
 
-            const response = await fetch('/chat/reply', {
+            const response = await fetch('{{ route("chat.bot") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
