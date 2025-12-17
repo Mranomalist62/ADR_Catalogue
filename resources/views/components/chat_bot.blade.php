@@ -628,7 +628,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let isMinimized = true; // Start minimized
     const isLoggedIn = {{ $isLoggedIn ? 'true' : 'false' }};
     let lastChatCount = {{ isset($chats) ? count($chats) : 0 }};
-    
+    let lastChatId = 0;
+
     // Minimize chat
     minimizeBtn.addEventListener('click', function() {
         chatContainer.classList.remove('show');
@@ -876,7 +877,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const newMessages = data.chats.slice(lastChatCount);
 
                     newMessages.forEach(chat => {
-                        addMessage(chat.message, chat.sender);
+                        if (chat.id > lastChatId && chat.sender === 'admin') {
+                            addMessage(chat.message, 'bot');
+                            lastChatId = chat.id;
+                        }
                     });
 
                     lastChatCount = data.chats.length;
