@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
-    // GET /api/categories
+    // GET /public/categories
     public function index()
     {
         $categories = Category::all();
@@ -19,7 +19,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    // GET /api/categories/{id}
+    // GET /public/categories/{id}
     public function show($id)
     {
         $category = Category::find($id);
@@ -37,7 +37,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    // POST /api/categories
+    // POST /public/categories
     public function store(Request $request)
     {
         $request->validate([
@@ -63,7 +63,7 @@ class CategoryController extends Controller
         ], 201);
     }
 
-    // PUT /api/categories/{id}
+    // PUT /public/categories/{id}
     public function update(Request $request, $id)
     {
         $category = Category::find($id);
@@ -100,7 +100,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    // DELETE /api/categories/{id}
+    // DELETE /public/categories/{id}
     public function destroy($id)
     {
         $category = Category::find($id);
