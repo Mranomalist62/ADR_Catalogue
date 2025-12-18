@@ -102,6 +102,7 @@ Route::prefix('admin')->middleware(['auth.admin'])->group(function () {
 
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
     Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
+    Route::get('/promo', [AdminController::class, 'promo'])->name('admin.promo');
 
     // Admin chat
     Route::get('/chat', [ChatController::class, 'adminChat'])->name('admin.chat');

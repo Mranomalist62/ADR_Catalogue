@@ -82,7 +82,7 @@ class AdminController extends Controller
                            ->where('sender', 'user')
                            ->count();
 
-        return view('admin_home_promo', compact('unreadCount'));
+        return view('admin_promo_banner', compact('unreadCount'));
     }
 
 }
