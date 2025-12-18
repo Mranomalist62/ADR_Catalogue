@@ -203,11 +203,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-600">Total Users</p>
-                                <p class="text-3xl font-bold text-gray-900">1,234</p>
-                                <p class="text-xs text-green-600 flex items-center mt-1">
-                                    <i class="fas fa-arrow-up mr-1"></i>
-                                    <span>+12% dari bulan lalu</span>
-                                </p>
+                                <p class="text-3xl font-bold text-gray-900">{{ number_format($totalUsers) }}</p>
                             </div>
                             <div class="p-3 bg-blue-500 rounded-full">
                                 <i class="fas fa-users text-white text-xl"></i>
@@ -220,11 +216,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-600">Total Orders</p>
-                                <p class="text-3xl font-bold text-gray-900">456</p>
-                                <p class="text-xs text-green-600 flex items-center mt-1">
-                                    <i class="fas fa-arrow-up mr-1"></i>
-                                    <span>+8% dari bulan lalu</span>
-                                </p>
+                                <p class="text-3xl font-bold text-gray-900">{{ number_format($totalOrders) }}</p>
                             </div>
                             <div class="p-3 bg-green-500 rounded-full">
                                 <i class="fas fa-shopping-bag text-white text-xl"></i>
@@ -237,11 +229,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-600">Total Products</p>
-                                <p class="text-3xl font-bold text-gray-900">89</p>
-                                <p class="text-xs text-orange-600 flex items-center mt-1">
-                                    <i class="fas fa-arrow-down mr-1"></i>
-                                    <span>-3% dari bulan lalu</span>
-                                </p>
+                                <p class="text-3xl font-bold text-gray-900">{{ number_format($totalProducts) }}</p>
                             </div>
                             <div class="p-3 bg-yellow-500 rounded-full">
                                 <i class="fas fa-box text-white text-xl"></i>
@@ -254,10 +242,8 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-600">Total Revenue</p>
-                                <p class="text-3xl font-bold text-gray-900">Rp 45.6M</p>
-                                <p class="text-xs text-green-600 flex items-center mt-1">
-                                    <i class="fas fa-arrow-up mr-1"></i>
-                                    <span>+23% dari bulan lalu</span>
+                                <p class="text-3xl font-bold text-gray-900">
+                                    Rp {{ number_format($totalRevenue, 0, ',', '.') }}
                                 </p>
                             </div>
                             <div class="p-3 bg-purple-500 rounded-full">
@@ -273,16 +259,27 @@
                     <div class="bg-white rounded-xl shadow-lg p-6 slide-in" style="animation-delay: 0.5s">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-800">Sales Overview</h3>
-                            <select
+                            <select id="salesRange"
                                 class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option>This Week</option>
-                                <option>Last Week</option>
-                                <option>This Month</option>
-                                <option>Last Month</option>
+                                <option value="this_week" {{ $salesRange === 'this_week' ? 'selected' : '' }}>
+                                    This Week
+                                </option>
+
+                                <option value="last_week" {{ $salesRange === 'last_week' ? 'selected' : '' }}>
+                                    Last Week
+                                </option>
+
+                                <option value="this_month" {{ $salesRange === 'this_month' ? 'selected' : '' }}>
+                                    This Month
+                                </option>
+
+                                <option value="last_month" {{ $salesRange === 'last_month' ? 'selected' : '' }}>
+                                    Last Month
+                                </option>
                             </select>
                         </div>
-                        <div class="chart-container">
-                            <canvas id="salesChart"></canvas>
+                        <div class="chart-container" style="height:300px">
+                            <canvas id="salesChart" class="w-full h-full"></canvas>
                         </div>
                     </div>
 
@@ -291,18 +288,24 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-800">Revenue Trends</h3>
                             <div class="flex space-x-2">
-                                <button
-                                    class="px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-sm hover:bg-blue-200 transition-colors">
-                                    Daily
-                                </button>
-                                <button
-                                    class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm hover:bg-gray-200 transition-colors">
-                                    Weekly
-                                </button>
-                                <button
-                                    class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm hover:bg-gray-200 transition-colors">
-                                    Monthly
-                                </button>
+                                <select id="revenueRange" class="px-3 py-1 border border-gray-300 rounded-md text-sm
+                                        focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="this_week" {{ $revenueRange === 'this_week' ? 'selected' : '' }}>
+                                        This Week
+                                    </option>
+
+                                    <option value="last_week" {{ $revenueRange === 'last_week' ? 'selected' : '' }}>
+                                        Last Week
+                                    </option>
+
+                                    <option value="this_month" {{ $revenueRange === 'this_month' ? 'selected' : '' }}>
+                                        This Month
+                                    </option>
+
+                                    <option value="last_month" {{ $revenueRange === 'last_month' ? 'selected' : '' }}>
+                                        Last Month
+                                    </option>
+                                </select>
                             </div>
                         </div>
                         <div class="chart-container">
@@ -345,79 +348,60 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#12345
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div
-                                                class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                                <span class="text-xs font-medium">JD</span>
+                                @forelse ($recentOrders as $order)
+                                    <tr class="hover:bg-gray-50 transition-colors">
+
+                                        {{-- Order ID --}}
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            #{{ $order->id }}
+                                        </td>
+
+                                        {{-- Customer --}}
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div
+                                                    class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                                    <span class="text-xs font-medium">
+                                                        {{ strtoupper(substr($order->user->name, 0, 2)) }}
+                                                    </span>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        {{ $order->user->name }}
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">
+                                                        {{ $order->user->email }}
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="ml-3">
-                                                <div class="text-sm font-medium text-gray-900">John Doe</div>
-                                                <div class="text-xs text-gray-500">john@example.com</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Laptop ASUS ROG</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp 15.000.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                            Completed
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#12346
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div
-                                                class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                                <span class="text-xs font-medium">JS</span>
-                                            </div>
-                                            <div class="ml-3">
-                                                <div class="text-sm font-medium text-gray-900">Jane Smith</div>
-                                                <div class="text-xs text-gray-500">jane@example.com</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mouse Gaming</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp 500.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                            Processing
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#12347
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div
-                                                class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                                <span class="text-xs font-medium">BJ</span>
-                                            </div>
-                                            <div class="ml-3">
-                                                <div class="text-sm font-medium text-gray-900">Bob Johnson</div>
-                                                <div class="text-xs text-gray-500">bob@example.com</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Keyboard Mechanical
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp 1.200.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                            Pending
-                                        </span>
-                                    </td>
-                                </tr>
+                                        </td>
+
+                                        {{-- Product --}}
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $order->nama_produk ?? optional($order->product)->nama ?? '-' }}
+                                        </td>
+
+                                        {{-- Amount --}}
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            Rp {{ number_format($order->total_harga, 0, ',', '.') }}
+                                        </td>
+
+                                        {{-- Status (USE ACCESSOR) --}}
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                                    {{ $order->status_badge['color'] }}">
+                                                {{ $order->status_badge['label'] }}
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">
+                                            No orders in the last week
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -430,20 +414,42 @@
         // Chart.js configuration
         Chart.defaults.font.family = 'Poppins';
         Chart.defaults.color = '#6b7280';
+        const salesData = @json($salesChart);
+        const revenueData = @json($revenueChart);
+
+        const hasSalesData = salesData.some(v => v > 0);
+        const hasRevenueData = revenueData.some(v => v > 0);
+
+
 
         document.addEventListener('DOMContentLoaded', function () {
+
+
+            document.getElementById('salesRange')
+                ?.addEventListener('change', function () {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('SalesRange', this.value);
+                    window.location.href = url.toString();
+                });
+
+            document.getElementById('revenueRange')
+                ?.addEventListener('change', function () {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('RevenueRange', this.value);
+                    window.location.href = url.toString();
+                });
+
             // Sales Chart
             const salesCtx = document.getElementById('salesChart');
+
             if (salesCtx) {
                 new Chart(salesCtx, {
                     type: 'line',
                     data: {
                         labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                         datasets: [{
-                            label: 'Sales',
-                            data: [12, 19, 15, 25, 22, 30, 18],
-                            borderColor: 'rgb(59, 130, 246)',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            label: 'Orders',
+                            data: hasSalesData ? salesData : [],
                             borderWidth: 2,
                             tension: 0.4,
                             fill: true
@@ -453,23 +459,15 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: {
-                                display: false
-                            }
+                            legend: { display: false },
+                            tooltip: { enabled: hasSalesData }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                grid: {
-                                    display: true,
-                                    color: 'rgba(0, 0, 0, 0.05)'
-                                }
+                                ticks: { precision: 0 }
                             },
-                            x: {
-                                grid: {
-                                    display: false
-                                }
-                            }
+                            x: { grid: { display: false } }
                         }
                     }
                 });
@@ -484,9 +482,7 @@
                         labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                         datasets: [{
                             label: 'Revenue',
-                            data: [5200000, 8300000, 6500000, 10500000, 9200000, 12500000, 7500000],
-                            backgroundColor: 'rgba(147, 51, 234, 0.8)',
-                            borderColor: 'rgb(147, 51, 234)',
+                            data: hasRevenueData ? revenueData : [],
                             borderWidth: 1,
                             borderRadius: 4
                         }]
@@ -495,28 +491,17 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: {
-                                display: false
-                            }
+                            legend: { display: false },
+                            tooltip: { enabled: hasRevenueData }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                grid: {
-                                    display: true,
-                                    color: 'rgba(0, 0, 0, 0.05)'
-                                },
                                 ticks: {
-                                    callback: function (value) {
-                                        return 'Rp ' + (value / 1000000).toFixed(0) + 'M';
-                                    }
+                                    callback: v => 'Rp ' + (v / 1_000_000).toFixed(0) + 'M'
                                 }
                             },
-                            x: {
-                                grid: {
-                                    display: false
-                                }
-                            }
+                            x: { grid: { display: false } }
                         }
                     }
                 });

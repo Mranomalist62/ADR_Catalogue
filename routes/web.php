@@ -162,7 +162,7 @@ Route::prefix('admin/api')->middleware('auth.admin')->group(function () {
     Route::get('addresses', [AddressController::class, 'index']);
     Route::get('addresses/{id}', [AddressController::class, 'show']);
 
-
+    Route::post('revenue', [AdminController::class, 'revenue']);
 
     Route::apiResource('promo', PromoController::class)
         ->except(['index', 'show']);

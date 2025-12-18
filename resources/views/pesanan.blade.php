@@ -718,7 +718,12 @@
 
                     // Add pay button event (will be shown/hidden by checkAndUpdatePaymentStatus)
                     const payButton = item.querySelector('.pay-button');
-                    payButton.addEventListener('click', () => initiatePayment(order.id));
+                    // Create a closure to capture the current order.id
+                    payButton.addEventListener('click', (function (orderId) {
+                        return function (event) {
+                            initiatePayment(orderId, event);
+                        };
+                    })(order.id));
 
                     // Initially hide the payment action section
                     const paymentAction = item.querySelector('.payment-action');
