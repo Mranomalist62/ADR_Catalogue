@@ -475,8 +475,8 @@
             const imageContainer = document.getElementById('product-image');
             if (product.path_thumbnail) {
                 imageContainer.innerHTML = `
-                    <img src="${product.path_thumbnail}" alt="${product.nama}"
-                         class="w-full h-full object-cover">
+                    <img src="/storage/${product.path_thumbnail}" alt="${product.nama}"
+                        class="w-full h-full object-cover">
                 `;
             }
 

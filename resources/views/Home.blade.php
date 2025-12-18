@@ -904,7 +904,7 @@
 
             if (product.path_thumbnail) {
                 // Replace placeholder with actual image
-                imageContainer.innerHTML = `<img src="${product.path_thumbnail}" alt="${product.nama}" class="w-full h-full object-cover" loading="lazy">`;
+                imageContainer.innerHTML = `<img src="storage/${product.path_thumbnail}" alt="${product.nama}" class="w-full h-full object-cover" loading="lazy">`;
             }
             // If no thumbnail, keep the default icon
         }

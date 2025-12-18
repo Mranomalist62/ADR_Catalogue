@@ -27,7 +27,7 @@ Route::get('/kategori', fn() => view('kategori'))->name('kategori');
 Route::get('/invoice', fn() => view('invoice'))->name('invoice');
 
 Route::get('/product/{id}', fn($id) => view('product', compact('id')))->name('product');
-    Route::get('/profile', fn() => view('profile'))->name('profile');
+Route::get('/profile', fn() => view('profile'))->name('profile');
 
 
 Route::get('/banner', fn() => view('admin_banner'))->name('banner');
@@ -65,8 +65,8 @@ Route::post('/admin/logout', [AdminAuth::class, 'logout'])->name('admin.logout')
 
 Route::middleware(['auth.user'])->group(function () {
 
-    Route::get('/promo', fn() => view('promo'))->name('promo'); // DUPLICATE
-    Route::post('/logout', [UserAuth::class, 'logout'])->name('logout'); // DUPLICATE LOGOUT BELOW
+    Route::get('/promo', fn() => view('promo'))->name('promo');
+    Route::post('/logout', [UserAuth::class, 'logout'])->name('logout');
 
 
     //Pembayaran
@@ -98,8 +98,8 @@ Route::prefix('admin')->middleware(['auth.admin'])->group(function () {
     Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
     Route::get('/statistics', [AdminController::class, 'statistics'])->name('admin.statistics');
     Route::get('/billing', [AdminController::class, 'billing'])->name('admin.billing');
-    Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
 
+    Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
     Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
 
     // Admin chat

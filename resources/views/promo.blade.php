@@ -399,211 +399,7 @@
                 <p class="text-gray-600">Temukan penawaran terbaik untuk Anda</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Promo Card 1 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
-                    style="animation-delay: 0.1s">
-                    <div class="relative">
-                        <div class="bg-gradient-to-r from-blue-300 to-blue-500 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-laptop text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Elektronik Sale</h3>
-                            </div>
-                        </div>
-                        <span
-                            class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            -50%
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Diskon besar untuk semua produk elektronik pilihan</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 500.000</p>
-                                <p class="text-sm text-gray-500 line-through">Rp 1.000.000</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                2 hari lagi
-                            </div>
-                        </div>
-                        <button
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Promo Card 2 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
-                    style="animation-delay: 0.2s">
-                    <div class="relative">
-                        <div class="bg-gradient-to-r from-blue-200 to-blue-400 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-tshirt text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Fashion Deal</h3>
-                            </div>
-                        </div>
-                        <span
-                            class="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            -30%
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Koleksi fashion terbaru dengan harga spesial</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 210.000</p>
-                                <p class="text-sm text-gray-500 line-through">Rp 300.000</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                5 hari lagi
-                            </div>
-                        </div>
-                        <button
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Promo Card 3 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
-                    style="animation-delay: 0.3s">
-                    <div class="relative">
-                        <div class="bg-gradient-to-r from-sky-200 to-sky-400 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-utensils text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Makanan Fest</h3>
-                            </div>
-                        </div>
-                        <span
-                            class="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            Buy 2 Get 1
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Beli 2 gratis 1 untuk makanan pilihan</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 75.000</p>
-                                <p class="text-sm text-green-600">Hemat 50%</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                1 minggu lagi
-                            </div>
-                        </div>
-                        <button
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Promo Card 4 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
-                    style="animation-delay: 0.4s">
-                    <div class="relative">
-                        <div
-                            class="bg-gradient-to-r from-indigo-200 to-indigo-400 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-spa text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Beauty Special</h3>
-                            </div>
-                        </div>
-                        <span
-                            class="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            -40%
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Produk kecantikan dengan diskon spesial</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 90.000</p>
-                                <p class="text-sm text-gray-500 line-through">Rp 150.000</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                3 hari lagi
-                            </div>
-                        </div>
-                        <button
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Promo Card 5 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
-                    style="animation-delay: 0.5s">
-                    <div class="relative">
-                        <div class="bg-gradient-to-r from-cyan-200 to-cyan-400 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-couch text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Home Living</h3>
-                            </div>
-                        </div>
-                        <span
-                            class="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            Gratis Ongkir
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Perabotan rumah dengan gratis ongkir</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 250.000</p>
-                                <p class="text-sm text-blue-600">Hemat Rp 15.000</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                4 hari lagi
-                            </div>
-                        </div>
-                        <button
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Promo Card 6 -->
-                <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
-                    style="animation-delay: 0.6s">
-                    <div class="relative">
-                        <div class="bg-gradient-to-r from-blue-100 to-blue-300 h-48 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <i class="fas fa-gamepad text-4xl mb-2"></i>
-                                <h3 class="text-xl font-bold">Gaming Zone</h3>
-                            </div>
-                        </div>
-                        <span
-                            class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            -60%
-                        </span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Aksesoris gaming dengan diskon besar</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <p class="text-2xl font-bold text-indigo-600">Rp 120.000</p>
-                                <p class="text-sm text-gray-500 line-through">Rp 300.000</p>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                6 hari lagi
-                            </div>
-                        </div>
-                        <button
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
-                        </button>
-                    </div>
-                </div>
+            <div id="promo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             </div>
         </div>
     </section>
@@ -694,12 +490,164 @@
     </footer>
 
     <script>
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
+        document.addEventListener('DOMContentLoaded', loadPromos);
+
+        function renderPromoImage(promo) {
+            if (promo.path_thumbnail) {
+                return `
+                    <img
+                        src="/storage/${promo.path_thumbnail}"
+                        class="h-48 w-full object-cover"
+                        alt="${promo.nama}"
+                    >
+                `;
+            }
+
+            // inline random gradient pick (no new function)
+            const gradients = [
+                'from-indigo-600 to-purple-600',
+                'from-rose-500 to-pink-600',
+                'from-emerald-500 to-teal-600',
+                'from-amber-500 to-orange-600',
+                'from-sky-500 to-blue-600',
+                'from-fuchsia-500 to-purple-700',
+                'from-lime-500 to-green-600',
+                'from-cyan-500 to-sky-600',
+                'from-violet-500 to-indigo-700',
+                'from-red-500 to-rose-600',
+                'from-yellow-500 to-amber-600',
+                'from-pink-500 to-fuchsia-600'
+            ];
+
+            const gradient = gradients[Math.floor(Math.random() * gradients.length)];
+
+            return `
+                <div class="h-48 w-full flex items-center justify-center
+                            bg-gradient-to-br ${gradient}">
+                    <div class="w-28 h-28 rounded-full bg-white/90
+                                flex items-center justify-center
+                                text-gray-900 font-bold text-3xl shadow-lg">
+                        -${promo.potongan_harga}%
+                    </div>
+                </div>
+            `;
         }
 
+
+        async function loadPromos() {
+            const container = document.getElementById('promo-grid');
+
+            try {
+                const res = await fetch('public/promo');
+                const json = await res.json();
+
+
+
+                if (!json.success) {
+                    container.innerHTML = `<p class="text-red-500">Gagal memuat promo</p>`;
+                    return;
+                }
+
+                if (json.data.length === 0) {
+                    container.innerHTML = `<p class="text-gray-500">Tidak ada promo tersedia</p>`;
+                    return;
+                }
+
+                container.innerHTML = json.data.map(renderPromoCard).join('');
+                loadPromoPrices();
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<p class="text-red-500">Terjadi kesalahan</p>`;
+            }
+        }
+
+        function renderPromoCard(promo) {
+            return `
+            <div class="promo-card bg-white rounded-xl shadow-lg overflow-hidden slide-in"
+                data-product-id="${promo.product.id}">
+
+                <div class="relative">
+                    ${renderPromoImage(promo)}
+
+                    <span class="absolute top-4 right-4
+                                bg-red-500 text-white px-3 py-1
+                                rounded-full text-sm font-medium">
+                        -${promo.potongan_harga}%
+                    </span>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-lg font-bold mb-1 truncate">${promo.nama}</h3>
+                    <p class="text-sm text-gray-500 mb-3 truncate">
+                        Produk: ${promo.product?.nama ?? '-'}
+                    </p>
+
+                    <!-- PRICE PLACEHOLDER -->
+                    <div class="mb-4 price-container text-gray-400 text-sm">
+                        Memuat harga...
+                    </div>
+
+                    <button
+                        onclick="buyPromo(${promo.product.id})"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700
+                            text-white py-2 rounded-lg">
+                        <i class="fas fa-shopping-cart mr-2"></i> Beli Sekarang
+                    </button>
+                </div>
+            </div>
+            `;
+        }
+
+        async function loadPromoPrices() {
+            const cards = document.querySelectorAll('.promo-card');
+
+            for (const card of cards) {
+                const productId = card.dataset.productId;
+                const priceContainer = card.querySelector('.price-container');
+
+                try {
+                    const res = await fetch(`public/products/${productId}`);
+                    const json = await res.json();
+
+                    if (!json || !json.data) {
+                        priceContainer.innerHTML = `<span class="text-red-400">Harga tidak tersedia</span>`;
+                        continue;
+                    }
+
+                    const hargaAsli = json.data.harga_satuan;
+                    const potongan = Number(
+                        card.querySelector('.absolute.top-4.right-4')
+                            .innerText.replace('%', '').replace('-', '')
+                    );
+
+                    const hargaDiskon = hargaAsli - (hargaAsli * potongan / 100);
+
+                    priceContainer.innerHTML = `
+                        <p class="text-xl font-bold text-indigo-600">
+                            Rp ${formatRupiah(hargaDiskon)}
+                        </p>
+                        <p class="text-sm text-gray-400 line-through">
+                            Rp ${formatRupiah(hargaAsli)}
+                        </p>
+                    `;
+
+                } catch (err) {
+                    console.error(err);
+                    priceContainer.innerHTML = `<span class="text-red-400">Gagal memuat harga</span>`;
+                }
+            }
+        }
+
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID').format(number);
+        }
+
+        function buyPromo(productId) {
+            window.location.href = `/product/${productId}`;
+        }
     </script>
+
 
     <!-- Chat Bot Component (Available for all users) -->
     @include('components.chat_bot')

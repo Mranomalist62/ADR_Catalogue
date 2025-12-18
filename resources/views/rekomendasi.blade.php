@@ -1040,7 +1040,7 @@
                 <div class="relative">
                     <div class="bg-gray-200 h-48 flex items-center justify-center overflow-hidden">
                         ${product.path_thumbnail ?
-                    `<img src="${product.path_thumbnail}" alt="${product.nama}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">` :
+                    `<img src="/storage/${product.path_thumbnail}" alt="${product.nama}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">` :
                     `<i class="fas fa-box text-gray-400 text-4xl"></i>`
                 }
                     </div>
