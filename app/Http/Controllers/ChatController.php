@@ -87,58 +87,58 @@ class ChatController extends Controller
     /**
      * Send message from user
      */
+    private function isAdminWorkingHour()
+    {
+        $now = now()->setTimezone('Asia/Jakarta');
+        $start = now()->setTimezone('Asia/Jakarta')->setTime(8, 0);
+        $end   = now()->setTimezone('Asia/Jakarta')->setTime(22, 0);
+
+        return $now->between($start, $end);
+    }
+
+    /**
+     * USER KIRIM PESAN
+     */
     public function sendUserMessage(Request $request)
     {
-        try {
-            $user = Auth::guard('user')->user();
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-
-            $request->validate([
-                'message' => 'required|string|max:1000'
-            ]);
-
-            // Save user message
-            $chat = Chat::create([
-                'user_id' => $user->id,
-                'message' => $request->message,
-                'sender' => 'user',
-                'is_read' => false
-            ]);
-
-            // Check if there's an admin online (simplified logic)
-            // In a real app, you might check if admin is actively monitoring
-            $adminOnline = true; // Simplified - you could implement real admin presence detection
-            
-            if ($adminOnline) {
-                // Don't send bot response if admin is available
-                // Admin will respond from dashboard
-                return response()->json([
-                    'user_message' => $chat,
-                    'status' => 'pending_admin_response',
-                    'message' => 'Pesan Anda telah diterima. Admin akan segera merespons.'
-                ]);
-            } else {
-                // Generate bot response only if no admin is available
-                $botResponse = Chat::getBotResponse($request->message);
-                
-                // Save bot response
-                $botChat = Chat::create([
-                    'user_id' => $user->id,
-                    'message' => $botResponse,
-                    'sender' => 'bot',
-                    'is_read' => true
-                ]);
-
-                return response()->json([
-                    'user_message' => $chat,
-                    'bot_response' => $botChat
-                ]);
-            }
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+        $user = Auth::guard('user')->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        $request->validate([
+            'message' => 'required|string|max:1000'
+        ]);
+
+        // Simpan pesan user
+        Chat::create([
+            'user_id' => $user->id,
+            'message' => $request->message,
+            'sender'  => 'user',
+            'is_read' => false
+        ]);
+
+        // JAM KERJA
+        $now   = now()->timezone('Asia/Jakarta');
+        $start = now()->timezone('Asia/Jakarta')->setTime(8, 0);
+        $end   = now()->timezone('Asia/Jakarta')->setTime(22, 0);
+
+        // =========================
+        // JAM KERJA → ADMIN
+        // =========================
+        if ($now->between($start, $end)) {
+            return response()->json([
+                'status'  => 'pending_admin_response',
+                'message' => 'Pesan Anda telah diterima. Admin akan segera merespons.'
+            ]);
+        }
+
+        // =========================
+        // LUAR JAM KERJA → BOT
+        // =========================
+        return response()->json([
+            'status' => 'use_bot'
+        ]);
     }
 
     /**
@@ -148,26 +148,37 @@ class ChatController extends Controller
     {
         try {
             $admin = Auth::guard('admin')->user();
+
             if (!$admin) {
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
 
             $request->validate([
-                'user_id' => 'required|exists:users,id',
+                'user_id' => 'required|exists:user,id',
                 'message' => 'required|string|max:1000'
-            ]);
+            ]);            
 
             $chat = Chat::create([
-                'user_id' => $request->user_id,
+                'user_id'  => $request->user_id,
                 'admin_id' => $admin->id,
-                'message' => $request->message,
-                'sender' => 'admin',
-                'is_read' => false
+                'message'  => $request->message,
+                'sender'   => 'admin',
+                'is_read'  => false
             ]);
 
             return response()->json(['message' => $chat]);
+
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+
+            \Log::error('Admin chat error', [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+            ]);
+
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -225,17 +236,17 @@ class ChatController extends Controller
     public function getUserChatForRefresh()
     {
         $user = Auth::guard('user')->user();
+
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         $chats = Chat::where('user_id', $user->id)
-                     ->orderBy('created_at', 'asc')
-                     ->get();
+                    ->orderBy('created_at', 'asc')
+                    ->get();
 
         return response()->json([
-            'chats' => $chats,
-            'user' => $user
+            'chats' => $chats
         ]);
     }
 

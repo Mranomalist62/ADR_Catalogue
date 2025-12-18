@@ -44,7 +44,8 @@ Route::get('/kontak', fn() => view('kontak'))->name('kontak');
 // CHATBOT (PUBLIC)
 // ==========================================================
 
-Route::post('/chat/bot', [ChatController::class, 'getBotResponse'])->name('chat.bot');
+Route::post('/chat/send', [ChatController::class, 'sendUserMessage']);
+Route::post('/chat/bot', [ChatbotController::class, 'reply']);
 
 // ==========================================================
 // AUTH ACTIONS

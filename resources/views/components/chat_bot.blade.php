@@ -627,7 +627,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let unreadCount = 0;
     let isMinimized = true; // Start minimized
     const isLoggedIn = {{ $isLoggedIn ? 'true' : 'false' }};
-    
+    let lastChatCount = {{ isset($chats) ? count($chats) : 0 }};
+    let lastChatId = 0;
+
     // Minimize chat
     minimizeBtn.addEventListener('click', function() {
         chatContainer.classList.remove('show');
@@ -703,16 +705,34 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 hideTypingIndicator();
-                
+
                 if (data.error) {
-                    addMessage('Maaf, terjadi kesalahan. Silakan coba lagi.', 'bot');
+                    addMessage('Maaf, terjadi kesalahan.', 'bot');
                     return;
                 }
-                
+
+                // JAM KERJA → ADMIN
                 if (data.status === 'pending_admin_response') {
                     addMessage(data.message, 'bot');
-                } else if (data.bot_response) {
-                    addMessage(data.bot_response.message, 'bot');
+                    return;
+                }
+
+                // LUAR JAM KERJA → BOT
+                if (data.status === 'use_bot') {
+                    fetch('/chat/bot', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document
+                                .querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        },
+                        body: JSON.stringify({ message })
+                    })
+                    .then(res => res.json())
+                    .then(botData => {
+                        addMessage(botData.reply, 'bot');
+                    });
                 }
             })
             .catch(error => {
@@ -740,8 +760,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
-                if (data.bot_response) {
-                    addMessage(data.bot_response, 'bot');
+                if (data.reply) {
+                    addMessage(data.reply, 'bot');
                 }
             })
             .catch(error => {
@@ -838,25 +858,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Periodically check for new messages (only for logged-in users)
     if (isLoggedIn) {
-        setInterval(function() {
-            if (!isMinimized) {
-                fetch('/chat/refresh', {
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.chats) {
-                        // Update chat with new messages
-                        // This would need more sophisticated logic to avoid duplicates
-                    }
-                })
-                .catch(error => {
-                    console.error('Error refreshing chat:', error);
-                });
-            }
-        }, 5000);
+        setInterval(function () {
+            if (isMinimized) return;
+
+            fetch('/chat/refresh', {
+                headers: {
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content')
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.chats) return;
+
+                // 🔥 ADA PESAN BARU DARI ADMIN
+                if (data.chats.length > lastChatCount) {
+                    const newMessages = data.chats.slice(lastChatCount);
+
+                    newMessages.forEach(chat => {
+                        if (chat.id > lastChatId && chat.sender === 'admin') {
+                            addMessage(chat.message, 'bot');
+                            lastChatId = chat.id;
+                        }
+                    });
+
+                    lastChatCount = data.chats.length;
+                }
+            })
+            .catch(err => console.error(err));
+        }, 3000);
     }
     
     // Character counter
