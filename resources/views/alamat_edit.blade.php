@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Alamat - ADR Catalogue</title>
+    <title>Edit Alamat - ADR Catalogue</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -288,10 +288,17 @@
         {{-- TITLE --}}
         <div class="mb-10">
             <p class="text-gray-600 text-sm mb-2">
-                Beranda / Checkout / Alamat / <span class="font-semibold text-gray-800">Tambah Alamat</span>
+                Beranda / Checkout / Alamat /
+                <span class="font-semibold text-gray-800" id="page-title-text">
+                    @if(isset($addressId)) Edit Alamat @else Tambah Alamat @endif
+                </span>
             </p>
-            <h1 class="text-3xl font-bold text-gray-800">Tambah Alamat Baru</h1>
+            <h1 class="text-3xl font-bold text-gray-800" id="page-heading">
+                @if(isset($addressId)) Edit Alamat @else Tambah Alamat Baru @endif
+            </h1>
         </div>
+
+        <input type="hidden" id="address-id" value="{{ $addressId ?? '' }}">
 
         {{-- CARD FORM --}}
         <div class="bg-white rounded-2xl shadow-xl p-8">
@@ -317,14 +324,14 @@
 
                 {{-- BUTTON --}}
                 <div class="pt-4 flex justify-end space-x-3">
-                    <a href="/alamat"
+                    <a href="/listalamat"
                         class="px-5 py-3 rounded-xl bg-gray-300 text-gray-800 font-medium hover:bg-gray-400 transition">
                         Batal
                     </a>
 
                     <button type="submit" id="submit-address"
                         class="px-5 py-3 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition">
-                        Simpan Alamat
+                        @if(isset($addressId)) Ubah Alamat @else Simpan Alamat @endif
                     </button>
                 </div>
 
@@ -337,7 +344,11 @@
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('add-address-form');
             const submitBtn = document.getElementById('submit-address');
-            const cancelBtn = document.querySelector('a[href="/alamat"]');
+            const cancelBtn = document.querySelector('a[href="/listalamat"]');
+            const addressId = document.getElementById('address-id')?.value;
+
+            // Check if we're in edit mode
+            const isEditMode = !!addressId;
 
             if (!form || !submitBtn) {
                 console.error('Form elements not found!');
@@ -346,6 +357,11 @@
 
             // Get CSRF token from meta tag
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+            // If editing, load address data from localStorage or fetch from API
+            if (isEditMode) {
+                loadAddressData(addressId);
+            }
 
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();
@@ -370,12 +386,19 @@
 
                 // Disable submit button and show loading
                 const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> ' +
+                    (isEditMode ? 'Mengupdate...' : 'Menyimpan...');
                 submitBtn.disabled = true;
 
                 try {
-                    const response = await fetch('/user/api/addresses', {
-                        method: 'POST',
+                    const url = isEditMode
+                        ? `/user/api/addresses/${addressId}`  // PUT for update
+                        : '/user/api/addresses';              // POST for create
+
+                    const method = isEditMode ? 'PUT' : 'POST';
+
+                    const response = await fetch(url, {
+                        method: method,
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
@@ -390,12 +413,16 @@
                     const result = await response.json();
 
                     if (result.success) {
-                        // Success - redirect to address list or previous page
-                        showSuccessMessage('Alamat berhasil ditambahkan!');
+                        // Success message
+                        const successMsg = isEditMode
+                            ? 'Alamat berhasil diupdate!'
+                            : 'Alamat berhasil ditambahkan!';
+
+                        showSuccessMessage(successMsg);
 
                         // Redirect after 1.5 seconds
                         setTimeout(() => {
-                            window.location.href = '/listalamat'; // or /listalamat depending on your routes
+                            window.location.href = '/listalamat';
                         }, 1500);
 
                     } else {
@@ -414,6 +441,52 @@
                     alert('Gagal menyimpan alamat: ' + error.message);
                 }
             });
+
+            // Function to load address data for editing
+            async function loadAddressData(addressId) {
+                try {
+                    // First check localStorage (from listalamat page)
+                    const editData = localStorage.getItem('editAddressData');
+
+                    if (editData) {
+                        const address = JSON.parse(editData);
+                        populateForm(address);
+                        localStorage.removeItem('editAddressData'); // Clean up
+                    } else {
+                        // Fetch from API if not in localStorage
+                        const response = await fetch(`/user/api/addresses/${addressId}`, {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            }
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success && result.data) {
+                            populateForm(result.data);
+                        } else {
+                            throw new Error(result.message || 'Gagal memuat data alamat');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading address data:', error);
+                    alert('Gagal memuat data alamat: ' + error.message);
+                    // Redirect back to list on error
+                    setTimeout(() => window.location.href = '/listalamat', 2000);
+                }
+            }
+
+            // Populate form with address data
+            function populateForm(address) {
+                document.getElementById('nama').value = address.nama || '';
+                document.getElementById('desk_alamat').value = address.desk_alamat || '';
+
+                // Update page title dynamically
+                document.getElementById('page-title-text').textContent = 'Edit Alamat';
+                document.getElementById('page-heading').textContent = 'Edit Alamat';
+                document.getElementById('submit-address').textContent = 'Update Alamat';
+            }
 
             // Helper function to show error messages
             function showError(elementId, message) {
@@ -453,13 +526,12 @@
                 }, 3000);
             }
 
-            // Update cancel button to use proper route
+            // Update cancel button
             if (cancelBtn) {
-                cancelBtn.href = '{{ route("listalamat") }}'; // or /alamat depending on your route
+                cancelBtn.href = '{{ route("listalamat") }}';
             }
         });
     </script>
-
 </body>
 
 </html>

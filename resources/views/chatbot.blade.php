@@ -12,7 +12,7 @@
 
     <div class="header">
         <a href="{{ url()->previous() }}" class="back-btn">Kembali</a>
-        <h1>BotChat</h1>
+        <h1>ChatBot</h1>
     </div>
 
     <div class="chat-wrapper">
@@ -20,10 +20,10 @@
         <div id="chatbox" class="chatbox"></div>
 
         <div class="quick-reply">
-            <button class="chip">Hai, Lorem ipsum...</button>
-            <button class="chip">Hai, Lorem ipsum...</button>
-            <button class="chip">Hai, Lorem ipsum...</button>
-            <button class="chip">Hai, Lorem ipsum...</button>
+            <button class="chip">Hai, Produk apa saja yang dimiliki ADRCatalog?</button>
+            <button class="chip">Hai, Apakah ada promo?</button>
+            <button class="chip">Hai, Kategori apa saja yang ada?</button>
+            <button class="chip">Hai, Berikan informasi harga produk ADRCatalog</button>
         </div>
 
         <div class="chat-input-wrapper">
@@ -63,7 +63,7 @@
             chatbox.scrollTop = chatbox.scrollHeight;
             input.value = '';
 
-            const response = await fetch('/chat/reply', {
+            const response = await fetch('{{ route("chat.bot") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

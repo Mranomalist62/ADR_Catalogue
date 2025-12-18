@@ -374,9 +374,12 @@
                 // Send message to server
                 fetch('/admin/chat/send', {
                     method: 'POST',
+                    credentials: 'include', // ⬅️ GANTI INI
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content')
                     },
                     body: JSON.stringify({
                         user_id: currentUserId,
@@ -386,16 +389,16 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        addMessage('Maaf, terjadi kesalahan. Silakan coba lagi.', 'bot');
+                        console.error(data.error);
+                        addMessage('Maaf, terjadi kesalahan.', 'bot');
                         return;
                     }
-                    
-                    // Message sent successfully
-                    console.log('Message sent:', data);
+
+                    console.log('Admin message saved:', data);
                 })
                 .catch(error => {
-                    addMessage('Maaf, terjadi kesalahan koneksi. Silakan coba lagi.', 'bot');
-                    console.error('Error sending message:', error);
+                    console.error('Fetch error:', error);
+                    addMessage('Maaf, terjadi kesalahan koneksi.', 'bot');
                 });
             });
 
