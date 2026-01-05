@@ -60,9 +60,8 @@ class Order extends Model
      */
     public function payment()
     {
-        return $this->hasOne(Payment::class, 'order_id');
+        return $this->hasOne(Payment::class, 'id_order', 'id');
     }
-
     public function product()
     {
         return $this->belongsTo(Product::class, 'id_produk');

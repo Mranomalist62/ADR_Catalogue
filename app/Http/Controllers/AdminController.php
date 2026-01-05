@@ -143,10 +143,56 @@ class AdminController extends Controller
     {
         // Get unread messages count
         $unreadCount = Chat::where('is_read', false)
+                        ->where('sender', 'user')
+                        ->count();
+
+        // Calculate statistics
+        $totalOrders = Order::count();
+
+        // Pending orders - status 'pending', 'capture', 'payment_pending', 'unpaid', 'awaiting_payment'
+        $pendingOrders = Order::whereIn('status', [
+            'pending',
+            'capture',
+            'payment_pending',
+            'unpaid',
+            'awaiting_payment'
+        ])->count();
+
+        // Completed orders - status 'paid', 'delivered', 'settlement'
+        $completedOrders = Order::whereIn('status', [
+            'paid',
+            'delivered',
+            'settlement'
+        ])->count();
+
+        // Total revenue - only for certain statuses
+        $revenueStatuses = ['paid', 'processing', 'shipped', 'delivered', 'settlement'];
+        $totalRevenue = Order::whereIn('status', $revenueStatuses)->sum('total_harga');
+
+        // Get latest orders for the table
+        $orders = Order::with(['user', 'product'])
+                    ->orderBy('created_at', 'desc')
+                    ->take(10) // Limit to 10 latest orders
+                    ->get();
+
+        return view('admin_orders', compact(
+            'unreadCount',
+            'totalOrders',
+            'pendingOrders',
+            'completedOrders',
+            'totalRevenue',
+            'orders'
+        ));
+    }
+
+    public function ordersDetail()
+    {
+        $unreadCount = Chat::where('is_read', false)
                            ->where('sender', 'user')
                            ->count();
 
-        return view('admin_orders', compact('unreadCount'));
+
+        return view('admin_orders_detail', compact('unreadCount'));
     }
 
     public function statistics()

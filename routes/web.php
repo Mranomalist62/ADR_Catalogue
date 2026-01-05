@@ -33,7 +33,6 @@ Route::get('/profile', fn() => view('profile'))->name('profile');
 Route::get('/banner', fn() => view('admin_banner'))->name('banner');
 
 
-
 // Help pages
 Route::get('/faq', fn() => view('faq'))->name('faq');
 Route::get('/pengiriman', fn() => view('pengiriman'))->name('pengiriman');
@@ -96,7 +95,11 @@ Route::middleware(['auth.user'])->group(function () {
 Route::prefix('admin')->middleware(['auth.admin'])->group(function () {
 
     Route::get('/', [AdminController::class, 'dashboard'])->name('admin');
+
+    Route::get('/orders/detail', [AdminController::class, 'ordersDetail'])->name('admin.orders.detail');
     Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
+
+
     Route::get('/statistics', [AdminController::class, 'statistics'])->name('admin.statistics');
     Route::get('/billing', [AdminController::class, 'billing'])->name('admin.billing');
 
@@ -167,6 +170,7 @@ Route::prefix('admin/api')->middleware('auth.admin')->group(function () {
     Route::apiResource('promo', PromoController::class)
         ->except(['index', 'show']);
 
+    Route::get('orders/{order}/invoice', [OrderController::class, 'invoiceApi']);
     Route::apiResource('orders', OrderController::class);
 
     Route::prefix('payments')->group(function () {
@@ -191,6 +195,9 @@ Route::prefix('user/api')->middleware('auth.user')->group(function () {
     Route::get('addresses/default', [AddressController::class, 'getDefaultAddress'])->name('alamat.default');
     Route::post('addresses/{id}/select', [AddressController::class, 'select']);
     Route::apiResource('addresses', AddressController::class);
+
+    Route::get('/orders/{order}/invoice', [OrderController::class, 'invoiceApi']);
+
     Route::apiResource('orders', OrderController::class)->except(['update', 'destroy']);
 
 

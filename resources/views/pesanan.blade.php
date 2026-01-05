@@ -496,11 +496,12 @@
                                     </p>
                                     <p class="text-gray-600 text-sm payment-date"></p>
                                 </div>
-                                <button onclick="window.print()"
-                                    class="print-btn bg-blue-100 text-blue-600 px-4 py-2 rounded-lg flex items-center space-x-2 hover:shadow-lg transition-transform duration-300">
+                                <a href="#"
+                                    class="print-btn bg-blue-100 text-blue-600 px-4 py-2 rounded-lg flex items-center space-x-2 hover:shadow-lg transition-transform duration-300"
+                                    target="_blank">
                                     <i class="fas fa-print"></i>
                                     <span>Cetak Invoice</span>
-                                </button>
+                                </a>
                             </div>
                         </div>
 
@@ -534,6 +535,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             loadOrders();
+
+            function isFinalOrderStatus(status) {
+                return ['delivered', 'cancelled', 'expired', 'deny'].includes(status.toLowerCase());
+            }
+
+
+
 
             // Mobile menu toggle
             function toggleMobileMenu() {
@@ -614,34 +622,11 @@
                         const isPending = paymentStatus.includes('pending') ||
                             ['unpaid', 'awaiting_payment'].includes(paymentStatus);
 
-                        if (isPending) {
-                            console.log(`SHOWING PAYMENT BUTTON for order ${orderId}`);
-                            const paymentAction = orderElement.querySelector('.payment-action');
-                            if (paymentAction) {
+                        if (!isFinalOrderStatus(orderStatus)) {
+                            if (['paid', 'settlement', 'capture'].includes(paymentStatus)) {
+                                paymentAction.classList.add('hidden');
+                            } else {
                                 paymentAction.classList.remove('hidden');
-
-                                // Update expiry time from Midtrans if available
-                                if (result.data.midtrans_status && result.data.midtrans_status.expiry_time) {
-                                    const expiry = new Date(result.data.midtrans_status.expiry_time);
-                                    const now = new Date();
-                                    const timeLeft = expiry - now;
-
-                                    if (timeLeft > 0) {
-                                        const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                                        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                                        const expiryText = orderElement.querySelector('.expiry-text');
-                                        if (expiryText) {
-                                            expiryText.textContent = `${hours} jam ${minutes} menit`;
-                                        }
-                                    }
-                                }
-
-                                // Update status badge with payment status
-                                const statusBadge = orderElement.querySelector('.status-badge');
-                                if (statusBadge) {
-                                    statusBadge.className = 'px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 flex items-center gap-1';
-                                    statusBadge.innerHTML = `<i class="far fa-clock text-xs"></i> Menunggu Pembayaran (Midtrans)`;
-                                }
                             }
                         }
                     }
@@ -727,7 +712,13 @@
 
                     // Initially hide the payment action section
                     const paymentAction = item.querySelector('.payment-action');
-                    paymentAction.classList.add('hidden');
+
+                    // Show pay button by default if order is NOT final
+                    if (!isFinalOrderStatus(orderStatus)) {
+                        paymentAction.classList.remove('hidden');
+                    } else {
+                        paymentAction.classList.add('hidden');
+                    }
 
                     // Show paid section if order is already marked as paid
                     if (['paid', 'settlement', 'capture', 'success'].includes(orderStatus.toLowerCase())) {
@@ -743,7 +734,7 @@
                         item.querySelector('.status-label').textContent = getStatusLabel(orderStatus);
                         item.querySelector('.restock-notice').classList.remove('hidden');
                     }
-
+                    item.dataset.status = orderStatus.toLowerCase();
                     // Add to container
                     container.appendChild(clone);
 
